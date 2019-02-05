@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from forms import ForgotForm
+#from forms import ForgotForm
 
 app = Flask(__name__)
 
@@ -26,5 +26,4 @@ def logg_inn():
 
 @app.route('/glemt_passord')
 def glemt_passord():
-    form = ForgotForm()
-    return render_template('glemt_passord.html', form=form)
+    return render_template('glemt_passord.html')

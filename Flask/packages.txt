@@ -1,2 +1,0 @@
-Python packages used:
-- flask, flask_wtf, wtforms

@@ -3,7 +3,11 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>OCR</title>
+        {% if title %}            
+            <title> {{ title }}</title>
+        {% else %}
+            <title> OCR </title>
+        {% endif %}
     </head>
     <body>
         <div class = container>

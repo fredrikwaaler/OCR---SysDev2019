@@ -1,7 +1,9 @@
 from flask import Flask, render_template
+from flask_wtf import FlaskForm
 from forms import ForgotForm
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secretkey'
 
 @app.route('/')
 @app.route('/kjop')
@@ -28,3 +30,6 @@ def logg_inn():
 def glemt_passord():
     form = ForgotForm()
     return render_template('glemt_passord.html', form=form)
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,14 +1,19 @@
 from flask import Flask, render_template
 from flask_wtf import FlaskForm
-from forms import ForgotForm
+from forms import ForgotForm, KjopForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secretkey'
 
 @app.route('/')
-@app.route('/kjøp')
+@app.route('/kjøp', methods=['GET', 'POST'])
 def kjop():
-    return render_template('kjøp.html', title="Kjøp")
+    form = KjopForm()
+
+    if form.validate_on_submit():
+        return "Kjøp-form validated"
+
+    return render_template('kjøp.html', title="Kjøp", form=form)
 
 @app.route('/salg')
 def salg():
@@ -31,7 +36,7 @@ def glemt_passord():
     form = ForgotForm()
 
     if form.validate_on_submit():
-        return "Form is validated"
+        return "Forgot-form validated"
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
 
 if __name__ == '__main__':

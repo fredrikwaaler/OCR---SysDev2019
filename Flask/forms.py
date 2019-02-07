@@ -23,3 +23,18 @@ class KjopForm(FlaskForm):
 
     betalt = BooleanField('Betalt')
 
+class SalgForm(FlaskForm):
+    type_salg = SelectField('Type', choices=[])
+    kunde = SelectField('Kunde', choices=[])
+    dato = StringField('Dato')
+    kontrakt = SelectField('Kontrakt', choices=[])
+    kommentar = StringField('Kommentar')
+    din_referanse = StringField('Din Referanse')
+    kontonummer = StringField('Kontonummer')
+    deres_referanse = StringField('Deres Referanse')
+
+    beskrivelse = StringField('Beskrivelse')
+    pris = StringField('Pris')
+    antall = StringField('Antall')
+    rabatt = StringField('Rabatt')
+    mva = StringField('Mva')

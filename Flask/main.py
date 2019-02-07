@@ -26,9 +26,12 @@ def profil():
 def logg_inn():
     return render_template('logg_inn.html', title="Logg inn")
 
-@app.route('/glemt_passord')
+@app.route('/glemt_passord', methods=['GET', 'POST'])
 def glemt_passord():
     form = ForgotForm()
+
+    if form.validate_on_submit():
+        return "Form is validated"
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
 
 if __name__ == '__main__':

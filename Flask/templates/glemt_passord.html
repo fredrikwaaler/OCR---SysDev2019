@@ -1,8 +1,9 @@
 {% extends 'layout_pre.html' %}
 {% block container %}
     <h1>Glemt Passord</h1>
-    <form method="POST" action="({ url_for('form') })">
+    <form method="POST" action="{{ url_for('glemt_passord') }}">
             {{ form.csrf_token }}
             {{ form.email }}
+            <input type="submit" Value="Submit">
     </form>
 {% endblock container %}

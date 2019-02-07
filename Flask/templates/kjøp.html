@@ -2,23 +2,41 @@
 {% block container %}
 
 <!-- TODO: lag forms for info under-->
-<h2>Type kjøp</h2>
-<h3>Levrandør</h3>
-<h3>Dato</h3>
-<h3>Fakturanummer</h3>
+<form method="POST" action="{{ url_for('kjop') }}">
+    <h3>Type kjøp</h3>
+    {{ form.csrf_token }}
+    {{ form.type_kjop }}
 
-<!-- Bilde her -->
+    <h3>Leverandør</h3>
+    {{ form.leverandor}}
+    <h3>Dato</h3>
+    {{ form.fakturadato.label }}
+    {{ form.fakturadato }}
+    {{ form.forfallsdato.label }}
+    {{ form.forfallsdato }}
+    <h3>Fakturanummer</h3>
+    {{ form.fakturanummer }}
 
-<!--TODO: lag skjema/form for -->
-<h3>Tekst</h3>
-<h3>Konto</h3>
-<h3>Brutto</h3>
-<h3>Mva</h3>
-<h3>Netto</h3>
+    <!-- Bilde her -->
 
-<!--TODO: Lag checkbox for "betalt" -->
-<h3>Betalt</h3>
 
-<!--TODO: gjør dette til en knapp-->
-<h4>Send Inn</h4>
+    <!--TODO: lag skjema/form for -->
+    <h3>Tekst</h3>
+    {{ form.teskst }}
+    <h3>Konto</h3>
+    {{ form.kostnadskonto }}
+    <h3>Brutto</h3>
+    {{ form.bruttobelop }}
+    <h3>Mva</h3>
+    {{ form.mva }}
+    <h3>Netto</h3>
+    {{ form.nettobelop}}
+
+    <!--TODO: Lag checkbox for "betalt" -->
+    <h3>Betalt</h3>
+    {{ form.betalt }}
+
+    <!--TODO: gjør dette til en knapp-->
+    <input type="submit" Value="Send inn">
+</form>
 {% endblock container %}

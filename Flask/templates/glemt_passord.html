@@ -3,6 +3,7 @@
     <h1>Glemt Passord</h1>
     <form method="POST" action="{{ url_for('glemt_passord') }}">
             {{ form.csrf_token }}
+            {{ form.email.label }}
             {{ form.email }}
             <input type="submit" Value="Submit">
     </form>

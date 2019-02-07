@@ -1,7 +1,17 @@
+/* h2 is used for big headings */
 h2 {
     font-size: 2.5 em;
+    font-family: 'Overpass', sans-serif;
+    color: red;
 }
 
+/* h3 is used for field headings */
 h3 {
-    font-size: 1.8 em;
+    font-size: 1.5 em;
+    font-family: 'Overpass', system-ui;
+}
+
+/* h4 is used for buttons */
+h4 {
+    
 }

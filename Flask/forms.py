@@ -1,11 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, BooleanField
 
-
+class LoginForm(FlaskForm):
+    email = StringField('Email')
+    password = PasswordField('Password')
 
 class ForgotForm(FlaskForm):
     email = StringField('Email')
-
 
 class KjopForm(FlaskForm):
     type_kjop = StringField('Type Kjøp')

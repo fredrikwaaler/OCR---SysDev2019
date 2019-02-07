@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_wtf import FlaskForm
-from forms import ForgotForm, KjopForm
+from forms import LoginForm, ForgotForm, KjopForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secretkey'
@@ -27,9 +27,14 @@ def historikk():
 def profil():
     return render_template('profil.html', title="Profil")
 
-@app.route('/logg_inn')
+@app.route('/logg_inn', methods=['GET', 'POST'])
 def logg_inn():
-    return render_template('logg_inn.html', title="Logg inn")
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        return "Login-form validated"
+
+    return render_template('logg_inn.html', title="Logg inn", form=form)
 
 @app.route('/glemt_passord', methods=['GET', 'POST'])
 def glemt_passord():

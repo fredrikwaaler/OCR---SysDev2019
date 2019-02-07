@@ -6,9 +6,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secretkey'
 
 @app.route('/')
-@app.route('/kjop')
+@app.route('/kjøp')
 def kjop():
-    return render_template('kjop.html', title="Kjøp")
+    return render_template('kjøp.html', title="Kjøp")
 
 @app.route('/salg')
 def salg():

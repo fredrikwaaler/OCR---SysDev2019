@@ -1,4 +1,26 @@
 {% extends 'layout_post.html' %}
 {% block container %}
-    <p>Hei</p>
+<h2>Min Konto</h2>
+
+<!--Info about the users name and email that we have-->
+<!--Structure: "Name:"    <actual name>  <Change button> -->
+<h3>Navn</h3>
+    <p>navn navnesen</p>
+        <h4>Endre</h4>
+<h3>Email</h3>
+    <p>navn@navnesen.com</p>
+        <h4>Endre</h4>
+<h3>Fikenbruker</h3>
+<h4>Endre</h4>
+
+<!--Just a line to make sure the user understands the semantic change-->
+<div class="newline"></div>
+<!--Change password here-->
+<h3>Nytt passord</h3>
+<h3>Gjenta passord</h3>
+
+<div class="newline"></div>
+<!--Buttons to download userdata and deleting account-->
+<h4>Last ned brukerdata</h4>
+<h4 id="warning">Slett Konto</h4>
 {% endblock container %}

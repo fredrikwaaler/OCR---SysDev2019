@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, BooleanField
 
 
+
 class ForgotForm(FlaskForm):
     email = StringField('Email')
 

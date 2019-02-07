@@ -9,9 +9,8 @@
         {% else %}
             <title> OCR </title>
         {% endif %}
-        <link rel="stylesheet" type="text/css" href="../css/normalize.css">
-        <link rel="stylesheet" type="text/css" href="../css/main.css">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('css/main.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}" />
     </head>
     <body>
         <div class="navbar">

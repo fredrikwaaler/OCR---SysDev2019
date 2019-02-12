@@ -1,3 +1,7 @@
+body {
+    margin-top: 50px;
+    font-family: 'Overpass', sans-serif;
+}
 /* h2 is used for big headings */
 h2 {
     font-size: 2.5 em;
@@ -89,3 +93,39 @@ input.success {
     background-color: #e6e6e6;
     border-color: #adadad;
   }
+/* h4 is used for buttons */
+h4 {
+    
+}
+
+ul {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #2369db;
+}
+  
+li {
+    float: left;
+    font-size: 0.8em;
+}
+
+li a {
+    
+    display: block;
+    color: #ffffff;
+    text-align: center;
+    padding: 12px 14px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #1f4684;
+}
+
+.active {
+    background-color: #05398e;
+}

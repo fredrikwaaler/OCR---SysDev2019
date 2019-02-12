@@ -8,8 +8,8 @@ class LoginForm(FlaskForm):
 class ForgotForm(FlaskForm):
     email = StringField('Email')
 
-class KjopForm(FlaskForm):
-    type_kjop = StringField('Type Kjøp')
+class KjoopForm(FlaskForm):
+    type_kjoop = StringField('Type Kjøp')
     leverandor = SelectField('Leverandør', choices=[('1', 'Meny'), ('2', 'Kiwi')])
     fakturadato = StringField('Faktura')
     forfallsdato = StringField('Forfall')

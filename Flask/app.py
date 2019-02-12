@@ -1,19 +1,31 @@
 from flask import Flask, render_template
 from flask_wtf import FlaskForm
-from forms import LoginForm, ForgotForm, KjopForm, SalgForm
+from forms import LoginForm, ForgotForm, KjoopForm, SalgForm
+from flask_nav import Nav
+from flask_nav.elements import Navbar, View
 
 app = Flask(__name__)
+nav = Nav(app)
 app.config['SECRET_KEY'] = 'secretkey'
 
+navbar = Navbar('',
+    View('Kjøp', 'kjoop'),
+    View('Salg', 'salg'),
+    View('Historikk', 'historikk'),
+    View('Profil', 'profil')
+)
+nav.register_element('nav', navbar)
+
+nav.init_app(app)
 @app.route('/')
-@app.route('/kjøp', methods=['GET', 'POST'])
-def kjop():
-    form = KjopForm()
+@app.route('/kjoop', methods=['GET', 'POST'])
+def kjoop():
+    form = KjoopForm()
 
     if form.validate_on_submit():
-        return "Kjøp-form validated"
+        return "Kjoop-form validated"
 
-    return render_template('kjøp.html', title="Kjøp", form=form)
+    return render_template('kjoop.html', title="Kjoop", form=form)
 
 @app.route('/salg', methods=['GET', 'POST'])
 def salg():
@@ -31,6 +43,7 @@ def historikk():
 @app.route('/profil')
 def profil():
     return render_template('profil.html', title="Profil")
+
 
 @app.route('/logg_inn', methods=['GET', 'POST'])
 def logg_inn():

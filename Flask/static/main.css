@@ -1,3 +1,10 @@
+/* Styling for mobile devices, ie. device with width less than 767px */
+@media screen and (max-width: 767px) {
+    .container {
+        margin: 0;
+    }
+}
+
 html {
     height: 100%;
 }
@@ -9,6 +16,11 @@ body {
     font-family: 'Overpass', sans-serif;
     padding-bottom: 150px;
 }
+
+.container {
+    margin: 0 20%;
+}
+
 /* h2 is used for big headings */
 h2 {
     font-size: 2.5 em;
@@ -44,6 +56,7 @@ input, select {
 
 /* TODO:
 - Make buttons, diff between input fields and buttons
+*/
 
 /* It works, but need to put on buttons and not fields. */
 input:focus, select.focus {

@@ -1,12 +1,15 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, BooleanField
 
+
 class LoginForm(FlaskForm):
     email = StringField('Email')
     password = PasswordField('Password')
 
+
 class ForgotForm(FlaskForm):
     email = StringField('Email')
+
 
 class KjoopForm(FlaskForm):
     type_kjoop = StringField('Type Kjøp')
@@ -16,12 +19,13 @@ class KjoopForm(FlaskForm):
     fakturanummer = StringField('Fakturanummer')
 
     tekst = StringField('Tekst')
-    kostnadskonto = SelectField('Kostnadskonto', choices=[("100", "Matkonto"), ("101", "Utstyrskonto")]) 
+    kostnadskonto = SelectField('Kostnadskonto', choices=[("100", "Matkonto"), ("101", "Utstyrskonto")])
     bruttobelop = StringField('Bruttobeløp')
     mva = StringField("Mva")
     nettobelop = StringField("Nettobeløp")
 
     betalt = BooleanField('Betalt')
+
 
 class SalgForm(FlaskForm):
     type_salg = SelectField('Type', choices=[])

@@ -14,12 +14,8 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}" />
     </head>
     <body>
-        <div class="navbar">
-            <a href="/kjøp">Kjøp</a>
-            <a href="/salg">Salg</a>
-            <a href="/historikk">Historikk</a>
-            <a href="/profil">Profil</a>
-        </div>
+        {{ nav.nav.render() }}
+
         <div class = container>
             {% block container %} 
             {% endblock %}

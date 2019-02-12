@@ -1,9 +1,9 @@
 {% extends 'layout_post.html' %}
 {% block container %}
-<form method="POST" action="{{ url_for('kjop') }}">
+<form method="POST" action="{{ url_for('kjoop') }}">
     <h3>Type kjøp</h3>
     {{ form.csrf_token }}
-    {{ form.type_kjop }}
+    {{ form.type_kjoop }}
 
     <h3>Leverandør</h3>
     {{ form.leverandor}}

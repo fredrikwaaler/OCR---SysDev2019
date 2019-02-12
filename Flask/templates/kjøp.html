@@ -1,7 +1,5 @@
 {% extends 'layout_post.html' %}
 {% block container %}
-
-<!-- TODO: lag forms for info under-->
 <form method="POST" action="{{ url_for('kjop') }}">
     <h3>Type kjøp</h3>
     {{ form.csrf_token }}
@@ -20,7 +18,6 @@
     <!-- Bilde her -->
 
 
-    <!--TODO: lag skjema/form for -->
     <h3>Tekst</h3>
     {{ form.teskst }}
     <h3>Konto</h3>
@@ -32,11 +29,8 @@
     <h3>Netto</h3>
     {{ form.nettobelop}}
 
-    <!--TODO: Lag checkbox for "betalt" -->
     <h3>Betalt</h3>
     {{ form.betalt }}
-
-    <!--TODO: gjør dette til en knapp-->
     <input type="submit" Value="Send inn">
 </form>
 {% endblock container %}

@@ -17,7 +17,11 @@ navbar = Navbar('',
 nav.register_element('nav', navbar)
 
 nav.init_app(app)
+
+
 @app.route('/')
+
+
 @app.route('/kjoop', methods=['GET', 'POST'])
 def kjoop():
     form = KjoopForm()
@@ -26,6 +30,7 @@ def kjoop():
         return "Kjoop-form validated"
 
     return render_template('kjoop.html', title="Kjoop", form=form)
+
 
 @app.route('/salg', methods=['GET', 'POST'])
 def salg():
@@ -36,9 +41,11 @@ def salg():
 
     return render_template('salg.html', title="Salg", form=form)
 
+
 @app.route('/historikk')
 def historikk():
     return render_template('historikk.html', title="Historikk")
+
 
 @app.route('/profil')
 def profil():
@@ -53,6 +60,7 @@ def logg_inn():
         return "Login-form validated"
 
     return render_template('logg_inn.html', title="Logg inn", form=form)
+
 
 @app.route('/glemt_passord', methods=['GET', 'POST'])
 def glemt_passord():

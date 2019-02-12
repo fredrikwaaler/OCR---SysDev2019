@@ -13,6 +13,7 @@ h2 {
 h3 {
     font-size: 1.5 em;
     font-family: 'Overpass', system-ui;
+    margin: 2px;
 }
 
 /* Input is used for buttons */

@@ -11,7 +11,81 @@ h3 {
     font-family: 'Overpass', system-ui;
 }
 
-/* h4 is used for buttons */
-h4 {
-    
+/* Input is used for buttons */
+input, select {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400px;
+    line-height: 1.42857143px;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid;
+    border-radius: 4px;
+    overflow: visible;
+    text-transform: none;
 }
+
+/* TODO:
+- Make buttons, diff between input fields and buttons
+
+/* It works, but need to put on buttons and not fields. */
+input:focus, select.focus {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #8c8c8c;
+  }
+
+/* upload image button and more
+    CSS copied from Fiken */
+input.bigBlue {
+    color: #ffffff;
+    background-color: #286090;
+    border-color: #204d74; 
+}
+
+/* used to confirm payments/sales
+    CSS copied from Fiken */
+input.success {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
+
+}
+
+#warning {
+    color: #ffffff;
+}
+
+/* HARD copy pasta from fiken
+    DELETE LATER */
+.btn-input {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+  }
+  
+  .btn-input:focus,
+  .btn-input.focus {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #8c8c8c;
+  }
+  
+  .btn-input:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+  }
+  
+  .btn-input:active,
+  .btn-input.active,
+  .open > .dropdown-toggle.btn-input {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+  }

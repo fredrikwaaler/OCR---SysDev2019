@@ -35,8 +35,35 @@ h3 {
     margin: 2px;
 }
 
+
+/* IDs for each input field */
+#type_kjoop, #fakturadato, #forfallsdato,
+#fakturanummer, #tekst, #bruttobelop,
+#mva, #nettobelop {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#type_kjoop:focus, #fakturadato:focus, #forfallsdato:focus,
+#fakturanummer:focus, #tekst:focus, #bruttobelop:focus,
+#mva:focus, #nettobelop:focus {
+    border-color: #66afe9;
+}
+/* upon clicking one of these fields:
+border-bottom-color: rgb(104, 176, 232);
+*/
+
 /* Input is used for buttons */
-input, select {
+select {
     color: #333;
     background-color: #fff;
     border-color: #ccc;
@@ -55,7 +82,7 @@ input, select {
 }
 
 /* TODO:
-- Make buttons, diff between input fields and buttons
+- Make buttons, diff from input fields and buttons
 */
 
 /* It works, but need to put on buttons and not fields. */

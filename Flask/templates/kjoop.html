@@ -1,36 +1,39 @@
 {% extends 'layout_post.html' %}
 {% block container %}
-<form method="POST" action="{{ url_for('kjoop') }}">
-    <h3>Type kjøp</h3>
-    {{ form.csrf_token }}
-    {{ form.type_kjoop }}
+<h2>Nytt Kjøp</h2>
+<div class="form_section">
+    <form method="POST" action="{{ url_for('kjoop') }}">
+        <h3>Type kjøp</h3>
+        {{ form.csrf_token }}
+        {{ form.type_kjoop }}
 
-    <h3>Leverandør</h3>
-    {{ form.leverandor}}
-    <h3>Dato</h3>
-    {{ form.fakturadato.label }}
-    {{ form.fakturadato }}
-    {{ form.forfallsdato.label }}
-    {{ form.forfallsdato }}
-    <h3>Fakturanummer</h3>
-    {{ form.fakturanummer }}
+        <h3>Leverandør</h3>
+        {{ form.leverandor}}
+        <h3>Dato</h3>
+        {{ form.fakturadato.label }}
+        {{ form.fakturadato }}
+        {{ form.forfallsdato.label }}
+        {{ form.forfallsdato }}
+        <h3>Fakturanummer</h3>
+        {{ form.fakturanummer }}
 
     <!-- Bilde her -->
 
 
-    <h3>Tekst</h3>
-    {{ form.tekst }}
-    <h3>Konto</h3>
-    {{ form.kostnadskonto }}
-    <h3>Brutto</h3>
-    {{ form.bruttobelop }}
-    <h3>Mva</h3>
-    {{ form.mva }}
-    <h3>Netto</h3>
-    {{ form.nettobelop}}
+        <h3>Tekst</h3>
+        {{ form.tekst }}
+        <h3>Konto</h3>
+        {{ form.kostnadskonto }}
+        <h3>Brutto</h3>
+        {{ form.bruttobelop }}
+        <h3>Mva</h3>
+        {{ form.mva }}
+        <h3>Netto</h3>
+        {{ form.nettobelop}}
 
-    <h3>Betalt</h3>
-    {{ form.betalt }}
-    <input type="submit" Value="Send inn">
-</form>
+        <h3>Betalt</h3>
+        {{ form.betalt }}
+        <input type="submit" Value="Send inn">
+    </form>
+</div>
 {% endblock container %}

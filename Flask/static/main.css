@@ -1,4 +1,5 @@
-/* Styling for mobile devices, ie. device with width less than 767px */
+/* Styling for mobile devices, ie. device with width less
+than 767px */
 @media screen and (max-width: 767px) {
     .container {
         margin: 0;
@@ -18,6 +19,8 @@ body {
     padding-bottom: 150px;
 }
 
+/* This continer currently holds all content,
+except for navbar and footer */
 .container {
     margin: 0 20% 20% 20%;
 }
@@ -25,7 +28,7 @@ body {
 /* h2 is used for big headings */
 h2 {
     font-size: 2.5 em;
-    font-family: 'Overpass', sans-serif;
+    font-family: 'Overpass', system-ui;
     color: red;
 }
 
@@ -120,10 +123,42 @@ input[type="submit"]:focus {
     border-color: #8c8c8c;
   }
 
+/* Email input fields have type = "text", but id = "email" */
+#email {
+    border-radius: 5px;
+    margin: 0;
+    padding: 0;
+    max-width: 400px;
+    min-width: 200px;
+    min-height: 33px;
+    width: 100%;
+}
+
+/* Highlighted email input field */
+#email:focus {
+}
+
+#password {
+    width: 100%;
+    max-width: 400px;
+    min-width: 200px;
+    min-height: 33px;
+    margin-bottom: 3em;
+
+    /* temp fix for widescreen */
+    margin-right: 900px;
+}
+
   /* Special styling for the delete user data button */
-  #warning {
-      background-color: red;
-  }
+#warning {
+    background-color: red;
+}
+
+
+#warning:focus {
+    background-color: blue;
+    border: 3px solid yellow;
+}
 
 /*  This will be added and styled LATER
     upload image button and more

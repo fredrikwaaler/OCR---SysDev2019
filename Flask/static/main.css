@@ -14,11 +14,12 @@ body {
     position: relative;
     margin-top: 50px;
     font-family: 'Overpass', sans-serif;
+    line-height: 1.42857143;
     padding-bottom: 150px;
 }
 
 .container {
-    margin: 0 20%;
+    margin: 0 20% 20% 20%;
 }
 
 /* h2 is used for big headings */
@@ -35,16 +36,74 @@ h3 {
     margin: 2px;
 }
 
-/* Input is used for buttons */
-input, select {
-    color: #333;
+
+/*  OLD SOLUTION!!!
+    IDs for each text input field */
+/*
+#type_kjoop, #fakturadato, #forfallsdato,
+#fakturanummer, #tekst, #bruttobelop,
+#mva, #nettobelop, #dato, #kommentar,
+#din_referanse, #kontonummer, #deres_referanse,
+#beskrivelse, #pris, #antall, #rabatt {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+*/
+
+/*  OLD SOLUTION!!!
+    upon clicking the text input fields we add shadows the
+    current highlighted field */
+/*
+#type_kjoop:focus, #fakturadato:focus, #forfallsdato:focus,
+#fakturanummer:focus, #tekst:focus, #bruttobelop:focus,
+#mva:focus, #nettobelop:focus, #dato:focus,
+#kommentar:focus, #din_referanse:focus, #kontonummer:focus,
+#deres_referanse:focus, #beskrivelse:focus, #pris:focus
+#antall:focus, #rabatt:focus {
+    border-color: #66afe9;
+    box-shadow: 2px #2d4e68;
+}
+*/
+
+/* Styling for text fields */
+input[type="text"] {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Styling for highlighted text field */
+input[type="text"]:focus {
+    border-color: #66afe9;
+    box-shadow: 2px #2d4e68;
+}
+
+/* Styling for general purpose buttons */
+input[type="submit"] {
+    color: rebeccapurple;
     background-color: #fff;
     border-color: #ccc;
     padding: 6px 12px;
     margin-bottom: 0;
     font-size: 14px;
     font-weight: 400px;
-    line-height: 1.42857143px;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
@@ -54,18 +113,20 @@ input, select {
     text-transform: none;
 }
 
-/* TODO:
-- Make buttons, diff between input fields and buttons
-*/
-
-/* It works, but need to put on buttons and not fields. */
-input:focus, select.focus {
+/* styling for active/highlighted buttons */
+input[type="submit"]:focus {
     color: #333;
     background-color: #e6e6e6;
     border-color: #8c8c8c;
   }
 
-/* upload image button and more
+  /* Special styling for the delete user data button */
+  #warning {
+      background-color: red;
+  }
+
+/*  This will be added and styled LATER
+    upload image button and more
     CSS copied from Fiken */
 input.bigBlue {
     color: #ffffff;
@@ -149,6 +210,7 @@ li a:hover:not(.active) {
     background-color: #05398e;
 }
 
+/* Klaus footer */
 footer {
     padding-top: 30px;
     position: absolute;
@@ -158,3 +220,26 @@ footer {
     background-color: #ededed;
     height: 100px;
 }
+
+
+/* Jan footer, trenger muligens en fix for hisorikk
+    sikkert ikke nødvendig, men mulig mer responsivt */
+/*
+footer {
+    display: flex;
+    padding: 60 px 15px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: flex-end;
+    text-align: center;
+    min-height: 175px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 200px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    box-sizing: border-box;
+    background-color: #ededed;
+    position: relative;
+}
+*/

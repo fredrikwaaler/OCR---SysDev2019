@@ -17,19 +17,32 @@
         <h3>Fakturanummer</h3>
         {{ form.fakturanummer }}
 
+
     <!-- Bilde her -->
 
 
-        <h3>Tekst</h3>
-        {{ form.tekst }}
-        <h3>Konto</h3>
-        {{ form.kostnadskonto }}
-        <h3>Brutto</h3>
-        {{ form.bruttobelop }}
-        <h3>Mva</h3>
-        {{ form.mva }}
-        <h3>Netto</h3>
-        {{ form.nettobelop}}
+<!-- Lag container for følgende:
+1: type, leverandør, fakturadato,
+fakturanum, forfalls
+
+2: tekst, kostnads, mva, netto. tot (?)
+
+3: betling (kryss av)
+
+(kanskje)
+4: egen container for boksene:
+lagre utkast, slett utkast, vis kjøpsoversikt -->
+
+    <h3>Tekst</h3>
+    {{ form.tekst }}
+    <h3>Konto</h3>
+    {{ form.kostnadskonto }}
+    <h3>Brutto</h3>
+    {{ form.bruttobelop }}
+    <h3>Mva</h3>
+    {{ form.mva }}
+    <h3>Netto</h3>
+    {{ form.nettobelop}}
 
         <h3>Betalt</h3>
         {{ form.betalt }}

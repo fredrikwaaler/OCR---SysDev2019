@@ -1,35 +1,38 @@
-/* Styling for mobile devices, ie. device with width less than 767px */
-@media screen and (max-width: 767px) {
-    .container {
-        margin: 0;
-    }
-}
+
 
 html {
     height: 100%;
+    background: #e2e2e2;
+    //background-image: linear-gradient(to bottom, #0645aa 0%, #ffffff 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 body {
-    min-height: 100%;
-    position: relative;
-    margin-top: 50px;
+    //min-height: 100%;
+    //position: relative;
+    //margin-top: 50px;
     font-family: 'Overpass', sans-serif;
-    line-height: 1.42857143;
-    padding-bottom: 150px;
+    //line-height: 1.42857143;
+    //padding-bottom: 150px;
 }
 
 .container {
-    margin: 0 20% 20% 20%;
+    margin: auto;
+    padding: 20px 50px; 
+    width: 80%;
+    background: #ffffff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* h2 is used for big headings */
 h2 {
-    font-size: 2.5 em;
+    font-size: 2.5em;
     font-family: 'Overpass', sans-serif;
-    color: red;
+    color: #0645aa
 }
 
-/* h3 is used for field headings */
+/* h3 is used for field; headings */
 h3 {
     font-size: 1.5 em;
     font-family: 'Overpass', system-ui;
@@ -77,9 +80,9 @@ h3 {
 /* Styling for text fields */
 input[type="text"] {
     display: block;
-    width: 100%;
+    width: 40%;
     height: 34px;
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 14px;
     line-height: 1.42857143;
     color: #555;
@@ -178,47 +181,55 @@ input.success {
 
 /* FIKEN COPY PASTA ENDES HERE */
 
-ul {
-    position: fixed;
+nav {
+    padding-top: 4px;
+    position: sticky;
     top: 0;
+    overflow: hidden;
     width: 100%;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    background-color: #2369db;
-}
-  
-li {
-    float: left;
-    font-size: 0.8em;
+    background: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    
 }
 
-li a {
-    
+nav ul {
+    margin: 0;
+    list-style-type: none;
+    height: 100%;
+}
+
+nav li {
+    margin: 0px;
+    display: inline;
+    float: left;
+}
+
+nav a {
     display: block;
-    color: #ffffff;
+    padding: 15px 0px;
+    width: 90px;
+    color: black;
     text-align: center;
-    padding: 12px 14px;
     text-decoration: none;
 }
 
-li a:hover:not(.active) {
-    background-color: #1f4684;
+nav a:hover:not(.active) {
+    background-color: rgba(209, 211, 214, 0.164);
 }
 
 .active {
-    background-color: #05398e;
+    //background-color: #022b6d;
+    border-bottom: 2px solid blue;
 }
 
 /* Klaus footer */
 footer {
-    padding-top: 30px;
-    position: absolute;
-    width: 100%;
-    bottom: 0;
+    margin: 50px 50px 0 50px ;
+    padding-top: 15px;
     text-align: center;
-    background-color: #ededed;
-    height: 100px;
+    background: white;
+    bottom: 0;
+    border-top: 2px solid #c7d4e8;
 }
 
 
@@ -243,3 +254,36 @@ footer {
     position: relative;
 }
 */
+
+/* Styling for mobile devices, ie. device with width less than 767px */
+@media screen and (max-width: 767px) {
+    body {
+        display: block;
+    }
+    .container {
+        padding-top: 50px;
+        width: 100%;
+    }
+
+    nav {
+        position: fixed;
+        margin: 0;
+        padding: auto;
+        padding-left: 0;
+        text-align: center;
+        
+    }
+
+    nav ul {
+        
+    }
+
+    nav li {
+        float: none;
+        display: inline-block;
+    }
+
+    nav a {
+        width: relative;
+    }
+}

@@ -221,7 +221,6 @@ nav {
 
 nav ul {
     margin: 0;
-    padding: 0;
     list-style-type: none;
     height: 100%;
 }
@@ -291,6 +290,7 @@ footer {
         width: 100%;
     }
 
+
     nav {
         position: fixed;
         margin: 0;
@@ -301,7 +301,7 @@ footer {
     }
 
     nav ul {
-        
+        padding: 0;
     }
 
     nav li {

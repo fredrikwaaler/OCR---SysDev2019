@@ -3,36 +3,24 @@
 <h2>Nytt Kjøp</h2>
 <div class="form_section">
     <form method="POST" action="{{ url_for('kjoop') }}">
-        <h3>Type kjøp</h3>
-        {{ form.csrf_token }}
-        {{ form.type_kjoop }}
-
-        <h3>Leverandør</h3>
-        {{ form.leverandor}}
-        <h3>Dato</h3>
-        {{ form.fakturadato.label }}
-        {{ form.fakturadato }}
-        {{ form.forfallsdato.label }}
-        {{ form.forfallsdato }}
-        <h3>Fakturanummer</h3>
-        {{ form.fakturanummer }}
-
-
+        <div class="totalbeloop">
+            <h3>Type kjøp</h3>
+            {{ form.csrf_token }}
+            {{ form.type_kjoop }}
+    
+            <h3>Leverandør</h3>
+            {{ form.leverandor}}
+            <h3>Dato</h3>
+            {{ form.fakturadato.label }}
+            {{ form.fakturadato }}
+            {{ form.forfallsdato.label }}
+            {{ form.forfallsdato }}
+            <h3>Fakturanummer</h3>
+            {{ form.fakturanummer }}
+        </div>
+        
     <!-- Bilde her -->
-
-
-<!-- Lag container for følgende:
-1: type, leverandør, fakturadato,
-fakturanum, forfalls
-
-2: tekst, kostnads, mva, netto. tot (?)
-
-3: betling (kryss av)
-
-(kanskje)
-4: egen container for boksene:
-lagre utkast, slett utkast, vis kjøpsoversikt -->
-        <div id="totalbeloop">    
+        <div class="totalbeloop">    
             <div id ="tekst">
                 <h3>Tekst</h3>
                 {{ form.tekst }}

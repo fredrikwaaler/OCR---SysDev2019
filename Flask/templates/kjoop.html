@@ -32,18 +32,28 @@ fakturanum, forfalls
 (kanskje)
 4: egen container for boksene:
 lagre utkast, slett utkast, vis kjøpsoversikt -->
-
-    <h3>Tekst</h3>
-    {{ form.tekst }}
-    <h3>Konto</h3>
-    {{ form.kostnadskonto }}
-    <h3>Brutto</h3>
-    {{ form.bruttobelop }}
-    <h3>Mva</h3>
-    {{ form.mva }}
-    <h3>Netto</h3>
-    {{ form.nettobelop}}
-
+        <div id="totalbeloop">    
+            <div id ="tekst">
+                <h3>Tekst</h3>
+                {{ form.tekst }}
+            </div>
+            <div id = "kostnadskonto">
+                <h3>Kostnadskonto</h3>
+                {{ form.kostnadskonto }}
+            </div>
+            <div id ="bruttobeloop">
+                <h3>Bruttobeløp</h3>
+                {{ form.bruttobelop }}
+            </div>
+            <div id ="mva">
+                <h3>Mva</h3>
+                {{ form.mva }}
+            </div>
+            <div id ="nettobeloop">
+                <h3>Nettobeløp</h3>
+                {{ form.nettobelop}}
+            </div>
+        </div>
         <h3>Betalt</h3>
         {{ form.betalt }}
         <input type="submit" Value="Send inn">

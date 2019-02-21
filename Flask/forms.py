@@ -21,7 +21,7 @@ class KjoopForm(FlaskForm):
     tekst = StringField('Tekst')
     kostnadskonto = SelectField('Kostnadskonto', choices=[("100", "Matkonto"), ("101", "Utstyrskonto")])
     bruttobelop = StringField('Bruttobeløp')
-    mva = StringField("Mva")
+    mva = SelectField("Mva", choices=[('1', '25%'), ('2', '12%')])
     nettobelop = StringField("Nettobeløp")
 
     betalt = BooleanField('Betalt')

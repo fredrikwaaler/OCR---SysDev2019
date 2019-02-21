@@ -1,5 +1,7 @@
 from flask_bcrypt import Bcrypt
 from Database import CursorFromConnectionPool
+from psycopg2 import ProgrammingError
+import traceback
 
 
 class DatabaseManager:
@@ -32,11 +34,42 @@ class DatabaseManager:
         # Then, store the record in the database
         with self._database as cursor:
             try:
-                cursor.execute('INSERT INTO UserInfo VALUES (%s, %s, %s, %s, %s, %s)',
+                cursor.execute('INSERT INTO UserInfo VALUES (%s, %s, %s, %s, %s, %s) HH',
                                     (email, hashed_password, fiken_username, fiken_password, first_name, last_name))
-                return True
-            except:
-                return False
+            except ProgrammingError:
+                traceback.print_exc()
+
+    def edit_user_info(self, email, table, **kwargs):
+        """
+        Used for editing a relation in the UserInfo table. Since email is pk, we filter by it.
+        Provide column_name and new value as kwargs. Ex: fiken_username="newFikenUsername".
+        :param email: The email of the relation to edit.
+        :param kwargs: The columns we want to edit, and the new values.
+        """
+        if self.get_user_info_by_email(email) is not None:
+            set_str = ""
+            for arg in kwargs:
+                set_str += "{} = '{}', ".format(arg, kwargs[arg])
+            set_str = set_str[:len(set_str)-2]  # Remove trailing "," and " "
+
+            update_str = "UPDATE {} SET {} WHERE email = '{}'".format(table, set_str, email)
+
+            try:
+                with self._database as cursor:
+                    cursor.execute(update_str, (set_str, email))
+            except ProgrammingError:
+                traceback.print_exc()
+
+        else:
+            raise ValueError("{} not belonging to any user. Cannot update values.".format(email))
+
+    def delete_user_by_email(self, email):
+        """
+        Deletes the relation in the userinfo-table that has the provided email, if any.
+        :param email: The email of the relation to delete.
+        """
+        with self._database as cursor:
+            cursor.execute("DELETE FROM UserInfo WHERE email = {}".format(email))
 
     def authenticate_login(self, email, password):
         """
@@ -81,7 +114,7 @@ class DatabaseManager:
         return matching
 
 
-
+a = DatabaseManager(host="localhost", user="postgres", password="Sebas10an99", database="Sukkertoppen")
 
 
 

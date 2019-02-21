@@ -160,7 +160,3 @@ class FikenManager:
 
 
 
-
-
-
-

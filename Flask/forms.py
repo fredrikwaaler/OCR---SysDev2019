@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, BooleanField
+from wtforms import StringField, PasswordField, SelectField, BooleanField, DateField, RadioField
 
 
 class LoginForm(FlaskForm):
@@ -12,10 +12,10 @@ class ForgotForm(FlaskForm):
 
 
 class KjoopForm(FlaskForm):
-    type_kjoop = StringField('Type Kjøp')
+    type_kjoop = RadioField('Label', choices=[('1','Kjøp fra leverandør'),('2','Kontantkjøp')])
     leverandor = SelectField('Leverandør', choices=[('1', 'Meny'), ('2', 'Kiwi')])
-    fakturadato = StringField('Faktura')
-    forfallsdato = StringField('Forfall')
+    fakturadato = DateField('Faktura')
+    forfallsdato = DateField('Forfall')
     fakturanummer = StringField('Fakturanummer')
 
     tekst = StringField('Tekst')

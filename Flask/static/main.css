@@ -25,14 +25,14 @@ except for navbar and footer */
 h2 {
     font-size: 2.5 em;
     font-family: 'Overpass', system-ui;
-    color: red;
+    color: rebeccapurple;
 }
 
 /* h3 is used for field; headings */
 h3 {
     font-size: 1.5 em;
     font-family: 'Overpass', system-ui;
-    margin: 2px;
+    margin:0;
 }
 
 
@@ -263,7 +263,7 @@ nav a:hover:not(.active) {
 }
 
 .active {
-    border-bottom: 2px solid blue;
+    border-bottom: 2px solid rebeccapurple;
 }
 
 /* Klaus footer */
@@ -276,8 +276,8 @@ footer {
     border-top: 2px solid #c7d4e8;
 }
 
-#totalbeloop {
-    padding: 10px;
+.totalbeloop {
+    margin-bottom: 30px;
     width: 100%;
     background: #f5f5f5;
     border: 2px solid transparent;
@@ -285,6 +285,7 @@ footer {
 }
 
 #tekst, #kostnadskontoBlock, #bruttobeloop, #mvaBlock, #nettobeloop {
+    height: 100%;
     display: inline-block;
     position: relative;
     width: auto;
@@ -319,6 +320,16 @@ footer {
         }
     }
 }
+#kostnadskontoBlock {
+    transform:translateY(2px)
+}
+
+/*
+#kostnadskonto, #mva {
+    height: 100%;
+}*/
+
+
 
 /* Jan footer, trenger muligens en fix for hisorikk
     sikkert ikke nødvendig, men mulig mer responsivt */
@@ -340,8 +351,6 @@ footer {
     background-color: #ededed;
     position: relative;
 }
-*/
-
 */
 
 /* OLD:
@@ -378,5 +387,19 @@ footer {
     nav a {
         width: relative;
     }
-    */
+}
+
+#type_kjoop {
+    display: inline-block;
+    padding: 15px 5px;
+    background: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 10px;
+
+}
+
+#type_kjoop li {
+    display: inline-block;
+    list-style: none;
+    padding-right:10px;
 }

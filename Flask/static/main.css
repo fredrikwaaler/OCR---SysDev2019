@@ -2,18 +2,12 @@
 html {
     height: 100%;
     background: #e2e2e2;
-    //background-image: linear-gradient(to bottom, #0645aa 0%, #ffffff 100%);
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
 
 body {
-    //min-height: 100%;
-    //position: relative;
-    //margin-top: 50px;
     font-family: 'Overpass', sans-serif;
-    //line-height: 1.42857143;
-    //padding-bottom: 150px;
 }
 
 /* This continer currently holds all content,
@@ -222,11 +216,12 @@ nav {
     width: 100%;
     background: #ffffff;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-    
+    text-align: center;
 }
 
 nav ul {
     margin: 0;
+    padding: 0;
     list-style-type: none;
     height: 100%;
 }
@@ -242,7 +237,6 @@ nav a {
     padding: 15px 0px;
     width: 90px;
     color: black;
-    text-align: center;
     text-decoration: none;
 }
 
@@ -251,7 +245,6 @@ nav a:hover:not(.active) {
 }
 
 .active {
-    //background-color: #022b6d;
     border-bottom: 2px solid blue;
 }
 

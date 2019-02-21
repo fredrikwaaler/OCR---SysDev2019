@@ -73,14 +73,32 @@ h3 {
 }
 */
 
+select {
+    display: block;
+    width: 100%;
+    //height: 34px;
+    padding: 6px 14px;
+    font-size: 14px;
+    //line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+select:focus {
+    border-color: #66afe9;
+    box-shadow: 2px #2d4e68;
+}
+
 /* Styling for text fields */
 input[type="text"] {
     display: block;
-    width: 100%;
-    height: 34px;
+    //height: 28px;
     padding: 6px 14px;
     font-size: 14px;
-    line-height: 1.42857143;
+    //line-height: 1.42857143;
     color: #555;
     background-color: #fff;
     background-image: none;
@@ -221,12 +239,8 @@ nav {
 }
 
 nav ul {
-<<<<<<< HEAD
-    margin: 0;
-=======
     margin: auto;
     padding: 0;
->>>>>>> a5033473483df400e2cfcbf870eb9ad0d34410a9
     list-style-type: none;
     height: 100%;
     width: 85%;
@@ -272,19 +286,16 @@ footer {
     border-radius: 5px;
 }
 
-#tekst, #kostnadskonto, #bruttobeloop, #mva, #nettobeloop {
+#tekst, #kostnadskontoBlock, #bruttobeloop, #mvaBlock, #nettobeloop {
     display: inline-block;
     position: relative;
     width: auto;
 }
 
-#tekst {
-    width: 30%;
-}
-
+/*
 #kostnadskonto, #mva {
     height: 100%;
-}
+}*/
 
 
 

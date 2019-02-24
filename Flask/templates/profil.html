@@ -1,24 +1,40 @@
 {% extends 'layout_post.html' %}
 {% block container %}
+{{ form.csrf_token }}
 <h2>Min Konto</h2>
-
 <!--Info about the users name and email that we have-->
 <!--Structure: "Name:"    <actual name>  <Change button> -->
-<h3>Navn</h3>
+<div class="boxdisplay">
+    <h3>Navn</h3>
     <p>navn navnesen</p>
     <input type="submit" Value="Endre">
-<h3>Email</h3>
+</div>
+
+<div class="boxdisplay">
+    <h3>Email</h3>
     <p>navn@navnesen.com</p>
     <input type="submit" Value="Endre">
-<h3>Fikenbruker</h3>
-<input type="submit" Value="Endre">
+</div>
+
+<div class="boxdisplay">
+    <h3>Fikenbruker</h3>
+    <input type="submit" Value="Endre">
+</div>
+
 
 <!--Just a line to make sure the user understands the semantic change-->
 <div class="newline"></div>
 <!--Change password here-->
-<h3>Nytt passord</h3>
-<h3>Gjenta passord</h3>
-<input type="submit" Value="Endre">
+<div class=boxdisplay>
+    <form method="POST" action="{{ url_for('change_password') }}">
+        <h3>Nytt passord</h3>
+        {{ form.new_password }}
+        <h3>Gjenta passord</h3>
+        {{ form.repeat_password }}
+        <input type="submit" Value="Endre">
+    </form>
+</div>
+
 
 <div class="newline"></div>
 <!--Buttons to download userdata and deleting account-->

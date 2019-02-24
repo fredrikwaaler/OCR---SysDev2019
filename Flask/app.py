@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, flash, request, redirect, url_for
 from flask_wtf import FlaskForm
-from forms import LoginForm, ForgotForm, KjoopForm, SalgForm
+from forms import LoginForm, ForgotForm, KjoopForm, SalgForm, ProfilForm
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
@@ -56,9 +56,13 @@ def historikk():
     return render_template('historikk.html', title="Historikk")
 
 
-@app.route('/profil')
+@app.route('/profil', methods=['GET', 'POST'])
 def profil():
-    return render_template('profil.html', title="Profil")
+    form = ProfilForm()
+    if form.validate_on_submit():
+        return "Password changed"
+
+    return render_template('profil.html', title="Profil", form=form)
 
 
 @app.route('/logg_inn', methods=['GET', 'POST'])
@@ -75,9 +79,12 @@ def logg_inn():
 def glemt_passord():
     form = ForgotForm()
 
-    if form.validate_on_submit():
-        return "Forgot-form validated"
+    
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
+
+@app.route('/password', methods=['POST'])
+def change_password():
+    return "NONFUNCTIONAL > Change Password"
 
 
 @app.route('/upload_file', methods=['POST'])
@@ -96,8 +103,8 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return "success"
-    return "None"
+            return filename + " has been uploaded to server"
+    return "EMPTY PAGE"
 
 def allowed_file(filename):
     return '.' in filename and \

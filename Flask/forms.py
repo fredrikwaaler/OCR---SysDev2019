@@ -42,3 +42,7 @@ class SalgForm(FlaskForm):
     antall = StringField('Antall')
     rabatt = StringField('Rabatt')
     mva = StringField('Mva')
+
+class ProfilForm(FlaskForm):
+    new_password = PasswordField('Nytt Passord')
+    repeat_password = PasswordField('Gjenta Passord')

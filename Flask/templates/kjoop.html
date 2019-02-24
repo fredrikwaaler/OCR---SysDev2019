@@ -4,19 +4,34 @@
 <div class="form_section">
     <form method="POST" action="{{ url_for('kjoop') }}">
         <div class="totalbeloop">
-            <h3>Type kjøp</h3>
             {{ form.csrf_token }}
-            {{ form.type_kjoop }}
-    
-            <h3>Leverandør</h3>
-            {{ form.leverandor}}
-            <h3>Dato</h3>
-            {{ form.fakturadato.label }}
-            {{ form.fakturadato }}
-            {{ form.forfallsdato.label }}
-            {{ form.forfallsdato }}
-            <h3>Fakturanummer</h3>
-            {{ form.fakturanummer }}
+            <div class="left">
+                <div id ="kjoopBlock">
+                        <h3>Type kjøp</h3>
+                        {{ form.type_kjoop }}
+                    </div>
+                    <div id = "leverandorBlock">
+                        <h3>Leverandør</h3>
+                        {{ form.leverandor}}
+                    </div>
+                    <div id = "fakturadatoBlock">
+                        <h3>Fakturadato</h3>
+                        {{ form.fakturadato }}
+                </div>
+            </div>
+            <div class="right">
+                <p class="italic">Valgfrie felter:</p>
+                <div id = "fakturanummerBlock">
+                    <h3>Fakturanummer</h3>
+                    {{ form.fakturanummer }}
+                </div>
+                <div id = "forfallsdatoBlock">
+                        <h3>Forfallsdato</h3>
+                        {{ form.forfallsdato }}
+                </div>
+            </div>
+            
+            
         </div>
         
     <!-- Bilde her -->

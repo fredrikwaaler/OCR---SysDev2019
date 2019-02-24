@@ -9,12 +9,14 @@ html {
 body {
     font-family: 'Overpass', sans-serif;
     word-wrap: break-word;
+    height: 100%;
 }
 
 /* This continer currently holds all content,
 except for navbar and footer */
 .container {
-    margin: auto;
+    min-height: 94%;
+    margin: 0 auto;
     padding: 20px 50px; 
     width: 80%;
     background: #ffffff;
@@ -268,7 +270,9 @@ nav a:hover:not(.active) {
 
 /* Klaus footer */
 footer {
-    margin: 50px 50px 0 50px ;
+    position: absolute;
+    width: 80%;
+    margin: 0 auto ;
     padding-top: 15px;
     text-align: center;
     background: white;
@@ -277,11 +281,14 @@ footer {
 }
 
 .totalbeloop {
+    display: inline-block;
+    padding: 10px;
     margin-bottom: 30px;
-    width: 100%;
+    width: 55%;
     background: #f5f5f5;
     border: 2px solid transparent;
     border-radius: 5px;
+    align-content: center;
 }
 
 #tekst, #kostnadskontoBlock, #bruttobeloop, #mvaBlock, #nettobeloop {
@@ -291,14 +298,31 @@ footer {
     width: auto;
 }
 
-#kostnadskontoBlock {
+#kostnadskontoBlock, #mvaBlock {
     transform:translateY(2px)
 }
+
+#kjoopBlock, #leverandorBlock, #fakturadatoBlock, #forfallsdatoBlock, #fakturanummerBlock h3{
+    position: relative;
+} 
+
+
+.left, .right {
+    float: left;
+    padding-right: 50px;
+    overflow: auto;
+}
+
+
+
+
 
 /*
 #kostnadskonto, #mva {
     height: 100%;
 }*/
+
+
 
 
 

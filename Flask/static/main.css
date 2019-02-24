@@ -284,7 +284,7 @@ footer {
     display: inline-block;
     padding: 10px;
     margin-bottom: 30px;
-    width: 55%;
+    width: 100%;
     background: #f5f5f5;
     border: 2px solid transparent;
     border-radius: 5px;
@@ -298,7 +298,41 @@ footer {
     width: auto;
 }
 
-#kostnadskontoBlock, #mvaBlock {
+/* NEW!
+
+    IMPORTANT: All styling above, ie. does not in the @media queries
+    are intended for mobile view!
+
+    Responsive design for 3 different resolutions:
+    phone, non-widescreen and widescreen
+    phone: width < 480px
+    non-widescreen: 480px < width > 768px
+    widescreen: width > 768px */
+
+    /* Styling for non-widescren (not phones)
+    480px < width > 768px */
+@media screen and (min-width: 480px) {
+
+    body{
+        background-color:#6aa6cc;
+        color:blue;    
+    }
+
+
+    /* Styling for widescreens, ie. width > 768px */
+    @media screen and (min-width: 768px) {
+
+        body{
+            background-color:#000;
+            color:red;    
+        }
+
+        .totalbeloop {
+            width: 55%;
+        }
+    }
+}
+#kostnadskontoBlock {
     transform:translateY(2px)
 }
 
@@ -348,8 +382,10 @@ footer {
 }
 */
 
-/* Styling for mobile devices, ie. device with width less than 767px */
-@media screen and (max-width: 767px) {
+/* OLD:
+    Minimal responsive design, differenntiates between wide screen
+    and non-widescreen screens
+ @media screen and (max-width: 767px) {
     body {
         display: block;
     }

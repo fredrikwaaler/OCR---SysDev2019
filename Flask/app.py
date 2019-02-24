@@ -31,23 +31,15 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/')
-@app.route('/kjoop', methods=['GET', 'POST'])
+@app.route('/kjoop', methods=['GET'])
 def kjoop():
     form = KjoopForm()
-
-    if form.validate_on_submit():
-        return "Kjoop-form validated"
-
     return render_template('kjoop.html', title="Kjoop", form=form)
 
 
-@app.route('/salg', methods=['GET', 'POST'])
+@app.route('/salg', methods=['GET'])
 def salg():
     form = SalgForm()
-
-    if form.validate_on_submit():
-        return "Salg-form validated"
-
     return render_template('salg.html', title="Salg", form=form)
 
 
@@ -56,12 +48,9 @@ def historikk():
     return render_template('historikk.html', title="Historikk")
 
 
-@app.route('/profil', methods=['GET', 'POST'])
+@app.route('/profil', methods=['GET'])
 def profil():
     form = ProfilForm()
-    if form.validate_on_submit():
-        return "Password changed"
-
     return render_template('profil.html', title="Profil", form=form)
 
 
@@ -78,8 +67,6 @@ def logg_inn():
 @app.route('/glemt_passord', methods=['GET', 'POST'])
 def glemt_passord():
     form = ForgotForm()
-
-    
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
 
 @app.route('/password', methods=['POST'])
@@ -110,6 +97,16 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+@app.route('/send_purchase_form', methods=['POST'])
+def send_purchase_form():
+    result = request.form
+    return render_template("result.html", result = result)
+
+@app.route('/send_sale_form', methods=['POST'])
+def send_sale_form():
+    result = request.form
+    return render_template("result.html", result = result)
     
 if __name__ == '__main__':
     app.run(debug=True)

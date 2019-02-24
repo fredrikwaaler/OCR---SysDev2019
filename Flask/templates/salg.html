@@ -1,7 +1,8 @@
 {% extends 'layout_post.html' %}
 {% block container %}
 <h2>Nytt Salg</h2>
-<form method="POST" action="{{ url_for('salg') }}">
+<form method="POST" action="{{ url_for('send_sale_form') }}">
+    {{ form.csrf_token }}
     <h3>Type</h3>
     {{ form.type_salg }}
     <h3>Kunde</h3>

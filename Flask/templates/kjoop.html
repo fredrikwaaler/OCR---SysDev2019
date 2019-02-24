@@ -1,7 +1,7 @@
 {% extends 'layout_post.html' %}
 {% block container %}
 <h2>Nytt Kjøp</h2>
-<div class="totalbeloop">
+<div class="boxdisplay">
     <form method="POST" action="/upload_file" enctype=multipart/form-data>
         <input type=file name=file>
         <input type=submit value=Upload>
@@ -9,7 +9,7 @@
 </div>
 <div class="form_section">
     <form method="POST" action="{{ url_for('kjoop') }}">
-        <div class="totalbeloop">
+        <div class="boxdisplay">
             {{ form.csrf_token }}
             <div class="left">
                 <div id ="kjoopBlock">
@@ -41,7 +41,7 @@
         </div>
         
     <!-- Bilde her -->
-        <div class="totalbeloop">    
+        <div class="boxdisplay">    
             <div id ="tekst">
                 <h3>Tekst</h3>
                 {{ form.tekst }}

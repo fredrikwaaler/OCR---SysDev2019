@@ -2,25 +2,28 @@
 {% block container %}
 <h2>Nytt Salg</h2>
 <form method="POST" action="{{ url_for('salg') }}">
-    <h3>Type</h3>
-    {{ form.type_salg }}
-    <h3>Kunde</h3>
-    {{ form.kunde }}
-    <h3>Dato</h3>
-    {{ form.dato }}
+    <div class="boxdisplay">
+        <h3>Type</h3>
+        {{ form.type_salg }}
+        <h3>Dato</h3>
+        {{ form.dato }}
+        <h3>Kommentar</h3>
+        {{ form.kommentar }}
+        <h3>Kontonummer</h3>
+        {{ form.kontonummer }}
+    </div>
+
+<div class="boxdisplay">
     <h3>Kontakt</h3>
-    {{ form.kontakt }}    
-    <h3>Kommentar</h3>
-    {{ form.kommentar }}
-    <h3>Din referanse</h3>
-    {{ form.din_referanse }}
-    <h3>Kontonummer</h3>
-    {{ form.kontonummer }}
+    {{ form.kontakt }}
+    <h3>Kontakt</h3>
+    {{ form.kontakt }}
     <h3>Deres referanse</h3>
     {{ form.deres_referanse}}
+</div>
 
-    <h3>Beskrivlse</h3>
-    {{ form.beskrivelse }}
+<div class="boxdisplay">
+    <h3>Varelinjer</h3>
     <h3>Pris</h3>
     {{ form.pris }}
     <h3>Antall</h3>
@@ -29,6 +32,7 @@
     {{ form.rabatt }}
     <h3>Mva</h3>
     {{ form.mva }}
+</div>
 
     <input class="buttons" type="submit" Value="Opprett Faktura"> 
 

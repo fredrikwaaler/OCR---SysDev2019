@@ -17,8 +17,8 @@ except for navbar and footer */
 .container {
     min-height: 94%;
     margin: 0 auto;
-    padding: 20px 50px; 
-    width: 80%;
+    padding: 20px 0px; 
+    width: 100%;
     background: #ffffff;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
@@ -306,12 +306,18 @@ footer {
     height: 400px;
 }
 
+/* The title and field of a div */
 #tekst, #kostnadskontoBlock, #bruttobeloop, #mvaBlock, #nettobeloop {
     height: 100%;
     display: inline-block;
     position: relative;
     width: auto;
 }
+
+#kostnadskontoBlock, #mvaBlock {
+    margin-left: 20px;
+}
+
 
 /* NEW!
 
@@ -333,6 +339,15 @@ footer {
         color:blue;    
     }
 
+    .container {
+        min-height: 94%;
+        margin: 0 auto;
+        padding: 20px 20px; 
+        width: 90%;
+        background: #ffffff;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
 
     /* Styling for widescreens, ie. width > 768px */
     @media screen and (min-width: 768px) {
@@ -340,6 +355,15 @@ footer {
         body {
             background-color:#000;
             color:red;    
+        }
+
+        .container {
+            min-height: 94%;
+            margin: 0 auto;
+            padding: 20px 40px; 
+            width: 80%;
+            background: #ffffff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
         .boxdisplay {

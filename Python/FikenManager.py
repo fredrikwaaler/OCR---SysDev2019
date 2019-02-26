@@ -52,6 +52,14 @@ class FikenManager:
         else:
             return None
 
+    def has_valid_login(self):
+        """
+        Checks whether or not the manager has been set with valid login for fiken.
+        :return: True if valid login. False if not.
+        """
+        response = get(url="https://fiken.no/api/v1/whoAmI", auth=(self._fiken_login, self._fiken_pass))
+        return response.status_code == 200
+
     def _hal_to_dict(self, hal_object, links=False):
         """
         Converts the hal-json object provided from fiken into a python dictionary, mapping keys with values.
@@ -88,7 +96,7 @@ class FikenManager:
         """
         types = {"purchases": "purchases", "contacts": "contacts", "expense_accounts":
             "accounts/{}".format(datetime.now().year), "payment_accounts": "bank-accounts", "companies": "companies",
-                 "products": "products"}
+                 "products": "products", "sales": "sales"}
 
         if data_type not in types.keys():  # Check if the provided data-type is valid.
             raise ValueError("{} is not a valid data set. Please use one of the following key-words: {}".format(
@@ -158,5 +166,13 @@ class FikenManager:
                              "Use 'set_company_slug'")
 
 
+'''
+a = FikenManager(email="fredrik.waaler@hotmail.no", host="localhost", password="Sebas10an99", database="Sukkertoppen",
+                 user="postgres")
+# a.set_company_slug(
+a.set_company_slug(a.get_company_info()[0][2])
+print(a.get_data_from_fiken(data_type="sales"))
+print(a.has_valid_login())
 
+'''
 

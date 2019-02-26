@@ -7,7 +7,7 @@
 <div class="boxdisplay">
     <form method="POST" action="{{ url_for('change_name') }}">
         <h3>Navn</h3>
-        <p>navn navnesen</p>
+        <p>{{ name }}</p>
         {{ form.new_name }}
         <input type="submit" Value="Endre">
     </form>
@@ -16,10 +16,10 @@
 <div class="boxdisplay">
     <form method="POST" action="{{ url_for('change_email') }}">
         <h3>Email</h3>
-        <p>navn@navnesen.com</p>
+        <p>{{ email }}</p>
         {{ form.new_email }}
+        <input type="submit" Value="Endre">
     </form>
-    <input type="submit" Value="Endre">
 </div>
 
 <div class="boxdisplay">

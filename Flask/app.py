@@ -51,7 +51,10 @@ def historikk():
 @app.route('/profil', methods=['GET'])
 def profil():
     form = ProfilForm()
-    return render_template('profil.html', title="Profil", form=form)
+    #TODO - Get profile data from database
+    name = "Ola Normann"
+    email = "ola@normann.no"
+    return render_template('profil.html', title="Profil", form=form, name=name, email=email)
 
 
 @app.route('/logg_inn', methods=['GET', 'POST'])

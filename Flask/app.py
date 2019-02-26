@@ -124,5 +124,13 @@ def change_fiken():
 def change_password():
     return "NONFUNCTIONAL > Change Password"
 
+@app.route('/get_user_data', methods=['POST'])
+def get_user_data():
+    return "NONFUCNTIONAL > Get user data"
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    return "NONFUCTIONAL > Delete Account"
+
 if __name__ == '__main__':
     app.run(debug=True)

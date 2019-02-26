@@ -341,6 +341,10 @@ footer {
         .boxdisplay {
             width: 55%;
         }
+
+        .imagebox {
+            float: right;
+        }
     }
 }
 #kostnadskontoBlock, #mvaBlock {
@@ -358,7 +362,18 @@ footer {
     overflow: auto;
 }
 
+.imagebox {
+    
+    height: 100%;
+    width: 40%;
+    text-align: center;
+}
 
+img {
+    max-width: 590px;
+    width:100%;
+    height:auto;
+}
 
 
 

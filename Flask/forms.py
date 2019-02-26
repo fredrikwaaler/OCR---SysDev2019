@@ -44,7 +44,7 @@ class SalgForm(FlaskForm):
     mva = StringField('Mva')
 
 class ProfilForm(FlaskForm):
-    name = StringField('Name')
-    email = StringField('Email')
+    new_name = StringField('Name')
+    new_email = StringField('Email')
     new_password = PasswordField('Nytt Passord')
     repeat_password = PasswordField('Gjenta Passord')

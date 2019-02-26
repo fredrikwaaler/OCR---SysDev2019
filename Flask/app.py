@@ -51,7 +51,10 @@ def historikk():
 @app.route('/profil', methods=['GET'])
 def profil():
     form = ProfilForm()
-    return render_template('profil.html', title="Profil", form=form)
+    #TODO - Get profile data from database
+    name = "Ola Normann"
+    email = "ola@normann.no"
+    return render_template('profil.html', title="Profil", form=form, name=name, email=email)
 
 
 @app.route('/logg_inn', methods=['GET', 'POST'])
@@ -120,6 +123,14 @@ def change_fiken():
 @app.route('/password', methods=['POST'])
 def change_password():
     return "NONFUNCTIONAL > Change Password"
+
+@app.route('/get_user_data', methods=['POST'])
+def get_user_data():
+    return "NONFUCNTIONAL > Get user data"
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    return "NONFUCTIONAL > Delete Account"
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,6 +1,11 @@
 {% extends 'layout_post.html' %}
 {% block container %}
 <h2>Nytt Kjøp</h2>
+{% if image %}
+<div class="imagebox">
+    <img src="static/uploads/{{ image }}" alt="Uploaded Image">
+</div>
+{% endif %}
 <div class="boxdisplay">
     <form method="POST" action="/upload_file" enctype=multipart/form-data>
         <input type=file name=file>
@@ -35,9 +40,7 @@
                         <h3>Forfallsdato</h3>
                         {{ form.forfallsdato }}
                 </div>
-            </div>
-            
-            
+            </div>        
         </div>
         
     <!-- Bilde her -->

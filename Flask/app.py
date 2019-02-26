@@ -24,7 +24,7 @@ nav.register_element('nav', navbar)
 nav.init_app(app)
 
 #Uploading files to server
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -32,9 +32,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 @app.route('/kjoop', methods=['GET'])
-def kjoop():
+def kjoop(image=None):
     form = KjoopForm()
-    return render_template('kjoop.html', title="Kjoop", form=form)
+    return render_template('kjoop.html', title="Kjoop", form=form, image=image)
 
 
 @app.route('/salg', methods=['GET'])
@@ -90,7 +90,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return filename + " has been uploaded to server"
+            return kjoop(image=filename)
     return "EMPTY PAGE"
 
 def allowed_file(filename):

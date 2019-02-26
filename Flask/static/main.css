@@ -94,7 +94,7 @@ select:focus {
 }
 
 /* Styling for text fields */
-input[type="text"] {
+input[type="text"], input[type="password"] {
     display: block;
     //height: 28px;
     padding: 6px 14px;
@@ -151,6 +151,7 @@ input[type="submit"]:focus {
 /* Highlighted email input field */
 #email:focus {
 }
+
 
 #password {
     width: 100%;

@@ -5,20 +5,28 @@
 <!--Info about the users name and email that we have-->
 <!--Structure: "Name:"    <actual name>  <Change button> -->
 <div class="boxdisplay">
-    <h3>Navn</h3>
-    <p>navn navnesen</p>
+    <form method="POST" action="{{ url_for('change_name') }}">
+        <h3>Navn</h3>
+        <p>navn navnesen</p>
+        {{ form.name }}
+        <input type="submit" Value="Endre">
+    </form>
+</div>
+
+<div class="boxdisplay">
+    <form method="POST" action="{{ url_for('change_email') }}">
+        <h3>Email</h3>
+        <p>navn@navnesen.com</p>
+        {{ form.email }}
+    </form>
     <input type="submit" Value="Endre">
 </div>
 
 <div class="boxdisplay">
-    <h3>Email</h3>
-    <p>navn@navnesen.com</p>
-    <input type="submit" Value="Endre">
-</div>
-
-<div class="boxdisplay">
-    <h3>Fikenbruker</h3>
-    <input type="submit" Value="Endre">
+    <form method="POST" action="{{ url_for('change_fiken') }}">
+        <h3>Fikenbruker</h3>
+        <input type="submit" Value="Endre">
+    </form>
 </div>
 
 

@@ -69,11 +69,9 @@ def glemt_passord():
     form = ForgotForm()
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
 
-@app.route('/password', methods=['POST'])
-def change_password():
-    return "NONFUNCTIONAL > Change Password"
-
-
+'''
+POST FUNCTIONS
+'''
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
@@ -97,7 +95,6 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 @app.route('/send_purchase_form', methods=['POST'])
 def send_purchase_form():
     result = request.form
@@ -107,6 +104,22 @@ def send_purchase_form():
 def send_sale_form():
     result = request.form
     return render_template("result.html", result = result)
-    
+
+@app.route('/change_name', methods=['POST'])
+def change_name():
+    return "NONFUNCTIONAL > Change Name"
+
+@app.route('/change_email', methods=['POST'])
+def change_email():
+    return "NONFUNCTIONAL > Change Email"
+
+@app.route('/change_fiken', methods=['POST'])
+def change_fiken():
+    return "NONFUNCTIONAL > Change Fiken"
+
+@app.route('/password', methods=['POST'])
+def change_password():
+    return "NONFUNCTIONAL > Change Password"
+
 if __name__ == '__main__':
     app.run(debug=True)

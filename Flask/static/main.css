@@ -1,4 +1,3 @@
-
 html {
     height: 100%;
     background: #e2e2e2;
@@ -17,7 +16,7 @@ except for navbar and footer */
 .container {
     min-height: 94%;
     margin: 0 auto;
-    padding: 20px 0px; 
+    padding: 20px 10px; 
     width: 100%;
     background: #ffffff;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -34,7 +33,7 @@ h2 {
 h3 {
     font-size: 1.5 em;
     font-family: 'Overpass', system-ui;
-    margin:0;
+    margin: 0;
 }
 
 
@@ -152,14 +151,10 @@ input[type="submit"]:focus {
 #email:focus {
 }
 
-
-
-
-  /* Special styling for the delete user data button */
+/* Styling for delete user data button */
 #warning {
     background-color: red;
 }
-
 
 #warning:focus {
     background-color: blue;
@@ -188,37 +183,6 @@ input.success {
     color: #ffffff;
 }
 
-/* HARD copy pasta from fiken
-    DELETE LATER */
-.btn-input {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-  }
-  
-  .btn-input:focus,
-  .btn-input.focus {
-    color: #333;
-    background-color: #e6e6e6;
-    border-color: #8c8c8c;
-  }
-  
-  .btn-input:hover {
-    color: #333;
-    background-color: #e6e6e6;
-    border-color: #adadad;
-  }
-  
-  .btn-input:active,
-  .btn-input.active,
-  .open > .dropdown-toggle.btn-input {
-    color: #333;
-    background-color: #e6e6e6;
-    border-color: #adadad;
-  }
-
-/* FIKEN COPY PASTA ENDES HERE */
-
 nav {
     padding-top: 4px;
     position: sticky;
@@ -228,6 +192,7 @@ nav {
     background: #ffffff;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
     text-align: center;
+    z-index: 1;
 }
 
 nav ul {
@@ -235,13 +200,14 @@ nav ul {
     padding: 0;
     list-style-type: none;
     height: 100%;
-    width: 85%;
+    width: 100%;
 }
 
 nav li {
     margin: 0px;
     display: inline;
     float: left;
+    
 }
 
 nav a {
@@ -277,7 +243,7 @@ footer {
     elements that are semanticly connected */
 .boxdisplay {
     display: inline-block;
-    padding: 10px;
+    padding: 10px 5px;
     margin-bottom: 30px;
     width: 100%;
     border-radius: 5px;
@@ -307,7 +273,7 @@ footer {
 }
 
 #kostnadskontoBlock, #mvaBlock {
-    margin-left: 20px;
+    margin-left: 15px;
 }
 
 
@@ -330,6 +296,10 @@ footer {
         background-color:#6aa6cc;
         color:blue;    
     }
+    
+    nav ul {
+        width: 90%;
+    }
 
     .container {
         min-height: 94%;
@@ -348,6 +318,11 @@ footer {
             background-color:#000;
             color:red;    
         }
+
+        nav ul {
+            width: 85%;
+        }
+
 
         .container {
             min-height: 94%;
@@ -394,8 +369,6 @@ img {
     width:100%;
     height:auto;
 }
-
-
 
 /*
 #kostnadskonto, #mva {
@@ -462,19 +435,4 @@ footer {
     nav a {
         width: relative;
     }
-}
-
-#type_kjoop {
-    display: inline-block;
-    padding: 15px 5px;
-    background: #ffffff;
-    border: 2px solid transparent;
-    border-radius: 10px;
-
-}
-
-#type_kjoop li {
-    display: inline-block;
-    list-style: none;
-    padding-right:10px;
 }

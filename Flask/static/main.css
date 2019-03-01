@@ -12,11 +12,11 @@ body {
 }
 
 /* This continer currently holds all content,
-except for navbar and footer */
+    except for navbar and footer */
 .container {
     min-height: 94%;
-    margin: 0 auto;
-    padding: 20px 10px; 
+    margin: 0;
+    padding: 20px 0px; 
     width: 100%;
     background: #ffffff;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -243,9 +243,10 @@ footer {
     elements that are semanticly connected */
 .boxdisplay {
     display: inline-block;
-    padding: 10px 5px;
+    padding: 10px 0px;
     margin-bottom: 30px;
-    width: 100%;
+    /*width: 100%;*/
+    min-width: 350px;
     border-radius: 5px;
     align-content: center;
     border: 1px solid #e3e3e3;
@@ -304,8 +305,8 @@ footer {
     .container {
         min-height: 94%;
         margin: 0 auto;
-        padding: 20px 20px; 
-        width: 90%;
+        padding: 0;
+        width: 100%;
         background: #ffffff;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     }

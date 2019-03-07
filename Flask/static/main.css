@@ -210,7 +210,6 @@ nav li {
     margin: 0px;
     display: inline;
     float: left;
-    
 }
 
 nav a {
@@ -219,6 +218,11 @@ nav a {
     width: 90px;
     color: black;
     text-decoration: none;
+}
+
+#type_kjoop {
+    list-style-type: none;
+    padding-left: 5px;
 }
 
 nav a:hover:not(.active) {

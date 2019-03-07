@@ -266,7 +266,7 @@ footer {
 }
 
 /* The title and field of a div */
-#tekst, #kostnadskontoBlock, #bruttobeloop, #mvaBlock, #nettobeloop {
+#tekstBlock, #kostnadskontoBlock, #bruttobeloopBlock, #mvaBlock, #nettobeloopBlock {
     height: 100%;
     display: inline-block;
     position: relative;

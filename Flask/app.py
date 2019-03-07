@@ -1,4 +1,4 @@
-import os
+import os, datetime
 from flask import Flask, render_template, flash, request, redirect, url_for
 from flask_wtf import FlaskForm
 from forms import LoginForm, ForgotForm, KjoopForm, SalgForm, ProfilForm
@@ -32,8 +32,17 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 @app.route('/kjoop', methods=['GET'])
-def kjoop(image='dummy.png'):
+def kjoop(image='dummy.png', populate_data=None):
     form = KjoopForm()
+    if populate_data:
+        #TODO - Add data from image input to variables.
+        #The data can be stored in variable populate_data.
+        form.fakturadato.data =  datetime.datetime(2000, 1, 1)
+        form.forfallsdato.data = datetime.datetime(3000, 1, 1)
+        form.fakturanummer.data = "NNNN"
+        form.tekst.data = "Tekst"
+        form.bruttobelop.data = "Bruttobeløp"
+        form.nettobelop.data = "Nettobeløp"
     return render_template('kjoop.html', title="Kjoop", form=form, image=image)
 
 
@@ -91,8 +100,10 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            print(filename)
-            return kjoop(image=filename)
+            # TODO - Send send image for parsing
+
+            # TODO - Retrieve data and pass it trough populate_data
+            return kjoop(image=filename, populate_data=True)
     return "EMPTY PAGE"
 
 def allowed_file(filename):

@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, BooleanField, DateField, RadioField
+from wtforms import StringField, PasswordField, SelectField, BooleanField, RadioField
+from wtforms.fields.html5 import DateField
 
 
 class LoginForm(FlaskForm):

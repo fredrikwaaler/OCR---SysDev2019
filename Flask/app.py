@@ -32,7 +32,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 @app.route('/kjoop', methods=['GET'])
-def kjoop(image=None):
+def kjoop(image='dummy.png'):
     form = KjoopForm()
     return render_template('kjoop.html', title="Kjoop", form=form, image=image)
 
@@ -91,6 +91,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            print(filename)
             return kjoop(image=filename)
     return "EMPTY PAGE"
 

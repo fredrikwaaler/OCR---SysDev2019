@@ -74,6 +74,7 @@ h3 {
 }
 */
 
+/* Previous select styling. Moved styling to common styling below
 select {
     display: block;
     max-width: 350px;
@@ -91,11 +92,13 @@ select:focus {
     border-color: #66afe9;
     box-shadow: 2px #2d4e68;
 }
+*/
 
 /* Styling for text fields */
-input[type="text"], input[type="password"] {
+select, input[type="text"], input[type="password"] {
+    overflow: visible;
     display: block;
-    //height: 28px;
+    min-height: 20px; 
     padding: 6px 14px;
     font-size: 14px;
     color: #555;
@@ -106,7 +109,7 @@ input[type="text"], input[type="password"] {
 }
 
 /* Styling for highlighted text field */
-input[type="text"]:focus {
+select:focus, input[type="text"]:focus {
     border-color: #66afe9;
     box-shadow: 2px #2d4e68;
 }
@@ -267,10 +270,9 @@ footer {
 
 /* The title and field of a div */
 #tekstBlock, #kostnadskontoBlock, #bruttobeloopBlock, #mvaBlock, #nettobeloopBlock {
-    height: 100%;
+    padding: 10px;
     display: inline-block;
     position: relative;
-    width: auto;
 }
 
 #kostnadskontoBlock, #mvaBlock {
@@ -343,9 +345,11 @@ footer {
         }
     }
 }
+/*
 #kostnadskontoBlock, #mvaBlock {
     transform:translateY(2px)
 }
+*/
 
 #kjoopBlock, #leverandorBlock, #fakturadatoBlock, #forfallsdatoBlock, #fakturanummerBlock h3{
     position: relative;
@@ -437,3 +441,4 @@ footer {
         width: relative;
     }
 }
+*/

@@ -32,9 +32,10 @@ h2 {
     font-size: 2.5 em;
     font-family: 'Overpass', system-ui;
     color: rebeccapurple;
-    display: block;
-    float: right;
-    margin: 15px 42% 0 0;
+    width: 30%;
+    //display: block;
+    //float: right;
+    margin: 10px auto;
 }
 
 /* h3 is used for field; headings */
@@ -44,14 +45,28 @@ h3 {
     margin: 15px 0 0 0;
 }
 
+/* some h2 are elements are used as title for a
+    minor block/boxdisplay. */
+.title {
+    font-size: 1.5em;
+    width: 40%;
+    margin: 10px auto;
+}
+
 /* h4 is used for side info */
 h4 {
     font-size: 0,9 em;
     font-family: 'Overpass', sans-serif;
     font-weight: 400;
-    margin: 0;
-    display: block;
-    float: right;
+    margin: 0 auto;
+}
+
+li {
+    margin: 5px 0;
+}
+
+label {
+    margin: 5px 0 0 5px;
 }
 
 /*  OLD SOLUTION!!!
@@ -139,16 +154,20 @@ input[type="submit"] {
     padding: 6px 12px;
     display: block;
     float: right;
-    margin: 0 40px 0 0;
+    margin: 0 10px 0 0;
     font-size: 14px;
-    font-weight: 400px;
     text-align: center;
     white-space: nowrap;
-    vertical-align: middle;
     border: 1px solid;
     border-radius: 4px;
     overflow: visible;
     text-transform: none;
+}
+
+/* Buttons that are inside a boxdisplay */
+input[type="submit"].boxedButton {
+    float: left;
+    margin: 5px 0 0 0;
 }
 
 /* styling for active/highlighted buttons */
@@ -163,6 +182,13 @@ input[type="checkbox"], input[type="radio"] {
     position: relative;
     display: block;
     float: left;
+    margin: 0 5px 0 0;
+}
+
+input[type="file"] {
+    margin: 0;
+    padding: 0;
+    max-width: 207px;
 }
 
 /* Email input fields have type = "text", but id = "email" */
@@ -222,10 +248,12 @@ nav {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
     text-align: center;
     z-index: 1;
+    padding: 0;
+    margin: 0;
 }
 
 nav ul {
-    margin: auto;
+    margin: 0;
     padding: 0;
     list-style-type: none;
     height: 100%;
@@ -233,7 +261,8 @@ nav ul {
 }
 
 nav li {
-    margin: 0px;
+    margin: 0;
+    padding: 0;
     display: inline;
     float: left;
 }
@@ -241,7 +270,8 @@ nav li {
 nav a {
     display: block;
     padding: 15px 0px;
-    width: 90px;
+    margin: 0;
+    width: 80px;
     color: black;
     text-decoration: none;
 }
@@ -296,17 +326,14 @@ footer {
     height: 400px;
 }
 
-/* The title and field of a div */
+/* The title and field of a div
+    TODO: not all fields are mentioned yet */
 #tekstBlock, #kostnadskontoBlock, #bruttobeloopBlock, #mvaBlock, #nettobeloopBlock {
-    padding: 10px;
+    padding: 0;
+    margin: 0 20px 0 0;
     display: inline-block;
     position: relative;
 }
-
-#kostnadskontoBlock, #mvaBlock {
-    margin-left: 15px;
-}
-
 
 /* NEW!
 
@@ -343,11 +370,6 @@ footer {
         margin: 10px 220px;
     }
 
-    /* TODO:float left cauesed history-page to look odd */
-    h3 {
-        margin-top: 10px;
-    }
-
     .wrapper {
         min-height: 94%;
         margin: 0;
@@ -363,6 +385,9 @@ footer {
         width: 85%;
     }
 
+    #kostnadskontoBlock, #mvaBlock {
+        margin-left: 15px;
+    }
 
     /* Styling for widescreens, ie. width > 768px */
     @media screen and (min-width: 768px) {
@@ -392,6 +417,7 @@ footer {
 
         .imagebox {
             float: right;
+            width: 100%;
         }
     }
 }
@@ -415,8 +441,8 @@ footer {
 .imagebox {
     
     height: 100%;
-    width: 40%;
-    text-align: center;
+    width: 90%;
+    margin: 0 auto;
 }
 
 img {
@@ -424,14 +450,6 @@ img {
     width:100%;
     height:auto;
 }
-
-/*
-#kostnadskonto, #mva {
-    height: 100%;
-}*/
-
-
-
 
 
 /* Jan footer, trenger muligens en fix for hisorikk
@@ -453,42 +471,5 @@ footer {
     box-sizing: border-box;
     background-color: #ededed;
     position: relative;
-}
-*/
-
-/* OLD:
-    Minimal responsive design, differenntiates between wide screen
-    and non-widescreen screens
- @media screen and (max-width: 767px) {
-    body {
-        display: block;
-    }
-    .wrapper {
-        padding-top: 50px;
-        width: 100%;
-    }
-
-
-    nav {
-        position: fixed;
-        margin: 0;
-        padding: auto;
-        padding-left: 0;
-        text-align: center;
-        
-    }
-
-    nav ul {
-        padding: 0;
-    }
-
-    nav li {
-        float: none;
-        display: inline-block;
-    }
-
-    nav a {
-        width: relative;
-    }
 }
 */

@@ -9,7 +9,7 @@
         <h3>Navn</h3>
         <p>{{ name }}</p>
         {{ form.new_name }}
-        <input type="submit" Value="Endre">
+        <input class="boxedButton" type="submit" Value="Endre">
     </form>
 </div>
 
@@ -18,14 +18,14 @@
         <h3>Email</h3>
         <p>{{ email }}</p>
         {{ form.new_email }}
-        <input type="submit" Value="Endre">
+        <input class="boxedButton" type="submit" Value="Endre">
     </form>
 </div>
 
 <div class="boxdisplay">
     <form method="POST" action="{{ url_for('change_fiken') }}">
         <h3>Fikenbruker</h3>
-        <input type="submit" Value="Endre">
+        <input class="boxedButton" type="submit" Value="Endre">
     </form>
 </div>
 
@@ -39,7 +39,7 @@
         {{ form.new_password }}
         <h3>Gjenta passord</h3>
         {{ form.repeat_password }}
-        <input type="submit" Value="Endre">
+        <input class="boxedButton" type="submit" Value="Endre">
     </form>
 </div>
 

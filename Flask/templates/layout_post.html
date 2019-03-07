@@ -17,9 +17,11 @@
     <body>
         {{ nav.nav.render() }}
 
-        <div class = container>
-            {% block container %} 
-            {% endblock %}
+        <div class = wrapper>
+            <div class=container>
+                {% block container %} 
+                {% endblock %}
+            </div>
             <footer>
                 <a href="#">Problemer?</a>
                 <p>Copyright Group 8</p>

@@ -13,13 +13,18 @@ body {
 
 /* This continer currently holds all content,
     except for navbar and footer */
-.container {
+.wrapper {
     min-height: 94%;
     margin: 0;
     padding: 20px 0px; 
     width: 100%;
     background: #ffffff;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container {
+    display: flow-root;
+    min-height: 100%;
 }
 
 /* h2 is used for big headings */
@@ -231,7 +236,6 @@ nav li {
     margin: 0px;
     display: inline;
     float: left;
-    
 }
 
 nav a {
@@ -240,6 +244,11 @@ nav a {
     width: 90px;
     color: black;
     text-decoration: none;
+}
+
+#type_kjoop {
+    list-style-type: none;
+    padding-left: 5px;
 }
 
 nav a:hover:not(.active) {
@@ -339,7 +348,7 @@ footer {
         margin-top: 10px;
     }
 
-    .container {
+    .wrapper {
         min-height: 94%;
         margin: 0;
         padding: 20px 0px;
@@ -368,7 +377,7 @@ footer {
         }
 
 
-        .container {
+        .wrapper {
             min-height: 94%;
             margin: 0 auto;
             padding: 20px 40px; 
@@ -454,7 +463,7 @@ footer {
     body {
         display: block;
     }
-    .container {
+    .wrapper {
         padding-top: 50px;
         width: 100%;
     }

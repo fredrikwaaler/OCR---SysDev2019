@@ -1,7 +1,7 @@
 import os, datetime, json
 from flask import Flask, render_template, flash, request, redirect, url_for
 from flask_wtf import FlaskForm
-from forms import LoginForm, ForgotForm, KjoopForm, SalgForm, ProfilForm
+from forms import LoginForm, ForgotForm, KjoopForm, SalgForm, ProfilForm, FikenModalForm
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
@@ -58,10 +58,11 @@ def historikk():
 @app.route('/profil', methods=['GET'])
 def profil():
     form = ProfilForm()
+    fiken_modal_form = FikenModalForm()
     #TODO - Get profile data from database
     name = "Ola Normann"
     email = "ola@normann.no"
-    return render_template('profil.html', title="Profil", form=form, name=name, email=email)
+    return render_template('profil.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email)
 
 
 @app.route('/logg_inn', methods=['GET', 'POST'])

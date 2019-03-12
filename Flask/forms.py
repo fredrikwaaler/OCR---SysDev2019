@@ -54,3 +54,7 @@ class ProfilForm(FlaskForm):
     new_email = StringField('Email')
     new_password = PasswordField('Nytt Passord')
     repeat_password = PasswordField('Gjenta Passord')
+
+class FikenModalForm(FlaskForm):
+    email = StringField('Email')
+    password = PasswordField('Passord')

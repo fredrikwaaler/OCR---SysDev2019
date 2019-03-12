@@ -34,11 +34,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/kjoop', methods=['GET'])
 def kjoop(image='dummy.png', pop=False):
     form = KjoopForm()
-    
     if pop:
-        #TODO - Add formatting for datetime from json file
-        form.fakturadato.data =  datetime.datetime(2000, 1, 1)
-        form.forfallsdato.data = datetime.datetime(3000, 1, 1)
+        form.fakturadato.data =  stringToDatetime(pop['fakturadato'])
+        form.forfallsdato.data = stringToDatetime(pop['forfallsdato'])
         form.fakturanummer.data = pop['fakturanummer']
         form.tekst.data = pop['tekst']
         form.bruttobelop.data = pop['bruttobelop']
@@ -162,6 +160,17 @@ def send_to_fiken(data, type):
         with open('test_sale.json', 'w') as outfile:
             entry = {data}
             json.dump(data, outfile)
+
+def stringToDatetime(input_string):
+    """
+    Changes datatype of string to a datetime object
+    :param input_string Date in format YYYY-MM-DD
+    """
+    split = input_string.split("-")
+    date = datetime.datetime(int(split[0]), int(split[1]), int(split[2]))
+    print(date)
+    return date
+
 
 if __name__ == '__main__':
     app.run(debug=True)

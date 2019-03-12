@@ -2,8 +2,8 @@
 {% block container %}
 <h2>Nytt Kjøp</h2>
 {% if image %}
-<div class="imagebox">
-    <img src="static/uploads/{{ image }}" alt="Uploaded Image">
+<div class="imagebox" id="imagebox_id">
+    <img src="static/uploads/{{ image }}" class="img_class" id="img_id" alt="Uploaded Image">
 </div>
 {% endif %}
 <div class="boxdisplay">
@@ -72,7 +72,7 @@
             {{ form.betalt }}
             <h4>Kryss av dersom handelen er betalt</h4>
         </div>
-        <input type="submit" Value="Send inn">
+        <input type="submit" Value="Send inn" class="buttons">
     </form>
 </div>
 {% endblock container %}

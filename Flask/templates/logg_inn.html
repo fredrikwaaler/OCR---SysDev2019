@@ -1,12 +1,12 @@
 {% extends 'layout_pre.html' %}
 {% block container %}
 <h2>Logg inn</h2>
-<form method="POST" action="{{ url_for('logg_inn') }}">
+<form method="POST" id="logg_inn_form" action="{{ url_for('logg_inn') }}">
     <h3>Brukernavn</h3>
     {{ form.email }}
     <h3>Passord</h3>
     {{ form.password }}
-    <input type="submit" Value="Logg inn">
+    <input type="submit" classs="logg_inn" id="logg_inn" Value="Logg inn">
     <a href="/glemt_passord">Glemt passord?</a> 
     
 </form>

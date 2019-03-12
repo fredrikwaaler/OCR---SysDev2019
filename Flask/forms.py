@@ -30,15 +30,20 @@ class KjoopForm(FlaskForm):
 
 class SalgForm(FlaskForm):
     type_salg = SelectField('Type', choices=[])
-    kunde = SelectField('Kunde', choices=[])
-    dato = StringField('Dato')
-    kontakt = SelectField('kontakt', choices=[])
+    dato = DateField('Dato')
+    dager_til_forfall = StringField("Dager til forfalll")
     kommentar = StringField('Kommentar')
-    din_referanse = StringField('Din Referanse')
     kontonummer = StringField('Kontonummer')
+
+    kunde = SelectField('Kunde', choices=[])
+
+    kontakt = SelectField('Kontakt', choices=[("1", "Kontakt 1"), ("2", "Kontakt 2") ])
+    vaar_referanse = StringField('Din Referanse')
     deres_referanse = StringField('Deres Referanse')
 
     beskrivelse = StringField('Beskrivelse')
+    
+    produkt = SelectField('Produkt', choices=[("1", "KAKE")])
     pris = StringField('Pris')
     antall = StringField('Antall')
     rabatt = StringField('Rabatt')

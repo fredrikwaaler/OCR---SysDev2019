@@ -119,6 +119,8 @@ def send_purchase_form():
 @app.route('/send_sale_form', methods=['POST'])
 def send_sale_form():
     result = request.form
+    send_to_fiken(result, "Sale")
+
     return render_template("result.html", result = result)
 
 @app.route('/change_name', methods=['POST'])
@@ -157,7 +159,9 @@ def send_to_fiken(data, type):
             entry = {data}
             json.dump(data, outfile)
     if type == "Sale":
-        print("Sale")
+        with open('test_sale.json', 'w') as outfile:
+            entry = {data}
+            json.dump(data, outfile)
 
 if __name__ == '__main__':
     app.run(debug=True)

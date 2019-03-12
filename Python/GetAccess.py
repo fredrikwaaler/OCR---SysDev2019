@@ -36,7 +36,18 @@ class VisionAPI:
         response = client.annotate_image(
             {"image": {"content": content}, "features":
                 [{'type': vision.enums.Feature.Type.TEXT_DETECTION}]})
+
+        image = vision.types.Image(content=content)
+
+        response = client.text_detection(image=image)
+        texts = response.text_annotations
+
+        for text in texts:
+            print('\n"{}"'.format(text.description) + "")
+
+            vertices = (['({},{})'.format(vertex.x, vertex.y)
+                         for vertex in text.bounding_poly.vertices])
+
+            print('bounds: {}'.format(','.join(vertices)))
+        print('Texts:')
         print(response)
-
-
-a = VisionAPI.get_text_detection_from_img("kvit.jpg")

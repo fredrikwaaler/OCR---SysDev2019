@@ -162,7 +162,7 @@ input[type="submit"] {
 }
 
 /* Buttons that are inside a boxdisplay */
-input[type="submit"].boxedButton {
+input[type="submit"].boxedButton, #boxedButtonPointer{
     float: left;
     margin: 5px 0 0 0;
 }

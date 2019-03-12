@@ -1,13 +1,23 @@
-var modal = document.getElementById('fiken_modal');
-var btn = document.getElementById('change_fiken_button');
-var span = document.getElementsByClassName('close')[0];
+var modal = document.getElementsByClassName('modal');
+var btn = document.getElementsByClassName('modal_button');
+var span = document.getElementsByClassName('close');
 
-btn.onclick = function () {
-    modal.style.display = "block";    
-}
+console.log(modal);
 
-span.onclick = function () {
-    modal.style.display = "none";
+btn[0].onclick = function () {
+    modal[0].style.display = "block";    
+};
+
+span[0].onclick = function () {
+    modal[0].style.display = "none";
+};
+
+btn[1].onclick = function () {
+    modal[1].style.display = "block";
+};
+
+span[1].onclick = function () {
+    modal[1].style.display = "none";
 };
 
 window.onclick = function(event) {

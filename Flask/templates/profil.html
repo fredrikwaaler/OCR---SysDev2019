@@ -23,17 +23,15 @@
 </div>
 
 <div class="boxdisplay">
-    <!--<form method="POST" action="{{ url_for('change_fiken') }}">-->
     <h3>Fikenbruker</h3>
-    <input class="boxedButton" type="submit" id="change_fiken_button" Value="Endre">
-    <!--</form>-->
+    <input class="modal_button" id="boxedButtonPointer" type="submit" Value="Endre">
 </div>
 <!-- Code for modal content for the change Fiken user functionality-->
-<div id = "fiken_modal" class="modal">
+<div class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <form method="POST" action="{{ url_for('change_fiken') }}">
-            <h2>Change Fiken account</h2>
+            <h2>Endre Fiken-bruker</h2>
             <h3>Email</h3>
             {{ fiken_modal_form.email }}
             <h3>Passord</h3>
@@ -63,7 +61,15 @@
 <form method="POST" action="{{ url_for('get_user_data') }}">
     <input type="submit" Value="Last ned brukerdata">
 </form>
-<form method="POST" action="{{ url_for('delete_account') }}">
-    <input type="submit" id="warning" Value="Slett konto">
-</form>
+    <input class ="modal_button" type="submit" id="warning" Value="Slett konto">
+<div class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form method="POST" action="{{ url_for('delete_account') }}">
+                <h2>Slett konto</h2>
+                <p>All brukerdata vil bli slettet</p>
+                <input class="boxedButton" id="warning" type="submit" Value="Slett konto">
+            </form>
+        </div>
+    </div>
 {% endblock container %}

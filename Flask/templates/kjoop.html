@@ -24,6 +24,7 @@
                     <div id = "leverandorBlock">
                         <h3>Leverandør</h3>
                         {{ form.leverandor}}
+                        <input class ="modal_button" type="button" Value="Opprett ny">
                     </div>
                     <div id = "fakturadatoBlock">
                         <h3>Fakturadato</h3>
@@ -74,5 +75,40 @@
         </div>
         <input type="submit" Value="Send inn">
     </form>
+    <!-- Code for modal content for creating customer functionality-->
+    <div class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form method="POST" action="{{ url_for('change_fiken') }}">
+                    <h2>Opprett ny kunde/leverandør</h2>
+                    <h3>Navn</h3>
+                    {{ customer_modal_form.navn }}
+                    <h3>Org.nr</h3>
+                    {{ customer_modal_form.org_nr }}
+                    <h3>Epost</h3>
+                    {{ customer_modal_form.email }}
+                    <h3>Telefonnummer</h3>
+                    {{ customer_modal_form.telefonnummer }}
+                    <h3>Kontonummer</h3>
+                    {{ customer_modal_form.kontonummer }}
+                    <h3>Kunde/leverandør</h3>
+                    <h3>Medlemsnr</h3>
+                    {{ customer_modal_form.medlemsnummer }}
+                    <h2>Adresse</h2>
+                    <h3>Land</h3>
+                    {{ customer_modal_form.land }}
+                    <h3>Adresse 1</h3>
+                    {{ customer_modal_form.adresse1 }}
+                    <h3>Adresse 2</h3>
+                    {{ customer_modal_form.adresse2 }}
+                    <h3>Postnummer</h3>
+                    {{ customer_modal_form.postnummer }}
+                    <h3>Poststed</h3>
+                    {{ customer_modal_form.poststed }}
+                    <input class="boxedButton" type="submit" Value="Endre">
+                </form>
+            </div>
+        </div>
+        <!--End of modal content-->
 </div>
 {% endblock container %}

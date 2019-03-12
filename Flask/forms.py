@@ -58,3 +58,17 @@ class ProfilForm(FlaskForm):
 class FikenModalForm(FlaskForm):
     email = StringField('Email')
     password = PasswordField('Passord')
+
+class CustomerForm(FlaskForm):
+    navn = StringField('Navn')
+    org_nr = StringField('Org.nr')
+    email = StringField('Epost')
+    telefonnummer = StringField('Telefonnummer')
+    kontonummer = StringField('Kontonummer')
+    #CHECKBOXES
+    medlemsnummer = StringField('Medlemsnummer') #Stepper?
+    land = StringField('Land')
+    adresse1 = StringField('Adresse 1')
+    adresse2 = StringField('Adresse 2')
+    postnummer = StringField('Postnummer')
+    poststed = StringField('Poststed')

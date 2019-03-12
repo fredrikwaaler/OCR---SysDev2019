@@ -1,7 +1,7 @@
 import os, datetime, json
 from flask import Flask, render_template, flash, request, redirect, url_for
 from flask_wtf import FlaskForm
-from forms import LoginForm, ForgotForm, KjoopForm, SalgForm, ProfilForm, FikenModalForm
+from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
@@ -34,6 +34,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/kjoop', methods=['GET'])
 def kjoop(image='dummy.png', pop=False):
     form = KjoopForm()
+    customer_modal_form = CustomerForm()
     if pop:
         form.fakturadato.data =  stringToDatetime(pop['fakturadato'])
         form.forfallsdato.data = stringToDatetime(pop['forfallsdato'])
@@ -41,7 +42,7 @@ def kjoop(image='dummy.png', pop=False):
         form.tekst.data = pop['tekst']
         form.bruttobelop.data = pop['bruttobelop']
         form.nettobelop.data = pop['nettobelop']
-    return render_template('kjoop.html', title="Kjoop", form=form, image=image)
+    return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image)
 
 
 @app.route('/salg', methods=['GET'])

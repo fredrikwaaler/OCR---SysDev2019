@@ -1,0 +1,13 @@
+{
+    "csrv_token": "jksakjnhdflafs",
+    "type_kjop": 1,
+    "fakturadato": "2019-12-31",
+    "fakturanummer": 234243,
+    "forfallsdato": "2019-12-31",
+    "tekst": "Tekst",
+    "kostnadskonto": 100,
+    "bruttobelop": 99999,
+    "mva": 1,
+    "nettobelop": 88888
+  }
+  

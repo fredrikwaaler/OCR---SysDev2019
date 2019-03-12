@@ -1,7 +1,7 @@
-import os, datetime
+import os, datetime, json
 from flask import Flask, render_template, flash, request, redirect, url_for
 from flask_wtf import FlaskForm
-from forms import LoginForm, ForgotForm, KjoopForm, SalgForm, ProfilForm
+from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
@@ -32,18 +32,17 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 @app.route('/kjoop', methods=['GET'])
-def kjoop(image='dummy.png', populate_data=None):
+def kjoop(image='dummy.png', pop=False):
     form = KjoopForm()
-    if populate_data:
-        #TODO - Add data from image input to variables.
-        #The data can be stored in variable populate_data.
-        form.fakturadato.data =  datetime.datetime(2000, 1, 1)
-        form.forfallsdato.data = datetime.datetime(3000, 1, 1)
-        form.fakturanummer.data = "NNNN"
-        form.tekst.data = "Tekst"
-        form.bruttobelop.data = "Bruttobeløp"
-        form.nettobelop.data = "Nettobeløp"
-    return render_template('kjoop.html', title="Kjoop", form=form, image=image)
+    customer_modal_form = CustomerForm()
+    if pop:
+        form.fakturadato.data =  stringToDatetime(pop['fakturadato'])
+        form.forfallsdato.data = stringToDatetime(pop['forfallsdato'])
+        form.fakturanummer.data = pop['fakturanummer']
+        form.tekst.data = pop['tekst']
+        form.bruttobelop.data = pop['bruttobelop']
+        form.nettobelop.data = pop['nettobelop']
+    return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image)
 
 
 @app.route('/salg', methods=['GET'])
@@ -60,10 +59,11 @@ def historikk():
 @app.route('/profil', methods=['GET'])
 def profil():
     form = ProfilForm()
+    fiken_modal_form = FikenModalForm()
     #TODO - Get profile data from database
     name = "Ola Normann"
     email = "ola@normann.no"
-    return render_template('profil.html', title="Profil", form=form, name=name, email=email)
+    return render_template('profil.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email)
 
 
 @app.route('/logg_inn', methods=['GET', 'POST'])
@@ -102,22 +102,25 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             # TODO - Send send image for parsing
 
-            # TODO - Retrieve data and pass it trough populate_data
-            return kjoop(image=filename, populate_data=True)
+            # TODO - Retrieve parsed json data
+            # Change filename here when adding own parsed data
+            with open('test_population.json', 'r') as f:
+                parsed_data = json.load(f)
+            return kjoop(image=filename, pop=parsed_data)
     return "EMPTY PAGE"
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/send_purchase_form', methods=['POST'])
 def send_purchase_form():
     result = request.form
+    send_to_fiken(result, "Purchase")
+    
     return render_template("result.html", result = result)
 
 @app.route('/send_sale_form', methods=['POST'])
 def send_sale_form():
     result = request.form
+    send_to_fiken(result, "Sale")
+
     return render_template("result.html", result = result)
 
 @app.route('/change_name', methods=['POST'])
@@ -143,6 +146,33 @@ def get_user_data():
 @app.route('/delete_account', methods=['POST'])
 def delete_account():
     return "NONFUCTIONAL > Delete Account"
+
+# Functions that can be moved to different file later
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def send_to_fiken(data, type):
+    if type == "Purchase":
+        # TODO - Make HAL json of data and send to Fiken API
+        with open('test_purchase.json', 'w') as outfile:
+            entry = {data}
+            json.dump(data, outfile)
+    if type == "Sale":
+        with open('test_sale.json', 'w') as outfile:
+            entry = {data}
+            json.dump(data, outfile)
+
+def stringToDatetime(input_string):
+    """
+    Changes datatype of string to a datetime object
+    :param input_string Date in format YYYY-MM-DD
+    """
+    split = input_string.split("-")
+    date = datetime.datetime(int(split[0]), int(split[1]), int(split[2]))
+    print(date)
+    return date
+
 
 if __name__ == '__main__':
     app.run(debug=True)

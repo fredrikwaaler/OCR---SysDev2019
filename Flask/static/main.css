@@ -90,7 +90,7 @@ select:focus, input[type="text"]:focus {
 }
 
 /* Styling for general purpose buttons */
-input[type="submit"] {
+input[type="submit"], input[type="button"] {
     color: rebeccapurple;
     background-color: #fff;
     border-color: #ccc;
@@ -108,13 +108,13 @@ input[type="submit"] {
 }
 
 /* Buttons that are inside a boxdisplay */
-input[type="submit"].boxedButton {
+input[type="submit"].boxedButton, #boxedButtonPointer{
     float: left;
     margin: 5px 0 0 0;
 }
 
 /* styling for active/highlighted buttons */
-input[type="submit"]:focus {
+input[type="submit"]:focus, input[type="button"]:focus {
     color: #333;
     background-color: #e6e6e6;
     border-color: #8c8c8c;

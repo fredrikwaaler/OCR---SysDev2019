@@ -2,12 +2,87 @@
 {% block container %}
 <h2>Historikk</h2>
 <!--Salg, kjøp and Alle are check buttons-->
-<h3>Salg</h3>
-<h3>Kjøp</h3>
-<h3>Alle</h3>
+<form name="filter_ledger" class="filter_buttons" method="post" action="">
+    {%  if not checked %}
+    <input onclick="this.form.submit();" type="radio" name="type" value="all" checked="checked"> All
+    <input onclick="this.form.submit();" type="radio" name="type" value="purchases"> Purchases
+    <input onclick="this.form.submit();" type="radio" name="type" value="sales"> Sales
+
+    {%  elif checked == "purchases" %}
+    <input onclick="this.form.submit();" type="radio" name="type" value="all"> All
+    <input onclick="this.form.submit();" type="radio" name="type" value="purchases" checked="checked"> Purchases
+    <input onclick="this.form.submit();" type="radio" name="type" value="sales"> Sales
+
+    {% elif checked == "sales" %}
+    <input onclick="this.form.submit();" type="radio" name="type" value="all"> All
+    <input onclick="this.form.submit();" type="radio" name="type" value="purchases"> Purchases
+    <input onclick="this.form.submit();" type="radio" name="type" value="sales" checked="checked"> Sales
+    {% endif %}
+
+</form>
+
+{# for entry, supplier in entry_view
+    -- Display image
+    -- Display entry info
+    -- <a href="{{ url_for('supplier', supplier) }}">Supplier: {{ supplier["name"] }}</a>
+    #}
+
+{% for entry, external in entry_view %}
+    <button class="collapsible">
+        <span class="collapsible_text">{{ entry["description"] }}</span>
+        <span class="collapsible_text">{{ entry["date"] }}</span>
+        <span class="collapsible_text">{{ entry["type"] }} - {{ entry["identifier"] }} </span>
+
+    </button>
+    <div class="content">
+        {%  if entry["downloadUrl"] %}
+            <img src="{{ entry["downloadUrl"] }}" alt="entry_image" type="application/pdf">
+        {%  endif %}
+
+        <div class="entry_info">
+
+            <div class="entry_stats">
+            <p>ID: {{ entry["identifier"] }}</p>
+            {% if external["supplier"] %}
+                <p>Supplier: {{ external["supplier"]["name"] }}</p>
+            {% elif external["customer"] %}
+                <p>Customer: {{ external["customer"]["name"] }}</p>
+            {% endif %}
+            <p>Paid: {{ entry["paid"] }}</p>
+            </div>
+
+            <div class="entry_description">
+                <p>Description: {{ entry["description"] }}</p>
+            </div>
+
+            <div class="entry_calc">
+                <p>
+
+                </p>
+            </div>
+        </div>
+    </div>
+{% endfor %}
 
 <div class="marginbox"></div>
 
-<!--Big form inc. Displays ID#, Type, Dato and additional tekst -->
-<!-- WTF form magic HERE-->
+
+<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+</script>
+
+
 {% endblock container %}

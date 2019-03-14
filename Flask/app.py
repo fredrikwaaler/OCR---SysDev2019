@@ -5,7 +5,8 @@ from forms import LoginForm, ForgotForm, KjoopForm, SalgForm, ProfilForm
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
-
+from FikenManager import FikenManager
+from HistoryPresenter import HistoryPresenter
 
 
 app = Flask(__name__)
@@ -28,6 +29,11 @@ UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Create a fiken manager. //TODO Should be created upon log-in.
+app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
+app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
+
+
 
 
 @app.route('/')
@@ -43,9 +49,25 @@ def salg():
     return render_template('salg.html', title="Salg", form=form)
 
 
-@app.route('/historikk')
+@app.route('/historikk', methods=['GET', 'POST'])
 def historikk():
-    return render_template('historikk.html', title="Historikk")
+    history_presenter = HistoryPresenter(app.config["FIKEN_MANAGER"])
+    sales = history_presenter.get_sales_for_view()
+    purchases = history_presenter.get_purchases_for_view()
+    a = sales + purchases
+    b = sales
+
+    # If the method is get, we just retrieved the page with default value "all".
+    if request.method == 'GET':
+        return render_template('historikk.html', title="Historikk", entry_view=sales + purchases)
+    else:
+        data_type = request.form["type"]
+        if data_type == "all":
+            return redirect(url_for('historikk'))
+        elif data_type == "purchases":
+            return render_template('historikk.html', title="Historikk", entry_view=purchases, checked="purchases")
+        elif data_type == "sales":
+            return render_template('historikk.html', title="Historikk", entry_view=sales, checked="sales")
 
 
 @app.route('/profil', methods=['GET'])
@@ -93,6 +115,7 @@ def upload_file():
             return kjoop(image=filename)
     return "EMPTY PAGE"
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -103,10 +126,27 @@ def send_purchase_form():
     result = request.form
     return render_template("result.html", result = result)
 
+
 @app.route('/send_sale_form', methods=['POST'])
 def send_sale_form():
     result = request.form
     return render_template("result.html", result = result)
-    
+
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                 endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

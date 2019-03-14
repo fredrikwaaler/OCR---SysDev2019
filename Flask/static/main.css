@@ -130,7 +130,7 @@ input[type="checkbox"], input[type="radio"] {
 }*/
 
 /* just for checkboxes */
-input[type="checkbox"], input[type="radio"] {
+input[type="checkbox"] {
     position: relative;
     display: block;
     float: left;
@@ -138,8 +138,7 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 /* just for radio buttons */
-
-input[type="checkbox"], input[type="radio"] {
+input[type="radio"] {
     position: relative;
     display: block;
     float: left;

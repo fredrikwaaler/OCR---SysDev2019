@@ -30,10 +30,8 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Create a fiken manager. //TODO Should be created upon log-in.
-app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
-app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
-
-
+#app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
+#app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
 
 
 @app.route('/')
@@ -42,8 +40,8 @@ def kjoop(image='dummy.png', pop=False):
     form = KjoopForm()
     customer_modal_form = CustomerForm()
     if pop:
-        form.fakturadato.data =  stringToDatetime(pop['fakturadato'])
-        form.forfallsdato.data = stringToDatetime(pop['forfallsdato'])
+        form.fakturadato.data =  string_to_datetime(pop['fakturadato'])
+        form.forfallsdato.data = string_to_datetime(pop['forfallsdato'])
         form.fakturanummer.data = pop['fakturanummer']
         form.tekst.data = pop['tekst']
         form.bruttobelop.data = pop['bruttobelop']
@@ -103,9 +101,12 @@ def glemt_passord():
     form = ForgotForm()
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
 
+
 '''
 POST FUNCTIONS
 '''
+
+
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
@@ -166,34 +167,47 @@ def dated_url_for(endpoint, **values):
             values['q'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
 
+
 @app.route('/change_name', methods=['POST'])
 def change_name():
     return "NONFUNCTIONAL > Change Name"
+
 
 @app.route('/change_email', methods=['POST'])
 def change_email():
     return "NONFUNCTIONAL > Change Email"
 
+
 @app.route('/change_fiken', methods=['POST'])
 def change_fiken():
     return "NONFUNCTIONAL > Change Fiken"
+
 
 @app.route('/password', methods=['POST'])
 def change_password():
     return "NONFUNCTIONAL > Change Password"
 
+
 @app.route('/get_user_data', methods=['POST'])
 def get_user_data():
-    return "NONFUCNTIONAL > Get user data"
+    return "NONFUNCTIONAL > Get user data"
+
 
 @app.route('/delete_account', methods=['POST'])
 def delete_account():
-    return "NONFUCTIONAL > Delete Account"
+    return "NONFUNCTIONAL > Delete Account"
+
+
+@app.route('/create_contact', methods=['POST'])
+def create_contact():
+    return "NONFUNCTIONAL > Create Contact"
+
 
 # Functions that can be moved to different file later
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def send_to_fiken(data, type):
     if type == "Purchase":
@@ -206,7 +220,8 @@ def send_to_fiken(data, type):
             entry = {data}
             json.dump(data, outfile)
 
-def stringToDatetime(input_string):
+
+def string_to_datetime(input_string):
     """
     Changes datatype of string to a datetime object
     :param input_string Date in format YYYY-MM-DD

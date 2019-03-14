@@ -1,4 +1,5 @@
-.vscode/settings.json
+.vscode/*
+Flask/-vscode/*
 Flask/__pycache__/app.cpython-37.pyc
 Flask/__pycache__/main.cpython-37.pyc
 Flask/__pycache__/main.cpython-36.pyc

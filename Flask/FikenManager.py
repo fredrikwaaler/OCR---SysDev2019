@@ -1,6 +1,6 @@
 # Base URL - https://fiken.no/api/v1
 
-from requests import get
+from requests import get, post
 from DatabaseManager import DatabaseManager
 from datetime import datetime
 
@@ -93,26 +93,44 @@ class FikenManager:
         Legal values is: purchases, contacts, expense_accounts, payment_accounts, companies
         :param links: Whether or not the returned data should include links.
         :return: A list of dictionaries. Each dict describes an object of the set data-type.
+        If there are no data of the given type, return None.
         """
-        types = {"purchases": "purchases", "contacts": "contacts", "expense_accounts":
+        allowed_types = {"purchases": "purchases", "contacts": "contacts", "expense_accounts":
             "accounts/{}".format(datetime.now().year), "payment_accounts": "bank-accounts", "companies": "companies",
                  "products": "products", "sales": "sales"}
 
-        if data_type not in types.keys():  # Check if the provided data-type is valid.
-            raise ValueError("{} is not a valid data set. Please use one of the following key-words: {}".format(
-                data_type, list(types.keys())))
+        if data_type not in allowed_types.keys():  # Check if the provided data-type is valid.
+            raise ValueError("{} is not a valid data type. Please use one of the following key-words: {}".format(
+                data_type, list(allowed_types.keys())))
 
         else:  # If so, try to get the data
             self._check_slug()  # Check that the slug is set
-            response = self._make_fiken_get_request("https://fiken.no/api/v1/companies/{}/{}".format
-                                                    (self._company_slug, types[data_type]))
+            response = self.make_fiken_get_request("https://fiken.no/api/v1/companies/{}/{}".format(
+                self._company_slug, allowed_types[data_type]))
 
             # We are only interested in the embedded data. Always retrieved from the following link:
-            response = response["_embedded"]["https://fiken.no/api/v1/rel/{}".format(types[data_type].split("/")[0])]
-            return_list = []
-            for resp in response:
-                return_list.append(self._hal_to_dict(resp, links))
-            return return_list
+            try:
+                return_list = []
+                response = response["_embedded"]["https://fiken.no/api/v1/rel/{}".format(allowed_types[data_type].
+                                                                                         split("/")[0])]
+                for resp in response:
+                    return_list.append(self._hal_to_dict(resp, links))
+                return return_list
+            except KeyError:
+                # If a key error, the response does not contains embedded, and we consider the response empty.
+                return []
+
+    def post_data_to_fiken(self, data_type, data):
+        allowed_types = {"purchases": "purchases"}
+
+        if data_type not in allowed_types.keys():
+            raise ValueError("{} is not a valid data type. Please use one of the following key-words: {}".format(
+                data_type, list(allowed_types.keys())))
+
+        self._check_slug()  # Check that the slug is set
+
+        url = "https://fiken.no/api/v1/companies/{}/{}".format(self._company_slug, data_type)
+        return self.make_fiken_post_request(url, data)
 
     def get_company_info(self):
         """
@@ -152,13 +170,24 @@ class FikenManager:
         slugs = [entry[2] for entry in company_info]
         return slug in slugs
 
-    def _make_fiken_get_request(self, url):
+    def make_fiken_get_request(self, url):
         """
-        Performs a basic get request to the provided url. Returns the json object returned.
+        Performs a basic get request to the provided url. Returns the json object returned from fiken.
         :param url: The url to send a request to
         :return: Returns the json-object passed when performing a get-request to the url.
         """
-        return get(url=url, auth=(self._fiken_login, self._fiken_pass)).json()
+        response = get(url=url, auth=(self._fiken_login, self._fiken_pass))
+        return response.json()
+
+    def make_fiken_post_request(self, url, post_json):
+        """
+        Performs a HTTP(S) post request to the provided url with a json-object as data.
+        Returns the json-object returned from fiken.
+        :param url: The url to post to
+        :param post_json: The json-object to post
+        :return: The response returned from fiken upon post.
+        """
+        return post(url=url, auth=(self._fiken_login, self._fiken_pass), json=post_json)
 
     def _check_slug(self):
         if self._company_slug is None:
@@ -166,13 +195,4 @@ class FikenManager:
                              "Use 'set_company_slug'")
 
 
-'''
-a = FikenManager(email="fredrik.waaler@hotmail.no", host="localhost", password="Sebas10an99", database="Sukkertoppen",
-                 user="postgres")
-# a.set_company_slug(
-a.set_company_slug(a.get_company_info()[0][2])
-print(a.get_data_from_fiken(data_type="sales"))
-print(a.has_valid_login())
-
-'''
 

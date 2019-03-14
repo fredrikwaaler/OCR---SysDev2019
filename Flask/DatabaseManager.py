@@ -34,15 +34,16 @@ class DatabaseManager:
         # Then, store the record in the database
         with self._database as cursor:
             try:
-                cursor.execute('INSERT INTO UserInfo VALUES (%s, %s, %s, %s, %s, %s) HH',
-                                    (email, hashed_password, fiken_username, fiken_password, first_name, last_name))
+                cursor.execute('INSERT INTO UserInfo VALUES (%s, %s, %s, %s, %s, %s) ', (email, hashed_password,
+                                                                                         fiken_username, fiken_password,
+                                                                                         first_name, last_name))
             except ProgrammingError:
                 traceback.print_exc()
 
-    def edit_user_info(self, email, table, **kwargs):
+    def edit_user_info(self, email, **kwargs):
         """
         Used for editing a relation in the UserInfo table. Since email is pk, we filter by it.
-        Provide column_name and new value as kwargs. Ex: fiken_username="newFikenUsername".
+        Provide column_name and new value in kwargs. Ex: fiken_username="newFikenUsername".
         :param email: The email of the relation to edit.
         :param kwargs: The columns we want to edit, and the new values.
         """
@@ -52,7 +53,7 @@ class DatabaseManager:
                 set_str += "{} = '{}', ".format(arg, kwargs[arg])
             set_str = set_str[:len(set_str)-2]  # Remove trailing "," and " "
 
-            update_str = "UPDATE {} SET {} WHERE email = '{}'".format(table, set_str, email)
+            update_str = "UPDATE  'user_info' SET {} WHERE email = '{}'".format(set_str, email)
 
             try:
                 with self._database as cursor:
@@ -114,7 +115,7 @@ class DatabaseManager:
         return matching
 
 
-a = DatabaseManager(host="localhost", user="postgres", password="Sebas10an99", database="Sukkertoppen")
+# a = DatabaseManager(host="localhost", user="postgres", password="Sebas10an99", database="Sukkertoppen")
 
 
 

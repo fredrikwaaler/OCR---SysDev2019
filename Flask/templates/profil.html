@@ -5,22 +5,42 @@
 <!--Info about the users name and email that we have-->
 <!--Structure: "Name:"    <actual name>  <Change button> -->
 <div class="boxdisplay">
-    <h3>Navn</h3>
-    <p>navn navnesen</p>
-    <input type="submit" Value="Endre">
+    <form method="POST" action="{{ url_for('change_name') }}">
+        <h3>Navn</h3>
+        <p>{{ name }}</p>
+        {{ form.new_name }}
+        <input class="boxedButton" type="submit" Value="Endre">
+    </form>
 </div>
 
 <div class="boxdisplay">
-    <h3>Email</h3>
-    <p>navn@navnesen.com</p>
-    <input type="submit" Value="Endre">
+    <form method="POST" action="{{ url_for('change_email') }}">
+        <h3>Email</h3>
+        <p>{{ email }}</p>
+        {{ form.new_email }}
+        <input class="boxedButton" type="submit" Value="Endre">
+    </form>
 </div>
 
 <div class="boxdisplay">
     <h3>Fikenbruker</h3>
-    <input type="submit" Value="Endre">
+    <input class="modal_button" id="boxedButtonPointer" type="submit" Value="Endre">
 </div>
-
+<!-- Code for modal content for the change Fiken user functionality-->
+<div class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form method="POST" action="{{ url_for('change_fiken') }}">
+            <h2>Endre Fiken-bruker</h2>
+            <h3>Email</h3>
+            {{ fiken_modal_form.email }}
+            <h3>Passord</h3>
+            {{ fiken_modal_form.password }}
+            <input class="boxedButton" type="submit" Value="Endre">
+        </form>
+    </div>
+</div>
+<!--End of modal content-->
 
 <!--Just a line to make sure the user understands the semantic change-->
 <div class="newline"></div>
@@ -31,13 +51,25 @@
         {{ form.new_password }}
         <h3>Gjenta passord</h3>
         {{ form.repeat_password }}
-        <input type="submit" Value="Endre">
+        <input class="boxedButton" type="submit" Value="Endre">
     </form>
 </div>
 
 
 <div class="newline"></div>
 <!--Buttons to download userdata and deleting account-->
-<input type="submit" Value="Last ned brukerdata">
-<input type="submit" id="warning" Value="Slett konto">
+<form method="POST" action="{{ url_for('get_user_data') }}">
+    <input type="submit" Value="Last ned brukerdata" class="buttons">
+</form>
+    <input class ="modal_button" type="submit" id="warning" Value="Slett konto">
+<div class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form method="POST" action="{{ url_for('delete_account') }}">
+                <h2>Slett konto</h2>
+                <p>All brukerdata vil bli slettet</p>
+                <input class="boxedButton" id="warning" type="submit" Value="Slett konto">
+            </form>
+        </div>
+    </div>
 {% endblock container %}

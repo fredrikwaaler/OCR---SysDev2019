@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, BooleanField, DateField, RadioField
+from wtforms import StringField, PasswordField, SelectField, BooleanField, RadioField
+from wtforms.fields.html5 import DateField
 
 
 class LoginForm(FlaskForm):
@@ -29,20 +30,45 @@ class KjoopForm(FlaskForm):
 
 class SalgForm(FlaskForm):
     type_salg = SelectField('Type', choices=[])
-    kunde = SelectField('Kunde', choices=[])
-    dato = StringField('Dato')
-    kontakt = SelectField('kontakt', choices=[])
+    dato = DateField('Dato')
+    dager_til_forfall = StringField("Dager til forfalll")
     kommentar = StringField('Kommentar')
-    din_referanse = StringField('Din Referanse')
     kontonummer = StringField('Kontonummer')
+
+    kunde = SelectField('Kunde', choices=[])
+
+    kontakt = SelectField('Kontakt', choices=[("1", "Kontakt 1"), ("2", "Kontakt 2") ])
+    vaar_referanse = StringField('Din Referanse')
     deres_referanse = StringField('Deres Referanse')
 
     beskrivelse = StringField('Beskrivelse')
+    
+    produkt = SelectField('Produkt', choices=[("1", "KAKE")])
     pris = StringField('Pris')
     antall = StringField('Antall')
     rabatt = StringField('Rabatt')
     mva = StringField('Mva')
 
 class ProfilForm(FlaskForm):
+    new_name = StringField('Name')
+    new_email = StringField('Email')
     new_password = PasswordField('Nytt Passord')
     repeat_password = PasswordField('Gjenta Passord')
+
+class FikenModalForm(FlaskForm):
+    email = StringField('Email')
+    password = PasswordField('Passord')
+
+class CustomerForm(FlaskForm):
+    navn = StringField('Navn')
+    org_nr = StringField('Org.nr')
+    email = StringField('Epost')
+    telefonnummer = StringField('Telefonnummer')
+    kontonummer = StringField('Kontonummer')
+    #CHECKBOXES
+    medlemsnummer = StringField('Medlemsnummer') #Stepper?
+    land = StringField('Land')
+    adresse1 = StringField('Adresse 1')
+    adresse2 = StringField('Adresse 2')
+    postnummer = StringField('Postnummer')
+    poststed = StringField('Poststed')

@@ -121,6 +121,15 @@ class FikenManager:
                 return []
 
     def post_data_to_fiken(self, data_type, data):
+        """
+        Posts the specified data to fiken.
+        The data-type need to be specified to instruct the FikenManager what data it is sending.
+        I.e. purchases, data to create a invoice, customer-info etc...
+        If a data-type of no known type (for the FikenManager) is specified,
+        a ValueError will be thrown, displaying what types are valid.
+        :param data_type: What data is being sent to fiken.
+        :param data: The data that is sent
+        """
         allowed_types = {"purchases": "purchases"}
 
         if data_type not in allowed_types.keys():
@@ -190,6 +199,10 @@ class FikenManager:
         return post(url=url, auth=(self._fiken_login, self._fiken_pass), json=post_json)
 
     def _check_slug(self):
+        """
+        Asserts that the slug is set before interacting with the fiken-api.
+        :throws: Throws a ValueError if the slug is not set.
+        """
         if self._company_slug is None:
             raise ValueError("The slug must be set for the FikenManager before interacting with the api. "
                              "Use 'set_company_slug'")

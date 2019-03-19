@@ -166,34 +166,36 @@ def dated_url_for(endpoint, **values):
             values['q'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
 
+
 @app.route('/change_name', methods=['POST'])
 def change_name():
     return "NONFUNCTIONAL > Change Name"
+
 
 @app.route('/change_email', methods=['POST'])
 def change_email():
     return "NONFUNCTIONAL > Change Email"
 
+
 @app.route('/change_fiken', methods=['POST'])
 def change_fiken():
     return "NONFUNCTIONAL > Change Fiken"
+
 
 @app.route('/password', methods=['POST'])
 def change_password():
     return "NONFUNCTIONAL > Change Password"
 
+
 @app.route('/get_user_data', methods=['POST'])
 def get_user_data():
     return "NONFUCNTIONAL > Get user data"
+
 
 @app.route('/delete_account', methods=['POST'])
 def delete_account():
     return "NONFUCTIONAL > Delete Account"
 
-# Functions that can be moved to different file later
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def send_to_fiken(data, type):
     if type == "Purchase":
@@ -205,6 +207,7 @@ def send_to_fiken(data, type):
         with open('test_sale.json', 'w') as outfile:
             entry = {data}
             json.dump(data, outfile)
+
 
 def stringToDatetime(input_string):
     """

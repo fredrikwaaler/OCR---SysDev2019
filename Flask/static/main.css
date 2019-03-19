@@ -469,6 +469,7 @@ img {
         padding: 20px 10px;
         margin: 20px 40px;
         width: 85%;
+        max-width: 540px;
     }
 
     .left, .right {
@@ -527,19 +528,39 @@ img {
         .wrapper {
             min-height: 94%;
             margin: 0 auto;
-            padding: 20px 40px;
-            width: 80%;
+            padding: 20px 10px;
+            width: 85%;
             background: #ffffff;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
         .boxdisplay {
             width: 55%;
+            display: block;
+            float: left;
+            margin: 0 20px 40px 0;
         }
 
         .imagebox {
-            float: right;
             width: 100%;
+            margin: 0 2% 0 0;
+        }
+        
+        #img_id {
+            display: block;
+            float: right;
+            /* layout should when pic reached this size */
+            width: 570px;
+        }
+
+        input[type="button"] {
+            margin: 0; 
+            vertical-align: middle;
+        }
+
+        h4 {
+            display: block;
+            float: left;
         }
     }
 }

@@ -10,6 +10,8 @@ Flask/__pycache__/Database.cpython-36.pyc
 Flask/__pycache__/DatabaseManager.cpython-36.pyc
 Flask/__pycache__/FikenManager.cpython-36.pyc
 Flask/__pycache__/HistoryPresenter.cpython-36.pyc
+*.jpg
+*.jpeg
 
 Flask/test_purchase.json
 Flask/test_sale.json

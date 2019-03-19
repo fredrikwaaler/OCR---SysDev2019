@@ -1,5 +1,6 @@
+
 import os, datetime, json
-from flask import Flask, render_template, flash, request, redirect, url_for
+from flask import Flask, render_template, flash, request, redirect, url_for, session, g
 from flask_wtf import FlaskForm
 from forms import *
 from flask_nav import Nav
@@ -30,23 +31,24 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Create a fiken manager. //TODO Should be created upon log-in.
-#app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
-#app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
+# app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
+# app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
 
 
-@app.route('/')
 @app.route('/kjoop', methods=['GET'])
 def kjoop(image='dummy.png', pop=False):
-    form = KjoopForm()
-    customer_modal_form = CustomerForm()
-    if pop:
-        form.fakturadato.data =  string_to_datetime(pop['fakturadato'])
-        form.forfallsdato.data = string_to_datetime(pop['forfallsdato'])
-        form.fakturanummer.data = pop['fakturanummer']
-        form.tekst.data = pop['tekst']
-        form.bruttobelop.data = pop['bruttobelop']
-        form.nettobelop.data = pop['nettobelop']
-    return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image)
+    if g.user:
+        form = KjoopForm()
+        customer_modal_form = CustomerForm()
+        if pop:
+            form.fakturadato.data =  string_to_datetime(pop['fakturadato'])
+            form.forfallsdato.data = string_to_datetime(pop['forfallsdato'])
+            form.fakturanummer.data = pop['fakturanummer']
+            form.tekst.data = pop['tekst']
+            form.bruttobelop.data = pop['bruttobelop']
+            form.nettobelop.data = pop['nettobelop']
+        return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image)
+    return redirect(url_for('logg_inn'))
 
 
 @app.route('/salg', methods=['GET'])
@@ -80,18 +82,18 @@ def historikk():
 def profil():
     form = ProfilForm()
     fiken_modal_form = FikenModalForm()
-    #TODO - Get profile data from database
+    # TODO - Get profile data from database
     name = "Ola Normann"
     email = "ola@normann.no"
     return render_template('profil.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email)
 
 
+@app.route('/')
 @app.route('/logg_inn', methods=['GET', 'POST'])
 def logg_inn():
     form = LoginForm()
-
-    if form.validate_on_submit():
-        return "Login-form validated"
+    if request.method == 'POST':
+        return 'POST'
 
     return render_template('logg_inn.html', title="Logg inn", form=form)
 
@@ -100,6 +102,47 @@ def logg_inn():
 def glemt_passord():
     form = ForgotForm()
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
+
+
+'''
+SESSION FUNCTIONS
+'''
+
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'key' in session:
+        g.user = session['key']
+
+
+@app.route('/set_session_id')
+def set_session_id():
+    """
+    Sets a Test Session ID.
+    :return: 'Test Session ID set'
+    """
+    session['key'] = 'value'
+    return 'Test Session ID set'
+
+
+@app.route('/get_session_id')
+def get_session_id():
+    """
+    Checks if session id for Test Session ID is set
+    :return: 'value' if set, 'not set' if not set
+    """
+    return session.get('key', 'not set')
+
+
+@app.route('/drop_session')
+def drop_session():
+    """
+    Drops the Test Session
+    :return: 'Session dropped'
+    """
+    session.pop('key', None)
+    return 'Session dropped'
 
 
 '''
@@ -152,6 +195,7 @@ def send_sale_form():
     send_to_fiken(result, "Sale")
 
     return render_template("result.html", result = result)
+
 
 @app.context_processor
 def override_url_for():

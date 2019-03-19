@@ -41,7 +41,7 @@ def kjoop(image='dummy.png', pop=False):
         form = KjoopForm()
         customer_modal_form = CustomerForm()
         if pop:
-            form.fakturadato.data =  string_to_datetime(pop['fakturadato'])
+            form.fakturadato.data = string_to_datetime(pop['fakturadato'])
             form.forfallsdato.data = string_to_datetime(pop['forfallsdato'])
             form.fakturanummer.data = pop['fakturanummer']
             form.tekst.data = pop['tekst']
@@ -100,17 +100,26 @@ def logg_inn():
 
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
-    # TODO - Make restrictions for input (i.e. email must be an email)
     form = SignUpForm()
     if request.method == 'POST':
+        fault = False
         if not is_filled_out(form):
             flash("Alle felter må fylles ut")
+            fault = True
         if not is_valid_email(form.email.data):
             flash("E-post er ikke en gyldig addresse")
+            fault = True
         if not is_valid_password(form.password.data):
             flash("Passord er ugyldig (Minst 8 karakterer)")
-        if not form.password.data == form.repeat_password.data:
-            flash("Passord må være likt")
+            if not form.password.data == form.repeat_password.data:
+                flash("Passord må være likt")
+            fault = True
+
+        if not fault:
+            # TODO - Create new user in database
+            session['email'] = 'test_value'
+            return redirect(url_for('logg_inn'))
+
     return render_template('sign_up.html', title="Sign up", form=form)
 
 

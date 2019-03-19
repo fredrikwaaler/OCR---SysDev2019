@@ -310,39 +310,6 @@ img {
     width:100%;
     height:auto;
 }
-
-
-/* NEW!
-
-    IMPORTANT: All styling above, ie. does not in the @media queries
-    are intended for mobile view!
-
-    Responsive design for 3 different resolutions:
-    phone, non-widescreen and widescreen
-    phone: width < 480px
-    non-widescreen: 480px < width > 768px
-    widescreen: width > 768px */
-
-    /* Styling for non-widescren (not phones)
-    480px < width > 768px */
-@media screen and (min-width: 480px) {
-
-    /* temp color changes to make a clear
-        differences between devices */
-    body {
-        background-color:#6aa6cc;
-        color:blue; 
-        word-break: keep-all;
-    }
-    /*  ==================================================
-            Styling for login page with normal ipad
-        ==================================================
-    */
-    /* Centers the login form */
-    #logg_inn_form {
-        margin: 0 20% 0 20%;
-    }
-
 /* ------ HISTORY PAGE ----- */
 .filter_buttons {
     position: static;
@@ -446,106 +413,135 @@ img {
     box-sizing: border-box;
 }
 
-/* pushes logg inn button to the right center */
-#logg_inn {
-    margin: 5px 13% 0 0;
-}
+/* NEW!
+
+    IMPORTANT: All styling above, ie. does not in the @media queries
+    are intended for mobile view!
+
+    Responsive design for 3 different resolutions:
+    phone, non-widescreen and widescreen
+    phone: width < 480px
+    non-widescreen: 480px < width > 768px
+    widescreen: width > 768px */
+
+    /* Styling for non-widescren (not phones)
+    480px < width > 768px */
+@media screen and (min-width: 480px) {
+    /* temp color changes to make a clear
+        differences between devices */
+    body {
+        background-color:#6aa6cc;
+        color:blue; 
+        word-break: keep-all;
+    }
+/*  ==================================================
+            Styling for login page with normal ipad
+    ==================================================
+*/
+    /* Centers the login form */
+    #logg_inn_form {
+        margin: 0 20% 0 20%;
+    }
+
+    /* pushes logg inn button to the right center */
+    #logg_inn {
+        margin: 5px 13% 0 0;
+    }
 /*  =================================================
-        Styling for pages post login with normal ipad
+        Styling for pages post-login with normal ipad
     =================================================
 */
-nav ul {
-    width: 90%;
-}
-
-/* some h2 are elements are used as title for a
-    minor block/boxdisplay. */
-.title {
-    font-size: 2em;
-    color: yellowgreen;
-    display: block;
-    float: left;
-    margin: 10px 220px;
-}
-
-.boxdisplay {
-    padding: 20px 10px;
-    margin: 20px 40px;
-    width: 85%;
-}
-
-.left, .right {
-    float: none;
-}
-
-#tekstBlock, #kostnadskontoBlock, #bruttobeloopBlock, #mvaBlock, #nettobeloopBlock {
-    padding: 0;
-    margin: 0 20px 0 0;
-    width: 90%;
-    display: inline-block;
-    position: relative;
-}
-
-#kostnadskontoBlock, #mvaBlock {
-    margin-left: 15px;
-}
-
-.img_class {
-    margin: 0;
-}
-
-.imagebox {
-    margin: 0 10%
-}
-
-input[type="submit"].buttons {
-    display: inline-block;
-    margin: 0 8% 0 0;
-}
-
-#mvaBlock {
-    padding: 6px 0;
-    margin: 0 20px 0 0;
-}
-
-h2 {
-    width: 20%;
-}
-
-#kostnadskontoBlock {
-    margin: 0 20px 0 0;
-}
-
-/* Styling for widescreens, ie. width > 768px */
-@media screen and (min-width: 769px) {
-
-    body {
-        background-color:rgb(74, 167, 45);
-        color:red;
-    }
-
     nav ul {
-        width: 85%;
+        width: 90%;
     }
 
-    .wrapper {
-        min-height: 94%;
-        margin: 0 auto;
-        padding: 20px 40px;
-        width: 80%;
-        background: #ffffff;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    /* some h2 are elements are used as title for a
+        minor block/boxdisplay. */
+    .title {
+        font-size: 2em;
+        color: yellowgreen;
+        display: block;
+        float: left;
+        margin: 10px 220px;
     }
 
     .boxdisplay {
-        width: 55%;
+        padding: 20px 10px;
+        margin: 20px 40px;
+        width: 85%;
+    }
+
+    .left, .right {
+        float: none;
+    }
+
+    #tekstBlock, #kostnadskontoBlock, #bruttobeloopBlock, #mvaBlock, #nettobeloopBlock {
+        padding: 0;
+        margin: 0 20px 0 0;
+        width: 90%;
+        display: inline-block;
+        position: relative;
+    }
+
+    #kostnadskontoBlock, #mvaBlock {
+        margin-left: 15px;
+    }
+
+    .img_class {
+        margin: 0;
     }
 
     .imagebox {
-        float: right;
-        width: 100%;
+        margin: 0 10%
     }
-}
+
+    input[type="submit"].buttons {
+        display: inline-block;
+        margin: 0 8% 0 0;
+    }
+
+    #mvaBlock {
+        padding: 6px 0;
+        margin: 0 20px 0 0;
+    }
+
+    h2 {
+        width: 20%;
+    }
+
+    #kostnadskontoBlock {
+        margin: 0 20px 0 0;
+    }
+
+    /* Styling for widescreens, ie. width > 768px */
+    @media screen and (min-width: 769px) {
+        body {
+            background-color:rgb(74, 167, 45);
+            color:red;
+        }
+
+        nav ul {
+            width: 85%;
+        }
+
+        .wrapper {
+            min-height: 94%;
+            margin: 0 auto;
+            padding: 20px 40px;
+            width: 80%;
+            background: #ffffff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .boxdisplay {
+            width: 55%;
+        }
+
+        .imagebox {
+            float: right;
+            width: 100%;
+        }
+    }
 }
 /*
 #kostnadskontoBlock, #mvaBlock {

@@ -73,10 +73,17 @@ class TextProcessor:
         :param text_string: string of image processed data
         :return: invoice date
         """
-
-        match = re.search(r'\d{2}.\d{2}.\d{4}', self._text_string)
-        date = datetime.strptime(match.group(), '%d.%m.%Y').date()
-        return date
+        try:
+            match = re.search(r'\d{2}.\d{2}.\d{4}', self._text_string)
+            date = datetime.strptime(match.group(), '%d.%m.%Y').date()
+            return date
+        except ValueError:
+            try:
+                match = re.search(r'\d{2}/\d{2}/\d{4}', self._text_string)
+                date = datetime.strptime(match.group(), '%d/%m/%Y').date()
+                return date
+            except ValueError:
+                print("ValueError occured")
 
     def get_invoice_number(self):
         """
@@ -94,12 +101,11 @@ class TextProcessor:
         end = self._text_string.index("GODKJENT\n")
         match = self._text_string[start: end:1]
         return match
-        '''
-        match2 = text_string.Substring(start, input.IndexOf("GODKJENT") - start);
-        '''
+
+
 
 vision_manager = VisionManager("key.json")
-img_text = vision_manager.get_text_detection_from_img("kvit2.jpg")
+img_text = vision_manager.get_text_detection_from_img("kvit.jpg")
 text_processor = TextProcessor(img_text)
 print("Amount paid:")
 print(text_processor.get_total_amount_paid())

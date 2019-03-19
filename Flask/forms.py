@@ -49,15 +49,18 @@ class SalgForm(FlaskForm):
     rabatt = StringField('Rabatt')
     mva = StringField('Mva')
 
+
 class ProfilForm(FlaskForm):
     new_name = StringField('Name')
     new_email = StringField('Email')
     new_password = PasswordField('Nytt Passord')
     repeat_password = PasswordField('Gjenta Passord')
 
+
 class FikenModalForm(FlaskForm):
     email = StringField('Email')
     password = PasswordField('Passord')
+
 
 class CustomerForm(FlaskForm):
     navn = StringField('Navn')
@@ -72,3 +75,11 @@ class CustomerForm(FlaskForm):
     adresse2 = StringField('Adresse 2')
     postnummer = StringField('Postnummer')
     poststed = StringField('Poststed')
+
+
+class SignUpForm(FlaskForm):
+    first_name = StringField('First name')
+    last_name = StringField('Last name')
+    email = StringField('Email')
+    password = PasswordField('Password')
+    repeat_password = PasswordField('Password')

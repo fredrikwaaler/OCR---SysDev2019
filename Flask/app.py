@@ -1,5 +1,5 @@
 
-import os, datetime, json
+import os, datetime, json, re
 from flask import Flask, render_template, flash, request, redirect, url_for, session, g
 from flask_wtf import FlaskForm
 from forms import *
@@ -96,6 +96,59 @@ def logg_inn():
         return 'POST'
 
     return render_template('logg_inn.html', title="Logg inn", form=form)
+
+
+@app.route('/sign_up', methods=['GET', 'POST'])
+def sign_up():
+    # TODO - Make restrictions for input (i.e. email must be an email)
+    form = SignUpForm()
+    if request.method == 'POST':
+        if not is_filled_out(form):
+            flash("Alle felter må fylles ut")
+        if not is_valid_email(form.email.data):
+            flash("E-post er ikke en gyldig addresse")
+        if not is_valid_password(form.password.data):
+            flash("Passord er ugyldig (Minst 8 karakterer)")
+        if not form.password.data == form.repeat_password.data:
+            flash("Passord må være likt")
+    return render_template('sign_up.html', title="Sign up", form=form)
+
+
+def is_filled_out(form):
+    """
+    Checks if a form is completely filled out.
+    :param form: The form to be checked
+    :return: True if form is filled out, False if something is missing
+    """
+    for entry in form:
+        if entry.data == '':
+            if not entry.name == 'csrf_token':
+                return False
+    return True
+
+
+def is_valid_email(email):
+    """
+    Checks if an email string is a valid email.
+    :param email: The email to be checked
+    :return: True if email is valid, False if email is invalid.
+    """
+    if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
+        return True
+    else:
+        return False
+
+
+def is_valid_password(password):
+    """
+    Checks if password is a valid password
+    :param password: The password to be checked
+    :return: True if password is valid, False if password is invalid.
+    """
+    if re.match('[A-Za-z0-9@#$%^&+=]{8,}', password):
+        return True
+    else:
+        return False
 
 
 @app.route('/glemt_passord', methods=['GET', 'POST'])

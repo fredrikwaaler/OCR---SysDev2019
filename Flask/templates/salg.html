@@ -3,7 +3,7 @@
 <h2>Nytt Salg</h2>
 <form method="POST" action="{{ url_for('send_sale_form') }}">
 {{ form.csrf_token }}
-    <div class="boxdisplay">
+    <div class="boxdisplay" id="part1Sales">
         <h3>Type</h3>
         {{ form.type_salg }}
         <h3>Dato</h3>
@@ -16,7 +16,7 @@
         {{ form.kontonummer }}
     </div>
 
-    <div class="boxdisplay">
+    <div class="boxdisplay" id="part2Sales">
         <h3>Kontakt</h3>
         {{ form.kontakt }}
         <h3>Vår referanse</h3>
@@ -25,7 +25,7 @@
         {{ form.deres_referanse }}
     </div>
 
-    <div class="boxdisplay">
+    <div class="boxdisplay" id="part3Sales">
         <h3 class="title">Varelinjer</h3>
         <h3>Produkt</h3>
         {{ form.produkt }}
@@ -39,7 +39,7 @@
         {{ form.mva }}
     </div>
 
-    <input class="buttons" type="submit" Value="Opprett Faktura">
+    <input class="buttons" type="submit" Value="Opprett Faktura" id="sendInvoiceButton">
 
 </form>
 {% endblock container %}

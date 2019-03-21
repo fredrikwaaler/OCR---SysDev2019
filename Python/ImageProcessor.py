@@ -54,6 +54,8 @@ class VisionManager:
 
 
 
+
+
 class TextProcessor:
     __author__ = "Yrian Hovde Øksne"
 
@@ -70,7 +72,6 @@ class TextProcessor:
     def get_invoice_date(self):
         """
         gets invoice date from a text string made by the google vision api
-        :param text_string: string of image processed data
         :return: invoice date
         """
         try:
@@ -88,26 +89,79 @@ class TextProcessor:
     def get_invoice_number(self):
         """
         gets invoice number from a larger string
-        :param test_string: string that contains an invoice number
         :return: invoice number
         """
     def get_total_amount_paid(self):
         """
-        gets the total amount paid for within a string of a receipt processed by Google visions api
-        :param text_string: processed string from the google vision api
-        :return: total amount paid for in NOK
+        gets the total amount paid for within a string of a receipt processed by Googles vision api
+        :return: total amount paid for in NOK, returns None if the total amount is not found.
         """
-        start = self._text_string.index("NOK\n") +3;
-        end = self._text_string.index("GODKJENT\n")
-        match = self._text_string[start: end:1]
-        return match
+        try:
+            start = self._text_string.index("NOK\n") +3;
+            end = self._text_string.index("GODKJENT\n")
+            match = self._text_string[start: end:1]
+            return match
+        except ValueError:
+            print("ValueError occured")
 
+    def get_supplier(self):
+        """
+        gets a suggestion of the name of the supplier from a a text string of a receipt processed by Googles vision api
+        the text string needs to come from the VisionManager class to work properly
+        :return: the name of the supplier, returns None if the supplier is not found
+        """
+        supplier = self._text_string.partition(' ')[0]
+        if("AS" in supplier):
+            supplier = supplier.split("AS")[0] + "AS"
+        if("Salaskvitterins" or "Salgskvittering" in supplier):
+            new_supplier = supplier.replace('Salaskvitterins', '')
+            return new_supplier
+        else:
+            return supplier
+
+    def get_inidvidual_supplies(self):
+        """
+        gets a suggestion of the individual supplies that where listed on the given receipt.
+        :return: a dictionary of the individual supplies that where listed on the given receipt.
+        """
+
+
+    def get_individual_supplies_from_kiwi(self):
+        """
+        gets a suggestion of the individual supplies that were listed in the given receipt.
+        Note: This only works for receipts from the Kiwi company
+        :return: returns a list of the suggested individual supplies that were listen in the given receipt.
+        """
+        try:
+            start = self._text_string.index( "OperNr:") + 11
+            new_text_string = self._text_string[start: len(self._text_string)]
+            end = None
+            temp_supply_list = new_text_string.split("\n")
+            for string in temp_supply_list:
+                new_string = string.replace(",", ".")
+                try:
+                    if isinstance(float(new_string), float) and not (new_string == "15" or new_string == "25"):
+                        end = temp_supply_list.index(string)
+                        break
+                except ValueError:
+                    one = 1
+            supply_list = temp_supply_list[:end]
+            return supply_list
+        except ValueError:
+            print("ValueError occured")
+            print(ValueError.with_traceback())
 
 
 vision_manager = VisionManager("key.json")
 img_text = vision_manager.get_text_detection_from_img("kvit.jpg")
+print(img_text)
 text_processor = TextProcessor(img_text)
 print("Amount paid:")
 print(text_processor.get_total_amount_paid())
 print("Invoice date:")
 print(text_processor.get_invoice_date())
+print("Supplier:")
+print(text_processor.get_supplier())
+print("Individual supplies:")
+for string in text_processor.get_individual_supplies_from_kiwi():
+    print(string)

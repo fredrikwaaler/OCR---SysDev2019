@@ -1,6 +1,6 @@
-import os, datetime, json
-from flask import Flask, render_template, flash, request, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+import os, datetime, json, re
+from flask import Flask, render_template, flash, request, redirect, url_for, session, g
 from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
@@ -9,6 +9,7 @@ from FikenManager import FikenManager
 from HistoryPresenter import HistoryPresenter
 from user import User
 from PasswordHandler import PasswordHandler
+
 
 def create_login_manager():
     """
@@ -53,6 +54,9 @@ lm = create_login_manager()
 lm.init_app(app)
 lm.login_view = 'logg_inn'
 
+# Create a fiken manager. //TODO Should be created upon log-in.
+# app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
+
 
 @app.route('/kjoop', methods=['GET'])
 @login_required
@@ -71,6 +75,7 @@ def kjoop(image='dummy.png', pop=False):
 
 
 @app.route('/salg', methods=['GET'])
+@login_required
 def salg():
     form = SalgForm()
     # TODO - Use current_user instead of app
@@ -78,6 +83,7 @@ def salg():
 
 
 @app.route('/historikk', methods=['GET', 'POST'])
+@login_required
 def historikk():
     history_presenter = HistoryPresenter(app.config["FIKEN_MANAGER"])
     # TODO - Should use user-specific FM.
@@ -103,10 +109,11 @@ def historikk():
 
 
 @app.route('/profil', methods=['GET'])
+@login_required
 def profil():
     form = ProfilForm()
     fiken_modal_form = FikenModalForm()
-    #TODO - Get profile data from database
+    # TODO - Get profile data from database
     name = "Ola Normann"
     email = "ola@normann.no"
     # TODO - Should be retrieved from user-specific FM.
@@ -138,21 +145,86 @@ def logg_inn():
                 flash("Invalid credentials, try again.")
         else:
             flash("Invalid credentials, try again.")
-    return render_template("logg_inn.html", form=form)
+    return render_template('logg_inn.html', title="Logg inn", form=form)
+
+
+@app.route('/log_out')
+def log_out():
+    logout_user()
+    return redirect(url_for('logg_inn'))
+
+@app.route('/sign_up', methods=['GET', 'POST'])
+@login_required
+def sign_up():
+    form = SignUpForm()
+    if request.method == 'POST':
+        fault = False
+        if not is_filled_out(form):
+            flash("Alle felter må fylles ut")
+            fault = True
+        if not is_valid_email(form.email.data):
+            flash("E-post er ikke en gyldig addresse")
+            fault = True
+        if not is_valid_password(form.password.data):
+            flash("Passord er ugyldig (Minst 8 karakterer)")
+            if not form.password.data == form.repeat_password.data:
+                flash("Passord må være likt")
+            fault = True
+
+        if not fault:
+            # TODO - Create new user in database
+            session['email'] = 'test_value'
+            return redirect(url_for('logg_inn'))
+
+    return render_template('sign_up.html', title="Sign up", form=form)
+
+
+def is_filled_out(form):
+    """
+    Checks if a form is completely filled out.
+    :param form: The form to be checked
+    :return: True if form is filled out, False if something is missing
+    """
+    for entry in form:
+        if entry.data == '':
+            if not entry.name == 'csrf_token':
+                return False
+    return True
+
+
+def is_valid_email(email):
+    """
+    Checks if an email string is a valid email.
+    :param email: The email to be checked
+    :return: True if email is valid, False if email is invalid.
+    """
+    if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
+        return True
+    else:
+        return False
+
+
+def is_valid_password(password):
+    """
+    Checks if password is a valid password
+    :param password: The password to be checked
+    :return: True if password is valid, False if password is invalid.
+    """
+    if re.match('[A-Za-z0-9@#$%^&+=]{8,}', password):
+        return True
+    else:
+        return False
 
 
 @app.route('/glemt_passord', methods=['GET', 'POST'])
+@login_required
 def glemt_passord():
     form = ForgotForm()
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
 
 
-'''
-POST FUNCTIONS
-'''
-
-
 @app.route('/upload_file', methods=['POST'])
+@login_required
 def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
@@ -179,19 +251,21 @@ def upload_file():
 
 
 @app.route('/send_purchase_form', methods=['POST'])
+@login_required
 def send_purchase_form():
     result = request.form
     send_to_fiken(result, "Purchase")
-    
     return render_template("result.html", result = result)
 
 
 @app.route('/send_sale_form', methods=['POST'])
+@login_required
 def send_sale_form():
     result = request.form
     send_to_fiken(result, "Sale")
 
     return render_template("result.html", result = result)
+
 
 @app.context_processor
 def override_url_for():
@@ -209,26 +283,31 @@ def dated_url_for(endpoint, **values):
 
 
 @app.route('/change_name', methods=['POST'])
+@login_required
 def change_name():
     return "NONFUNCTIONAL > Change Name"
 
 
 @app.route('/change_email', methods=['POST'])
+@login_required
 def change_email():
     return "NONFUNCTIONAL > Change Email"
 
 
 @app.route('/change_fiken', methods=['POST'])
+@login_required
 def change_fiken():
     return "NONFUNCTIONAL > Change Fiken"
 
 
 @app.route('/password', methods=['POST'])
+@login_required
 def change_password():
     return "NONFUNCTIONAL > Change Password"
 
 
 @app.route('/set_active_company', methods=['POST'])
+@login_required
 def set_active_company():
     # Todo - must be changed to handle user-specific FM
     fm = app.config["FIKEN_MANAGER"]
@@ -239,17 +318,19 @@ def set_active_company():
 
 
 @app.route('/get_user_data', methods=['POST'])
+@login_required
 def get_user_data():
     return "NONFUNCTIONAL > Get user data"
 
 
-
 @app.route('/delete_account', methods=['POST'])
+@login_required
 def delete_account():
     return "NONFUNCTIONAL > Delete Account"
 
 
 @app.route('/create_contact', methods=['POST'])
+@login_required
 def create_contact():
     return "NONFUNCTIONAL > Create Contact"
 

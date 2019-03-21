@@ -81,3 +81,10 @@ class CustomerForm(FlaskForm):
     postnummer = StringField('Postnummer')
     poststed = StringField('Poststed')
 
+
+class SignUpForm(FlaskForm):
+    first_name = StringField('First name')
+    last_name = StringField('Last name')
+    email = StringField('Email')
+    password = PasswordField('Password')
+    repeat_password = PasswordField('Password')

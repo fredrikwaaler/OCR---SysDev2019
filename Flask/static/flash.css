@@ -1,0 +1,14 @@
+.flash {
+    padding: 0;
+    display: block;
+}
+.message {
+    margin: 5px auto;
+    display: block;
+    list-style: None;
+    padding: 5px 2px;
+    border: 1px red solid;
+    border-radius: 4px;
+    background-color: rgba(244, 119, 119, 0.5);
+    width: 95%;
+}

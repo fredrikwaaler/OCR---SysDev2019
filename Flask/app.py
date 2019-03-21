@@ -108,7 +108,7 @@ def logg_inn():
     return render_template('logg_inn.html', title="Logg inn", form=form)
 
 
-@app.route('/glemt_passord', methods=['GET', 'POST'])
+@app.route('/glemt_passord', methods=['GET mer', 'POST'])
 def glemt_passord():
     form = ForgotForm()
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)

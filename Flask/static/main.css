@@ -48,8 +48,8 @@ h3 {
     minor block/boxdisplay. */
 .title {
     font-size: 1.5em;
-    width: 40%;
     margin: 10px auto;
+    text-align: center;
 }
 
 /* h4 is used for side info */
@@ -97,7 +97,7 @@ input[type="submit"], input[type="button"] {
     padding: 6px 12px;
     display: block;
     float: right;
-    margin: 0 10px 0 0;
+    margin: 0 5% 0 0;
     font-size: 14px;
     text-align: center;
     white-space: nowrap;
@@ -425,7 +425,7 @@ img {
     widescreen: width > 768px */
 
     /* Styling for non-widescren (not phones)
-    480px < width > 768px */
+    480px < width > 1200px */
 @media screen and (min-width: 480px) {
     /* temp color changes to make a clear
         differences between devices */
@@ -469,7 +469,7 @@ img {
         padding: 20px 10px;
         margin: 20px 40px;
         width: 85%;
-        max-width: 540px;
+        max-width: 840px;
     }
 
     .left, .right {
@@ -510,12 +510,16 @@ img {
         width: 20%;
     }
 
+    #prePaid {
+        margin-right: 40%;
+    }
+
     #kostnadskontoBlock {
         margin: 0 20px 0 0;
     }
 
     /* Styling for widescreens, ie. width > 768px */
-    @media screen and (min-width: 769px) {
+    @media screen and (min-width: 1200px) {
         body {
             background-color:rgb(74, 167, 45);
             color:red;
@@ -529,7 +533,8 @@ img {
             min-height: 94%;
             margin: 0 auto;
             padding: 20px 10px;
-            width: 85%;
+            //width: 85%;
+            max-width: 85%;
             background: #ffffff;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
@@ -539,6 +544,8 @@ img {
             display: block;
             float: left;
             margin: 0 20px 40px 0;
+            width: 520px;
+            max-width: 560px;
         }
 
         .imagebox {
@@ -550,17 +557,52 @@ img {
             display: block;
             float: right;
             /* layout should when pic reached this size */
-            width: 570px;
-        }
-
-        input[type="button"] {
-            margin: 0; 
-            vertical-align: middle;
+            min-width: 540px;
+            max-width: 560px;
         }
 
         h4 {
             display: block;
             float: left;
+        }
+
+        #prePaid {
+            display: block;
+            float: left;
+            margin: 0 70% 0 0;
+        }
+
+        #sendFormButton {
+            display: block;
+            float: right;
+            margin: 0 10% 0 0;
+        }
+
+        #part1Sales {
+            display: block;
+            float: left;
+        }
+
+        #part2Sales {
+            display: block;
+            float: right;
+        }
+
+        #part3Sales {
+            display: inline;
+            width: 90%;
+            margin: 20px 30% 0 30%;
+        }
+
+        #sendInvoiceButton {
+            display: inline;
+            margin: 10px 25% 0 0;
+        }
+
+        #dlUserData {
+            display: block;
+            float: right;
+            margin: 0 5% 0 0;
         }
     }
 }

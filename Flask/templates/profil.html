@@ -24,7 +24,14 @@
 
 <div class="boxdisplay">
     <h3>Fikenbruker</h3>
-    <input class="modal_button" id="boxedButtonPointer" type="submit" Value="Endre">
+    <input class="stacked_button modal_button" id="boxedButtonPointer" type="submit" Value="Endre bruker">
+    <span class="active_info">{{ current_user.config["FIKEN_MANAGER"]._fiken_login }}</span>
+    <br>
+    {# TODO - Must not use current_user.config, but depend on actual current_user. app is now passed as current_user #}
+    <input class="stacked_button modal_button" type="submit" Value="Endre firma">
+    {%  if current_user.config["FIKEN_MANAGER"].get_active_company_name() %}
+    <span class="active_info">{{ current_user.config["FIKEN_MANAGER"].get_active_company_name() }}</span>
+    {% endif %}
 </div>
 <!-- Code for modal content for the change Fiken user functionality-->
 <div class="modal">
@@ -41,6 +48,35 @@
     </div>
 </div>
 <!--End of modal content-->
+
+<!-- Code for modal to change associated fiken company -->
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close">x</span>
+            <form action="{{ url_for('set_active_company') }}" method="post">
+                <h2> Endre firma </h2>
+                    <table class="company_table">
+                        {% for company, company_key in companies %}
+                            <tr>
+                                <td>
+                                <label>
+                                    {% if company[0] == current_user.config["FIKEN_MANAGER"].get_active_company_name() %}
+                                    <input type="radio" checked="checked" name="company_keys" value={{ company_key }}>
+                                    {%  else %}
+                                    <input type="radio" name="company_keys" value="{{ company_key }}">
+                                    {% endif %}
+                                </label>
+                                </td>
+                                <td>
+                                    {{ company[0] }} <span class="org_num">({{ company[1] }})</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                <input class="boxedButton" type="submit" Value="Velg">
+            </form>
+        </div>
+    </div>
 
 <!--Just a line to make sure the user understands the semantic change-->
 <div class="newline"></div>

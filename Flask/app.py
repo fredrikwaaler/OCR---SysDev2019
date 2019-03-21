@@ -1,15 +1,31 @@
 import os, datetime, json
 from flask import Flask, render_template, flash, request, redirect, url_for
-from flask_wtf import FlaskForm
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
 from FikenManager import FikenManager
 from HistoryPresenter import HistoryPresenter
+from user import User
+from PasswordHandler import PasswordHandler
+
+def create_login_manager():
+    """
+    Handles the creation of a LoginManager for the app
+    :return: A LoginManager for the app to use
+    """
+    lm = LoginManager()
+
+    @lm.user_loader
+    def load_user(email):
+        return User.get_user(email)
+
+    return lm
 
 
 app = Flask(__name__)
+
 #Navbar
 nav = Nav(app)
 app.config['SECRET_KEY'] = 'secretkey'
@@ -24,17 +40,22 @@ nav.register_element('nav', navbar)
 
 nav.init_app(app)
 
-#Uploading files to server
+# Uploading files to server
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Create a fiken manager. //TODO Should be created upon log-in.
-app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
+# TODO - FIX THIS SHIT
+app.config["FIKEN_MANAGER"] = FikenManager()
+
+# Associated the app with a login-manager
+lm = create_login_manager()
+lm.init_app(app)
+lm.login_view = 'logg_inn'
 
 
-@app.route('/')
 @app.route('/kjoop', methods=['GET'])
+@login_required
 def kjoop(image='dummy.png', pop=False):
     form = KjoopForm()
     customer_modal_form = CustomerForm()
@@ -98,14 +119,26 @@ def profil():
                            companies=companies, current_user=app)
 
 
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/logg_inn', methods=['GET', 'POST'])
 def logg_inn():
+    if current_user.is_authenticated:
+        return redirect(url_for('kjoop'))
     form = LoginForm()
-
     if form.validate_on_submit():
-        return "Login-form validated"
-
-    return render_template('logg_inn.html', title="Logg inn", form=form)
+        email = form.data["email"]
+        user = User.get_user(email)
+        if user:
+            password = form.data["password"]
+            if PasswordHandler.compare_hash_with_text(user.password, password):
+                login_user(user)
+                next_page = request.args.get("next", url_for('kjoop'))
+                return redirect(next_page)
+            else:
+                flash("Invalid credentials, try again.")
+        else:
+            flash("Invalid credentials, try again.")
+    return render_template("logg_inn.html", form=form)
 
 
 @app.route('/glemt_passord', methods=['GET', 'POST'])

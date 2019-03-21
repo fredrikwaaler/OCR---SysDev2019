@@ -6,51 +6,30 @@ from datetime import datetime
 
 
 class FikenManager:
-    def __init__(self, email, **kwargs):
+    def __init__(self):
         """
         The FikenManager class provides means to communicate with fiken via the fiken api.
-        The FikenManager needs fiken credentials, which it will get from the provided database connection (kwargs).
-        Note: class is used in conjecture with the sysdev app for Sukkertoppen. Specifically for the projects database.
+        The FikenManager needs fiken credentials to know on which users behalf it will act.
         To properly interact with fiken, the app needs to know on which business's behalf. A single user may be
-        associated with several businesses. Hence, the attribute "company_name" is initially None. However,
-        a setter is provided to properly set the associated company name,
-        and the "get_company_names" method returns the names of all businesses associated with the user.
-        :param email: The login email (to the sysdev app).
-        :param kwargs: database, host, user, password, port (external)
-        :param database: The name of the database to connect to
-        :param host: The host address
-        :param user: The user logging in to the dbsm
-        :param password: Users password for dbsm
-        :param port: Port for external host
+        associated with several businesses. Hence, the attribute "company_slug" is initially None. However,
+        a setter is provided to properly set the associated company slug.
+        The slug is a specific variant of the company name (i.e. glass-og-yoga-as for Glass og Yoga AS)
+        that is handled to the fiken-api to indicate what company is acted on behalf of.
+        Method "get_company_info" returns tuples with info of all associated companies, including the companies slug.
         """
-        self._database_manager = DatabaseManager(**kwargs)
-        self._fiken_login = self._get_fiken_login(email)
-        self._fiken_pass = self._get_fiken_pass(email)
+        self._fiken_login = None
+        self._fiken_pass = None
         self._company_slug = None
 
-    def _get_fiken_login(self, email):
+    def set_fiken_credentials(self, username, password):
         """
-        Returns the fiken login (if existing) of the person with the corresponding email for the sysdev app.
-        :param email: The email to get fiken login by.
-        :return: The fiken login of the person with corresponding email. If not exists, None.
+        Sets the fiken credentials for the FM to the provided params.
+        :param username: The new fiken-username.
+        :param password: The new fiken-password.
+        :return:
         """
-        query_result = self._database_manager.get_user_info_by_email(email)
-        if query_result is not None:
-            return query_result[2]
-        else:
-            return None
-
-    def _get_fiken_pass(self, email):
-        """
-        Returns the fiken password (if existing) of the person with the corresponding login email for the sysdev app.
-        :param email: Login email to sysdev app.
-        :return: The fiken password of the person with the corresponding email. If not exists, None.
-        """
-        query_result = self._database_manager.get_user_info_by_email(email)
-        if query_result is not None:
-            return query_result[3]
-        else:
-            return None
+        self._fiken_login = username
+        self._fiken_pass = password
 
     def has_valid_login(self):
         """

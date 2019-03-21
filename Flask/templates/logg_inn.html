@@ -1,7 +1,8 @@
 {% extends 'layout_pre.html' %}
 {% block container %}
 <h2>Logg inn</h2>
-<form method="POST" id="logg_inn_form" action="{{ url_for('logg_inn') }}">
+<form method="POST" id="logg_inn_form" action="">
+    {{ form.csrf_token }}
     <h3>Brukernavn</h3>
     {{ form.email }}
     <h3>Passord</h3>

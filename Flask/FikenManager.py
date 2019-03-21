@@ -179,6 +179,17 @@ class FikenManager:
         slugs = [entry[2] for entry in company_info]
         return slug in slugs
 
+    def get_active_company_name(self):
+        """
+        Returns the name of the company associated with the active slug
+        :return: The name of the company associated with the active slug.
+        If there is no active company, return None.
+        """
+        for company in self.get_company_info():
+            if company[2] == self._company_slug:
+                return company[0]
+        return None
+
     def make_fiken_get_request(self, url):
         """
         Performs a basic get request to the provided url. Returns the json object returned from fiken.

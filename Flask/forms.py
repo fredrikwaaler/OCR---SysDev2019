@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, BooleanField, RadioField
 from wtforms.fields.html5 import DateField
+from wtforms.validators import DataRequired
 
 
 class LoginForm(FlaskForm):
@@ -49,15 +50,22 @@ class SalgForm(FlaskForm):
     rabatt = StringField('Rabatt')
     mva = StringField('Mva')
 
+
 class ProfilForm(FlaskForm):
+    # For changing name
     new_name = StringField('Name')
+    # For changing email
     new_email = StringField('Email')
+    # For changing password
     new_password = PasswordField('Nytt Passord')
     repeat_password = PasswordField('Gjenta Passord')
 
+
 class FikenModalForm(FlaskForm):
+    # For changing fiken-user
     email = StringField('Email')
     password = PasswordField('Passord')
+
 
 class CustomerForm(FlaskForm):
     navn = StringField('Navn')
@@ -72,3 +80,4 @@ class CustomerForm(FlaskForm):
     adresse2 = StringField('Adresse 2')
     postnummer = StringField('Postnummer')
     poststed = StringField('Poststed')
+

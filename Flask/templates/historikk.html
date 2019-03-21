@@ -2,6 +2,7 @@
 {% block container %}
 <h2>Historikk</h2>
 <!--Salg, kjøp and Alle are check buttons-->
+{% if entry_view|length > 0 %}
 <form name="filter_ledger" class="filter_buttons" method="post" action="">
     {%  if not checked %}
     <input onclick="this.form.submit();" type="radio" name="type" value="all" checked="checked"> All
@@ -63,7 +64,9 @@
         </div>
     </div>
 {% endfor %}
-
+{% else %}
+    <p class="no_history">No history. Add sales and purchases first.</p>
+{%  endif %}
 <div class="marginbox"></div>
 
 

@@ -54,7 +54,7 @@ h3 {
 
 /* h4 is used for side info */
 h4 {
-    font-size: 0,9 em;
+    font-size: 0,9em;
     font-family: 'Overpass', sans-serif;
     font-weight: 400;
     margin: 5px auto;
@@ -86,7 +86,7 @@ select, input[type="text"], input[type="password"] {
 /* Styling for highlighted text field */
 select:focus, input[type="text"]:focus {
     border-color: #66afe9;
-    box-shadow: 2px #2d4e68;
+    box-shadow: 2px 1px #2d4e68;
 }
 
 /* Styling for general purpose buttons */
@@ -107,11 +107,39 @@ input[type="submit"], input[type="button"] {
     text-transform: none;
 }
 
-/* Buttons that are inside a boxdisplay */
-input[type="submit"].boxedButton, #boxedButtonPointer{
-    float: left;
-    margin: 5px 0 0 0;
+
+/* Buttons that should stack, floats are cleared. */
+.stacked_button {
+    float: none !important;
+    margin-top: 5px !important;
+    display: inline-block !important;
 }
+
+/* Info about active user and fiken user */
+.active_info {
+    font-style: italic;
+    font-size: 50%;
+    text-overflow: ellipsis;
+}
+
+/* Warning box for not having set FM properly */
+.fiken_warning {
+    background-color: lightcoral;
+    padding: 1%;
+    border-radius: 5px;
+    width: auto;
+    margin-bottom: 5%;
+}
+
+
+
+/* Buttons that are inside a boxdisplay */
+input[type="submit"].boxedButton {
+    margin: 5px 0 0 0;
+    float: left;
+}
+
+
 
 /* styling for active/highlighted buttons */
 input[type="submit"]:focus, input[type="button"]:focus {
@@ -144,6 +172,7 @@ input[type="file"] {
 }
 
 /* Email input fields have type = "text", but id = "email" */
+/*
 #email, #password {
     border-radius: 5px;
     margin: 0;
@@ -152,11 +181,13 @@ input[type="file"] {
     min-width: 200px;
     min-height: 33px;
     width: 90%;
-}
+}*/
 
 /* Highlighted email input field */
+/*
 #email:focus {
 }
+*/
 
 /* Styling for delete user data button */
 #warning {
@@ -308,6 +339,34 @@ img {
     height:auto;
 }
 
+/* Pop-up for å endre selskap i fiken */
+
+.company_table {
+    background-color: white;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2%;
+    border-collapse: collapse;
+    box-shadow: 1px 1px #b0b0b0;
+}
+
+.company_table td {
+    text-overflow: ellipsis;
+    border: 1px solid #ddd;
+    padding: 1%;
+    text-align: left;
+}
+
+.company_table td input[type="radio"] {
+    border: 1px solid #fff;
+    margin: 0;
+}
+
+.org_num {
+    text;
+}
+
+
 
 /* NEW!
 
@@ -441,6 +500,12 @@ img {
     float: left;
     padding-left: 10%;
     box-sizing: border-box;
+}
+
+.no_history {
+    font-size: 200%;
+    padding: 5%;
+    text-align: center;
 }
 
 /* pushes logg inn button to the right center */

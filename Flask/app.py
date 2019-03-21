@@ -31,9 +31,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Create a fiken manager. //TODO Should be created upon log-in.
 app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
-app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
-
-
 
 
 @app.route('/')
@@ -41,41 +38,47 @@ app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
 def kjoop(image='dummy.png', pop=False):
     form = KjoopForm()
     customer_modal_form = CustomerForm()
+    # TODO - Use current_user instead of app
     if pop:
-        form.fakturadato.data =  stringToDatetime(pop['fakturadato'])
-        form.forfallsdato.data = stringToDatetime(pop['forfallsdato'])
+        form.fakturadato.data =  string_to_datetime(pop['fakturadato'])
+        form.forfallsdato.data = string_to_datetime(pop['forfallsdato'])
         form.fakturanummer.data = pop['fakturanummer']
         form.tekst.data = pop['tekst']
         form.bruttobelop.data = pop['bruttobelop']
         form.nettobelop.data = pop['nettobelop']
-    return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image)
+    return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image, current_user=app)
 
 
 @app.route('/salg', methods=['GET'])
 def salg():
     form = SalgForm()
-    return render_template('salg.html', title="Salg", form=form)
+    # TODO - Use current_user instead of app
+    return render_template('salg.html', title="Salg", form=form, current_user=app)
 
 
 @app.route('/historikk', methods=['GET', 'POST'])
 def historikk():
     history_presenter = HistoryPresenter(app.config["FIKEN_MANAGER"])
-    sales = history_presenter.get_sales_for_view()
-    purchases = history_presenter.get_purchases_for_view()
-    a = sales + purchases
-    b = sales
+    # TODO - Should use user-specific FM.
+    try:
+        sales = history_presenter.get_sales_for_view()
+        purchases = history_presenter.get_purchases_for_view()
+    except ValueError:
+        sales = []
+        purchases = []
+    # TODO - Use current_user instead of app
 
     # If the method is get, we just retrieved the page with default value "all".
     if request.method == 'GET':
-        return render_template('historikk.html', title="Historikk", entry_view=sales + purchases)
+        return render_template('historikk.html', title="Historikk", entry_view=sales + purchases, current_user=app)
     else:
         data_type = request.form["type"]
         if data_type == "all":
             return redirect(url_for('historikk'))
         elif data_type == "purchases":
-            return render_template('historikk.html', title="Historikk", entry_view=purchases, checked="purchases")
+            return render_template('historikk.html', title="Historikk", entry_view=purchases, checked="purchases", current_user=app)
         elif data_type == "sales":
-            return render_template('historikk.html', title="Historikk", entry_view=sales, checked="sales")
+            return render_template('historikk.html', title="Historikk", entry_view=sales, checked="sales", current_user=app)
 
 
 @app.route('/profil', methods=['GET'])
@@ -85,7 +88,14 @@ def profil():
     #TODO - Get profile data from database
     name = "Ola Normann"
     email = "ola@normann.no"
-    return render_template('profil.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email)
+    # TODO - Should be retrieved from user-specific FM.
+    # TODO - current_user should be current_user, not app
+    cmps = app.config["FIKEN_MANAGER"].get_company_info()
+    companies = []
+    for i in range(len(cmps)):
+        companies.append((cmps[i], i))
+    return render_template('profil.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email,
+                           companies=companies, current_user=app)
 
 
 @app.route('/logg_inn', methods=['GET', 'POST'])
@@ -103,9 +113,12 @@ def glemt_passord():
     form = ForgotForm()
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
 
+
 '''
 POST FUNCTIONS
 '''
+
+
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
@@ -130,11 +143,6 @@ def upload_file():
                 parsed_data = json.load(f)
             return kjoop(image=filename, pop=parsed_data)
     return "EMPTY PAGE"
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/send_purchase_form', methods=['POST'])
@@ -187,14 +195,30 @@ def change_password():
     return "NONFUNCTIONAL > Change Password"
 
 
+@app.route('/set_active_company', methods=['POST'])
+def set_active_company():
+    # Todo - must be changed to handle user-specific FM
+    fm = app.config["FIKEN_MANAGER"]
+    new_active_index = int(request.form["company_keys"])
+    new_active = fm.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
+    fm.set_company_slug(new_active)
+    return redirect(url_for('profil'))
+
+
 @app.route('/get_user_data', methods=['POST'])
 def get_user_data():
-    return "NONFUCNTIONAL > Get user data"
+    return "NONFUNCTIONAL > Get user data"
+
 
 
 @app.route('/delete_account', methods=['POST'])
 def delete_account():
-    return "NONFUCTIONAL > Delete Account"
+    return "NONFUNCTIONAL > Delete Account"
+
+
+@app.route('/create_contact', methods=['POST'])
+def create_contact():
+    return "NONFUNCTIONAL > Create Contact"
 
 
 def send_to_fiken(data, type):
@@ -209,7 +233,7 @@ def send_to_fiken(data, type):
             json.dump(data, outfile)
 
 
-def stringToDatetime(input_string):
+def string_to_datetime(input_string):
     """
     Changes datatype of string to a datetime object
     :param input_string Date in format YYYY-MM-DD

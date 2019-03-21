@@ -1,5 +1,6 @@
-import os, datetime, json
-from flask import Flask, render_template, flash, request, redirect, url_for
+
+import os, datetime, json, re
+from flask import Flask, render_template, flash, request, redirect, url_for, session, g
 from flask_wtf import FlaskForm
 from forms import *
 from flask_nav import Nav
@@ -31,9 +32,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Create a fiken manager. //TODO Should be created upon log-in.
 app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
+# app.config["FIKEN_MANAGER"] = FikenManager('fredrik.waaler@hotmail.no', host="localhost", database="Sukkertoppen", user="postgres", password="Sebas10an99")
+# app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
 
 
-@app.route('/')
 @app.route('/kjoop', methods=['GET'])
 def kjoop(image='dummy.png', pop=False):
     form = KjoopForm()
@@ -48,7 +50,7 @@ def kjoop(image='dummy.png', pop=False):
         form.nettobelop.data = pop['nettobelop']
     return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image, current_user=app)
 
-
+git
 @app.route('/salg', methods=['GET'])
 def salg():
     form = SalgForm()
@@ -85,7 +87,7 @@ def historikk():
 def profil():
     form = ProfilForm()
     fiken_modal_form = FikenModalForm()
-    #TODO - Get profile data from database
+    # TODO - Get profile data from database
     name = "Ola Normann"
     email = "ola@normann.no"
     # TODO - Should be retrieved from user-specific FM.
@@ -98,20 +100,122 @@ def profil():
                            companies=companies, current_user=app)
 
 
+@app.route('/')
 @app.route('/logg_inn', methods=['GET', 'POST'])
 def logg_inn():
     form = LoginForm()
-
-    if form.validate_on_submit():
-        return "Login-form validated"
+    if request.method == 'POST':
+        return 'POST'
 
     return render_template('logg_inn.html', title="Logg inn", form=form)
 
+@app.route('/sign_up', methods=['GET', 'POST'])
+def sign_up():
+    form = SignUpForm()
+    if request.method == 'POST':
+        fault = False
+        if not is_filled_out(form):
+            flash("Alle felter må fylles ut")
+            fault = True
+        if not is_valid_email(form.email.data):
+            flash("E-post er ikke en gyldig addresse")
+            fault = True
+        if not is_valid_password(form.password.data):
+            flash("Passord er ugyldig (Minst 8 karakterer)")
+            if not form.password.data == form.repeat_password.data:
+                flash("Passord må være likt")
+            fault = True
 
-@app.route('/glemt_passord', methods=['GET mer', 'POST'])
+        if not fault:
+            # TODO - Create new user in database
+            session['email'] = 'test_value'
+            return redirect(url_for('logg_inn'))
+
+    return render_template('sign_up.html', title="Sign up", form=form)
+
+
+def is_filled_out(form):
+    """
+    Checks if a form is completely filled out.
+    :param form: The form to be checked
+    :return: True if form is filled out, False if something is missing
+    """
+    for entry in form:
+        if entry.data == '':
+            if not entry.name == 'csrf_token':
+                return False
+    return True
+
+
+def is_valid_email(email):
+    """
+    Checks if an email string is a valid email.
+    :param email: The email to be checked
+    :return: True if email is valid, False if email is invalid.
+    """
+    if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
+        return True
+    else:
+        return False
+
+
+def is_valid_password(password):
+    """
+    Checks if password is a valid password
+    :param password: The password to be checked
+    :return: True if password is valid, False if password is invalid.
+    """
+    if re.match('[A-Za-z0-9@#$%^&+=]{8,}', password):
+        return True
+    else:
+        return False
+
+
+@app.route('/glemt_passord', methods=['GET', 'POST'])
 def glemt_passord():
     form = ForgotForm()
     return render_template('glemt_passord.html', title="Glemt Passord", form=form)
+
+
+'''
+SESSION FUNCTIONS
+'''
+
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'key' in session:
+        g.user = session['key']
+
+
+@app.route('/set_session_id')
+def set_session_id():
+    """
+    Sets a Test Session ID.
+    :return: 'Test Session ID set'
+    """
+    session['key'] = 'value'
+    return 'Test Session ID set'
+
+
+@app.route('/get_session_id')
+def get_session_id():
+    """
+    Checks if session id for Test Session ID is set
+    :return: 'value' if set, 'not set' if not set
+    """
+    return session.get('key', 'not set')
+
+
+@app.route('/drop_session')
+def drop_session():
+    """
+    Drops the Test Session
+    :return: 'Session dropped'
+    """
+    session.pop('key', None)
+    return 'Session dropped'
 
 
 '''
@@ -159,6 +263,7 @@ def send_sale_form():
     send_to_fiken(result, "Sale")
 
     return render_template("result.html", result = result)
+
 
 @app.context_processor
 def override_url_for():

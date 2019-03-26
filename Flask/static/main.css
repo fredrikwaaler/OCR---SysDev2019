@@ -8,6 +8,7 @@ html {
 body {
     font-family: 'Overpass', sans-serif;
     height: 100%;
+    overflow-x: hidden;
 }
 
 /* This continer currently holds all content,

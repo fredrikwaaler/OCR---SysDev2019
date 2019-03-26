@@ -204,7 +204,7 @@ def is_valid_password(password):
     :param password: The password to be checked
     :return: True if password is valid, False if password is invalid.
     """
-    if re.match('[A-Za-z0-9@#$%^&+=]{8,}', password):
+    if re.match('^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$', password):
         return True
     else:
         return False

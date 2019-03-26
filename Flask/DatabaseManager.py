@@ -1,7 +1,6 @@
 from Database import CursorFromConnectionPool
-from psycopg2 import ProgrammingError, Binary
+from psycopg2 import ProgrammingError
 import traceback
-from PasswordHandler import PasswordHandler
 
 
 class DatabaseManager:
@@ -17,26 +16,23 @@ class DatabaseManager:
 
     def store_user_info(self, email, password, name=None, fiken_manager=None):
         """
-        Creates a record in the database, storing the specified email and a hashed version of the supplied password.
+        Creates a record in the database.
         :param email: The email used to login the user
         :param password: The password to hash and store
         :param name: The users name
         :param fiken_manager: The fiken manager. Should be stored as a pickled byte object.
         """
-        # First, hash the password before storing
-        hashed_password = PasswordHandler.generate_hashed_password(password)
 
         '''
         if fiken_manager:
             if type(fiken_manager) is not bytes:
                 raise ValueError("The FikenManager must be a pickled byte object.")
         '''
-        print(fiken_manager)
 
         # Then, store the record in the database
         with self._database as cursor:
             try:
-                cursor.execute('INSERT INTO UserInfo VALUES (%s, %s, %s, %s) ', (email, hashed_password, name,
+                cursor.execute('INSERT INTO UserInfo VALUES (%s, %s, %s, %s) ', (email, password, name,
                                                                                      fiken_manager))
             except ProgrammingError:
                 traceback.print_exc()
@@ -81,7 +77,7 @@ class DatabaseManager:
 
 
         else:
-            raise ValueError("{} not belonging to any user. Cannot update values.".format(email))
+            raise ValueError("{} not belonging to any user. Cannot update values.".format(pk_email))
 
     def delete_user_by_email(self, email):
         """

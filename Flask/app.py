@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 from HistoryPresenter import HistoryPresenter
 from user import User
 from PasswordHandler import PasswordHandler
+from FormValidator import validate_new_name
 
 
 def create_login_manager():
@@ -282,8 +283,15 @@ def dated_url_for(endpoint, **values):
 @app.route('/change_name', methods=['POST'])
 @login_required
 def change_name():
-    current_user.name = request.form["new_name"]
-    current_user.store_user()
+    new_name = request.form["new_name"]
+    validated, errors = validate_new_name(new_name)
+    if validated:
+        current_user.name = new_name
+        current_user.store_user()
+    else:
+        # TODO - Display flash in html
+        for error in errors:
+            flash(error)
     return redirect(url_for('profil'))
 
 
@@ -313,6 +321,7 @@ def set_active_company():
         new_active_index = int(request.form["company_keys"])
         new_active = current_user.fiken_manager.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
         current_user.fiken_manager.set_company_slug(new_active)
+        current_user.store_user()
     return redirect(url_for('profil'))
 
 

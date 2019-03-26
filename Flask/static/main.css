@@ -107,11 +107,10 @@ input[type="submit"], input[type="button"] {
     text-transform: none;
 }
 
-
 /* Buttons that should stack, floats are cleared. */
 .stacked_button {
     float: none !important;
-    margin-top: 5px !important;
+    margin: 5px 0 0 0 !important;
     display: inline-block !important;
 }
 
@@ -130,8 +129,6 @@ input[type="submit"], input[type="button"] {
     width: auto;
     margin-bottom: 5%;
 }
-
-
 
 /* Buttons that are inside a boxdisplay */
 input[type="submit"].boxedButton {

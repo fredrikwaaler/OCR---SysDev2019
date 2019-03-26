@@ -7,4 +7,5 @@ Flask/__pycache__/*
 Flask/test_purchase.json
 Flask/test_sale.json
 
-OCR/.idea/*
+.idea/*
+Flask/.idea/*

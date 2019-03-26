@@ -442,8 +442,6 @@ Fiken user css
     /* temp color changes to make a clear
         differences between devices */
     body {
-        background-color:#6aa6cc;
-        color:blue;
         word-break: keep-all;
     }
 /*  ==================================================
@@ -471,7 +469,7 @@ Fiken user css
         minor block/boxdisplay. */
     .title {
         font-size: 2em;
-        color: yellowgreen;
+        //color: yellowgreen;
         display: block;
         float: left;
         margin: 10px 220px;
@@ -532,22 +530,12 @@ Fiken user css
 
     /* Styling for widescreens, ie. width > 768px */
     @media screen and (min-width: 1200px) {
-        body {
-            background-color:rgb(74, 167, 45);
-            color:red;
-        }
-
         nav ul {
             width: 85%;
         }
 
         .wrapper {
-            min-height: 94%;
-            margin: 0 auto;
-            padding: 20px 10px;
             max-width: 85%;
-            background: #ffffff;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
         .box-display {
@@ -599,6 +587,7 @@ Fiken user css
             float: right;
         }
 
+        /* TODO: IMPROVE THIS */
         #part3Sales {
             display: inline;
             width: 90%;

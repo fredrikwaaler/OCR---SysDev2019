@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 from DatabaseManager import DatabaseManager
 from FikenManager import FikenManager
+from PasswordHandler import PasswordHandler
 import pickle
 
 
@@ -12,7 +13,7 @@ class User(UserMixin):
     # The database shared by all users for storing/retrieving users
     Dm = DatabaseManager(host="localhost", user="postgres", password="Sebas10an99", database="Sukkertoppen")
 
-    def __init__(self, email, password, name):
+    def __init__(self, email, password, name, new=False):
         """
         A user has an email, a password and a name.
         A user also has a associated FikenManager.
@@ -20,9 +21,13 @@ class User(UserMixin):
         :param email: The users email
         :param password: The users password (not hashed - hashed automatically upon storing)
         :param name: The users name (first and last).
+        :param new: Specifies whether or not the user is new. Action is taken accordingly.
         """
         self.email = email
-        self.password = password
+        if new:
+            self.password = PasswordHandler.generate_hashed_password(password)
+        else:
+            self.password = password
         self.name = name
         self.active = True
         self.fiken_manager = self._get_fiken_manager()
@@ -41,6 +46,22 @@ class User(UserMixin):
         :return: True if the user is active, else false.
         """
         return self.active
+
+    def change_password(self, new_pass):
+        """
+        Changes the password of the user. Hashes upon setting.
+        :param new_pass: The new password.
+        """
+        self.password = PasswordHandler.generate_hashed_password(new_pass)
+
+    def change_email(self, new_email):
+        """
+        Changes the mail of the current user. Will, naturally, only change the password if the user is stored.
+        :param new_email: The new email
+        """
+        if self.Dm.get_user_info_by_email(self.email):
+            self.Dm.edit_user_info(self.email, email=new_email)
+            self.email = new_email
 
     def store_user(self):
         """
@@ -80,7 +101,6 @@ class User(UserMixin):
             return User(user_data[0], user_data[1], user_data[2])
         else:
             return None
-
 
 
 

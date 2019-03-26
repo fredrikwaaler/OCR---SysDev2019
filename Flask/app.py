@@ -1,4 +1,4 @@
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_fresh
 import os, datetime, json, re
 from flask import Flask, render_template, flash, request, redirect, url_for, session, g
 from forms import *
@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from HistoryPresenter import HistoryPresenter
 from user import User
 from PasswordHandler import PasswordHandler
-from FormValidator import validate_new_name
+from FormValidator import validate_new_name, validate_new_email, validate_new_password
 
 
 def create_login_manager():
@@ -109,12 +109,15 @@ def profile():
     name = current_user.name
     email = current_user.email
 
-    # Give all companies with each their int-key to the template.
-    # Used for deciding which company is set active in the form.
-    cmps = current_user.fiken_manager.get_company_info()
-    companies = []
-    for i in range(len(cmps)):
-        companies.append((cmps[i], i))
+    if current_user.fiken_manager.has_valid_login():
+        # Give all companies with each their int-key to the template.
+        # Used for deciding which company is set active in the form.
+        cmps = current_user.fiken_manager.get_company_info()
+        companies = []
+        for i in range(len(cmps)):
+            companies.append((cmps[i], i))
+    else:
+        companies = []
     return render_template('profile.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email,
                            companies=companies, current_user=current_user)
 
@@ -132,6 +135,7 @@ def log_in():
             password = form.data["password"]
             if PasswordHandler.compare_hash_with_text(user.password, password):
                 login_user(user)
+                current_user.store_user()
                 next_page = request.args.get("next", url_for('purchase'))
                 return redirect(next_page)
             else:
@@ -204,7 +208,7 @@ def is_valid_password(password):
     :param password: The password to be checked
     :return: True if password is valid, False if password is invalid.
     """
-    if re.match('[A-Za-z0-9@#$%^&+=]{8,}', password):
+    if re.match('^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$', password):
         return True
     else:
         return False
@@ -283,7 +287,7 @@ def dated_url_for(endpoint, **values):
 @app.route('/change_name', methods=['POST'])
 @login_required
 def change_name():
-    new_name = request.form["new_name"]
+    new_name = request.form["new_name"].strip()
     validated, errors = validate_new_name(new_name)
     if validated:
         current_user.name = new_name
@@ -292,13 +296,23 @@ def change_name():
         # TODO - Display flash in html
         for error in errors:
             flash(error)
-    return redirect(url_for('profil'))
+    return redirect(url_for('profile'))
 
 
 @app.route('/change_email', methods=['POST'])
 @login_required
 def change_email():
-    return "NONFUNCTIONAL > Change Email"
+    new_email = request.form["new_email"].strip()
+    validated, errors = validate_new_email(new_email)
+    if validated:
+        current_user.change_email(new_email)
+        login_user(current_user)
+    else:
+        # TODO - Display flash in html
+        for error in errors:
+            flash(error)
+    return redirect(url_for('profile'))
+
 
 
 @app.route('/change_fiken', methods=['POST'])
@@ -310,7 +324,17 @@ def change_fiken():
 @app.route('/password', methods=['POST'])
 @login_required
 def change_password():
-    return "NONFUNCTIONAL > Change Password"
+    new_pass = request.form["new_password"]
+    repeat_pass = request.form["repeat_password"]
+    validated, errors = validate_new_password(new_pass, repeat_pass)
+    if validated:
+        current_user.change_password(new_pass)
+        login_user(current_user)
+    else:
+        # TODO - Display flash in html
+        for error in errors:
+            flash(error)
+    return redirect(url_for('profile'))
 
 
 @app.route('/set_active_company', methods=['POST'])
@@ -322,7 +346,7 @@ def set_active_company():
         new_active = current_user.fiken_manager.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
         current_user.fiken_manager.set_company_slug(new_active)
         current_user.store_user()
-    return redirect(url_for('profil'))
+    return redirect(url_for('profile'))
 
 
 @app.route('/get_user_data', methods=['POST'])

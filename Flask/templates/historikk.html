@@ -22,12 +22,6 @@
 
 </form>
 
-{# for entry, supplier in entry_view
-    -- Display image
-    -- Display entry info
-    -- <a href="{{ url_for('supplier', supplier) }}">Supplier: {{ supplier["name"] }}</a>
-    #}
-
 {% for entry, external in entry_view %}
     <button class="collapsible">
         <span class="collapsible_text">{{ entry["description"] }}</span>

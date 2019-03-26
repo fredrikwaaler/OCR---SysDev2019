@@ -1,5 +1,5 @@
 from Database import CursorFromConnectionPool
-from psycopg2 import ProgrammingError
+from psycopg2 import ProgrammingError, Binary
 import traceback
 from PasswordHandler import PasswordHandler
 
@@ -31,6 +31,7 @@ class DatabaseManager:
             if type(fiken_manager) is not bytes:
                 raise ValueError("The FikenManager must be a pickled byte object.")
         '''
+        print(fiken_manager)
 
         # Then, store the record in the database
         with self._database as cursor:
@@ -49,29 +50,35 @@ class DatabaseManager:
         If not, None is returned.
         """
         with self._database as cursor:
-            cursor.execute("SELECT * FROM UserInfo WHERE email LIKE '{}'".format(email))
+            cursor.execute("SELECT * FROM userinfo WHERE email LIKE '{}'".format(email))
             return cursor.fetchone()
 
-    def edit_user_info(self, email, **kwargs):
+    def edit_user_info(self, pk_email, **kwargs):
         """
         Used for editing a relation in the UserInfo table. Since email is pk, we filter by it.
         Provide column_name and new value in kwargs. Ex: fiken_manager=FikenManager().
-        :param email: The email of the relation to edit.
+        :param pk_email: The email of the relation to edit.
         :param kwargs: The columns we want to edit, and the new values.
         """
-        if self.get_user_info_by_email(email) is not None:
-            set_str = ""
-            for arg in kwargs:
-                set_str += "{} = '{}', ".format(arg, kwargs[arg])
-            set_str = set_str[:len(set_str)-2]  # Remove trailing "," and " "
+        if self.get_user_info_by_email(pk_email) is not None:
+            update_str = ""  # The string that will specify what to update
+            values = []  # The values for the query
+            for arg in kwargs:  # For each of the values we want to update, add to upd_str and add value to values
+                update_str += "{} = %s, ".format(arg)
+                values.append(kwargs[arg])
+            update_str = update_str[:len(update_str)-2]  # Remove trailing " " and ,
+            values.append(pk_email)  # Add email to values to specify what relation is being updated
+            values = tuple(values)  # Create a tuple of the values
 
-            update_str = "UPDATE  'user_info' SET {} WHERE email = '{}'".format(set_str, email)
+            update_str = "UPDATE userinfo SET {} WHERE email = %s".format(update_str)
 
             try:
                 with self._database as cursor:
-                    cursor.execute(update_str, (set_str, email))
+                    cursor.execute(update_str, values)
             except ProgrammingError:
                 traceback.print_exc()
+
+
 
         else:
             raise ValueError("{} not belonging to any user. Cannot update values.".format(email))
@@ -82,7 +89,7 @@ class DatabaseManager:
         :param email: The email of the relation to delete.
         """
         with self._database as cursor:
-            cursor.execute("DELETE FROM UserInfo WHERE email = {}".format(email))
+            cursor.execute("DELETE FROM userinfo WHERE email = {}".format(email))
 
 
 

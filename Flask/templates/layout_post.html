@@ -20,11 +20,11 @@
 
         {{ nav.nav.render() }}
 
+        {# TODO - Move logout button #}
         <a href="{{ url_for('log_out') }}">Logg ut</a>
         <div class = wrapper>
-        {# TODO - Must be changed to actual current user, now uses app.config in reality #}
         {# TODO - Similar warning-box if not fiken-logged in at all.  #}
-        {% if not current_user.config["FIKEN_MANAGER"]._company_slug %}
+        {% if not current_user.fiken_manager.get_company_slug() %}
         <div class="fiken_warning">
             <p>
                 Oops: You must set an active company for the fiken-user before you can register sales, purchases and view history.

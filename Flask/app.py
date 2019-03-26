@@ -5,7 +5,6 @@ from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
-from FikenManager import FikenManager
 from HistoryPresenter import HistoryPresenter
 from user import User
 from PasswordHandler import PasswordHandler
@@ -46,16 +45,10 @@ UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# TODO - FIX THIS SHIT
-app.config["FIKEN_MANAGER"] = FikenManager()
-
 # Associated the app with a login-manager
 lm = create_login_manager()
 lm.init_app(app)
 lm.login_view = 'logg_inn'
-
-# Create a fiken manager. //TODO Should be created upon log-in.
-# app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
 
 
 @app.route('/kjoop', methods=['GET'])
@@ -63,49 +56,46 @@ lm.login_view = 'logg_inn'
 def kjoop(image='dummy.png', pop=False):
     form = KjoopForm()
     customer_modal_form = CustomerForm()
-    # TODO - Use current_user instead of app
     if pop:
-        form.fakturadato.data =  string_to_datetime(pop['fakturadato'])
+        form.fakturadato.data = string_to_datetime(pop['fakturadato'])
         form.forfallsdato.data = string_to_datetime(pop['forfallsdato'])
         form.fakturanummer.data = pop['fakturanummer']
         form.tekst.data = pop['tekst']
         form.bruttobelop.data = pop['bruttobelop']
         form.nettobelop.data = pop['nettobelop']
-    return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image, current_user=app)
+    return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image,
+                           current_user=current_user)
 
 
 @app.route('/salg', methods=['GET'])
 @login_required
 def salg():
     form = SalgForm()
-    # TODO - Use current_user instead of app
-    return render_template('salg.html', title="Salg", form=form, current_user=app)
+    return render_template('salg.html', title="Salg", form=form, current_user=current_user)
 
 
 @app.route('/historikk', methods=['GET', 'POST'])
 @login_required
 def historikk():
-    history_presenter = HistoryPresenter(app.config["FIKEN_MANAGER"])
-    # TODO - Should use user-specific FM.
+    history_presenter = HistoryPresenter(current_user.fiken_manager)
     try:
         sales = history_presenter.get_sales_for_view()
         purchases = history_presenter.get_purchases_for_view()
-    except ValueError:
+    except ValueError:  # If the fm is not properly set for interaction.
         sales = []
         purchases = []
-    # TODO - Use current_user instead of app
 
     # If the method is get, we just retrieved the page with default value "all".
     if request.method == 'GET':
-        return render_template('historikk.html', title="Historikk", entry_view=sales + purchases, current_user=app)
+        return render_template('historikk.html', title="Historikk", entry_view=sales + purchases, current_user=current_user)
     else:
         data_type = request.form["type"]
         if data_type == "all":
             return redirect(url_for('historikk'))
         elif data_type == "purchases":
-            return render_template('historikk.html', title="Historikk", entry_view=purchases, checked="purchases", current_user=app)
+            return render_template('historikk.html', title="Historikk", entry_view=purchases, checked="purchases", current_user=current_user)
         elif data_type == "sales":
-            return render_template('historikk.html', title="Historikk", entry_view=sales, checked="sales", current_user=app)
+            return render_template('historikk.html', title="Historikk", entry_view=sales, checked="sales", current_user=current_user)
 
 
 @app.route('/profil', methods=['GET'])
@@ -113,17 +103,20 @@ def historikk():
 def profil():
     form = ProfilForm()
     fiken_modal_form = FikenModalForm()
-    # TODO - Get profile data from database
-    name = "Ola Normann"
-    email = "ola@normann.no"
-    # TODO - Should be retrieved from user-specific FM.
-    # TODO - current_user should be current_user, not app
-    cmps = app.config["FIKEN_MANAGER"].get_company_info()
+
+    # Retrieve user-specific data
+    name = current_user.name
+    email = current_user.email
+
+    # Give all companies with each their int-key to the template.
+    # Used for deciding which company is set active in the form.
+    cmps = current_user.fiken_manager.get_company_info()
     companies = []
     for i in range(len(cmps)):
         companies.append((cmps[i], i))
+
     return render_template('profil.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email,
-                           companies=companies, current_user=app)
+                           companies=companies, current_user=current_user)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -285,7 +278,9 @@ def dated_url_for(endpoint, **values):
 @app.route('/change_name', methods=['POST'])
 @login_required
 def change_name():
-    return "NONFUNCTIONAL > Change Name"
+    current_user.name = request.form["new_name"]
+    current_user.store_user()
+    return redirect(url_for('profil'))
 
 
 @app.route('/change_email', methods=['POST'])
@@ -309,11 +304,11 @@ def change_password():
 @app.route('/set_active_company', methods=['POST'])
 @login_required
 def set_active_company():
-    # Todo - must be changed to handle user-specific FM
-    fm = app.config["FIKEN_MANAGER"]
-    new_active_index = int(request.form["company_keys"])
-    new_active = fm.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
-    fm.set_company_slug(new_active)
+    # In case no button was checked
+    if "company_keys" in request.form.keys():
+        new_active_index = int(request.form["company_keys"])
+        new_active = current_user.fiken_manager.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
+        current_user.fiken_manager.set_company_slug(new_active)
     return redirect(url_for('profil'))
 
 

@@ -13,45 +13,43 @@ class ForgotForm(FlaskForm):
     email = StringField('Email')
 
 
-class KjoopForm(FlaskForm):
-    type_kjoop = RadioField('Label', choices=[('1','Kjøp fra leverandør'),('2','Kontantkjøp')])
-    leverandor = SelectField('Leverandør', choices=[('1', 'Meny'), ('2', 'Kiwi')])
-    fakturadato = DateField('Faktura')
-    forfallsdato = DateField('Forfall')
-    fakturanummer = StringField('Fakturanummer')
+class PurchaseForm(FlaskForm):
+    purchase_type = RadioField('Label', choices=[('1','Kjøp fra leverandør'),('2','Kontantkjøp')])
+    supplier = SelectField('Leverandør', choices=[('1', 'Meny'), ('2', 'Kiwi')])
+    invoice_date = DateField('Faktura')
+    maturity_date = DateField('Forfall')
+    invoice_number = StringField('Fakturanummer')
 
-    tekst = StringField('Tekst')
-    kostnadskonto = SelectField('Kostnadskonto', choices=[("100", "Matkonto"), ("101", "Utstyrskonto")])
-    bruttobelop = StringField('Bruttobeløp')
-    mva = SelectField("Mva", choices=[('1', '25%'), ('2', '12%')])
-    nettobelop = StringField("Nettobeløp")
+    text = StringField('Tekst')
+    billing_account = SelectField('Kostnadskonto', choices=[("100", "Matkonto"), ("101", "Utstyrskonto")])
+    gross_amount = StringField('Bruttobeløp')
+    vat = SelectField("Mva", choices=[('1', '25%'), ('2', '12%')])
+    net_amount = StringField("Nettobeløp")
 
-    betalt = BooleanField('Betalt')
+    paid = BooleanField('Betalt')
 
 
-class SalgForm(FlaskForm):
-    type_salg = SelectField('Type', choices=[])
-    dato = DateField('Dato')
-    dager_til_forfall = StringField("Dager til forfalll")
-    kommentar = StringField('Kommentar')
-    kontonummer = StringField('Kontonummer')
+class SaleForm(FlaskForm):
+    sale_type = SelectField('Type', choices=[])
+    date = DateField('Dato')
+    days_to_maturity = StringField("Dager til forfalll")
+    comment = StringField('Kommentar')
+    account_number = StringField('Kontonummer')
 
-    kunde = SelectField('Kunde', choices=[])
+    contact = SelectField('Kontakt', choices=[("1", "Kontakt 1"), ("2", "Kontakt 2") ])
+    our_reference = StringField('Din Referanse')
+    their_reference = StringField('Deres Referanse')
 
-    kontakt = SelectField('Kontakt', choices=[("1", "Kontakt 1"), ("2", "Kontakt 2") ])
-    vaar_referanse = StringField('Din Referanse')
-    deres_referanse = StringField('Deres Referanse')
-
-    beskrivelse = StringField('Beskrivelse')
+    description = StringField('Beskrivelse')
     
-    produkt = SelectField('Produkt', choices=[("1", "KAKE")])
-    pris = StringField('Pris')
-    antall = StringField('Antall')
-    rabatt = StringField('Rabatt')
-    mva = StringField('Mva')
+    product = SelectField('Produkt', choices=[("1", "KAKE")])
+    price = StringField('Pris')
+    amount = StringField('Antall')
+    discount = StringField('Rabatt')
+    vat = StringField('Mva')
 
 
-class ProfilForm(FlaskForm):
+class ProfileForm(FlaskForm):
     # For changing name
     new_name = StringField('Name')
     # For changing email
@@ -68,18 +66,18 @@ class FikenModalForm(FlaskForm):
 
 
 class CustomerForm(FlaskForm):
-    navn = StringField('Navn')
+    name = StringField('Navn')
     org_nr = StringField('Org.nr')
     email = StringField('Epost')
-    telefonnummer = StringField('Telefonnummer')
-    kontonummer = StringField('Kontonummer')
+    telephone = StringField('Telefonnummer')
+    account_number = StringField('Kontonummer')
     #CHECKBOXES
-    medlemsnummer = StringField('Medlemsnummer') #Stepper?
-    land = StringField('Land')
-    adresse1 = StringField('Adresse 1')
-    adresse2 = StringField('Adresse 2')
-    postnummer = StringField('Postnummer')
-    poststed = StringField('Poststed')
+    member_number = StringField('Medlemsnummer') #Stepper?
+    country = StringField('Land')
+    address1 = StringField('Adresse 1')
+    address2 = StringField('Adresse 2')
+    zip_code = StringField('Postnummer')
+    postal_area = StringField('Poststed')
 
 
 class SignUpForm(FlaskForm):

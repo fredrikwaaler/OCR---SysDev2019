@@ -3,40 +3,40 @@
 <h2>Nytt Salg</h2>
 <form method="POST" action="{{ url_for('send_sale_form') }}">
 {{ form.csrf_token }}
-    <div class="boxdisplay" id="part1Sales">
+    <div class="box-display" id="part1Sales">
         <h3>Type</h3>
-        {{ form.type_salg }}
+        {{ form.sale_type }}
         <h3>Dato</h3>
-        {{ form.dato }}
+        {{ form.date }}
         <h3>Dager til forfall</h3>
-        {{ form.dager_til_forfall }}
+        {{ form.days_to_maturity }}
         <h3>Kommentar</h3>
-        {{ form.kommentar }}
+        {{ form.comment }}
         <h3>Kontonummer</h3>
-        {{ form.kontonummer }}
+        {{ form.account_number }}
     </div>
 
-    <div class="boxdisplay" id="part2Sales">
+    <div class="box-display" id="part2Sales">
         <h3>Kontakt</h3>
-        {{ form.kontakt }}
+        {{ form.contact }}
         <h3>Vår referanse</h3>
-        {{ form.vaar_referanse }}
+        {{ form.our_reference }}
         <h3>Deres referanse</h3>
-        {{ form.deres_referanse }}
+        {{ form.their_reference }}
     </div>
 
-    <div class="boxdisplay" id="part3Sales">
+    <div class="box-display" id="part3Sales">
         <h3 class="title">Varelinjer</h3>
         <h3>Produkt</h3>
-        {{ form.produkt }}
+        {{ form.product }}
         <h3>Pris</h3>
-        {{ form.pris }}
+        {{ form.price }}
         <h3>Antall</h3>
-        {{ form.antall }}
+        {{ form.amount }}
         <h3>Rabatt</h3>
-        {{ form.rabatt }}
+        {{ form.discount }}
         <h3>Mva</h3>
-        {{ form.mva }}
+        {{ form.vat }}
     </div>
 
     <input class="buttons" type="submit" Value="Opprett Faktura" id="sendInvoiceButton">

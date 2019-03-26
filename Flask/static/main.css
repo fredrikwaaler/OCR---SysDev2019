@@ -54,7 +54,7 @@ h3 {
 
 /* h4 is used for side info */
 h4 {
-    font-size: 0,9em;
+    font-size: 0.9em;
     font-family: 'Overpass', sans-serif;
     font-weight: 400;
     margin: 5px auto;
@@ -86,7 +86,7 @@ select, input[type="text"], input[type="password"] {
 /* Styling for highlighted text field */
 select:focus, input[type="text"]:focus {
     border-color: #66afe9;
-    box-shadow: 2px #2d4e68;
+    box-shadow: 2px 1px #2d4e68;
 }
 
 /* Styling for general purpose buttons */
@@ -105,29 +105,6 @@ input[type="submit"], input[type="button"] {
     border-radius: 4px;
     overflow: visible;
     text-transform: none;
-}
-
-/* Buttons that should stack, floats are cleared. */
-.stacked_button {
-    float: none !important;
-    margin: 5px 0 0 0 !important;
-    display: inline-block !important;
-}
-
-/* Info about active user and fiken user */
-.active_info {
-    font-style: italic;
-    font-size: 50%;
-    text-overflow: ellipsis;
-}
-
-/* Warning box for not having set FM properly */
-.fiken_warning {
-    background-color: lightcoral;
-    padding: 1%;
-    border-radius: 5px;
-    width: auto;
-    margin-bottom: 5%;
 }
 
 /* Buttons that are inside a boxdisplay */
@@ -165,24 +142,6 @@ input[type="file"] {
     padding: 0;
     max-width: 207px;
 }
-
-/* Email input fields have type = "text", but id = "email" */
-/*
-#email, #password {
-    border-radius: 5px;
-    margin: 0;
-    padding: 0;
-    max-width: 400px;
-    min-width: 200px;
-    min-height: 33px;
-    width: 90%;
-}*/
-
-/* Highlighted email input field */
-/*
-#email:focus {
-}
-*/
 
 /* Styling for delete user data button */
 #warning {
@@ -246,14 +205,15 @@ nav li {
 
 nav a {
     display: block;
-    padding: 15px 0px;
+    padding: 15px 0;
     margin: 0;
     width: 80px;
     color: black;
     text-decoration: none;
 }
 
-#type_kjoop {
+/* TODO: does this do anything? */
+purchase_type {
     list-style-type: none;
     padding-left: 5px;
 }
@@ -436,6 +396,36 @@ img {
     box-sizing: border-box;
 }
 
+/*
+Fiken user css
+ */
+
+
+/* Buttons that should stack, floats are cleared. */
+.stacked_button {
+    float: none !important;
+    margin: 5px 0 0 0 !important;
+    display: inline-block !important;
+}
+
+/* Info about active user and fiken user */
+.active_info {
+    font-style: italic;
+    font-size: 50%;
+    text-overflow: ellipsis;
+}
+
+/* Warning box for not having set FM properly */
+.fiken_warning {
+    background-color: lightcoral;
+    padding: 1%;
+    border-radius: 5px;
+    width: auto;
+    margin-bottom: 5%;
+}
+
+
+
 /* NEW!
 
     IMPORTANT: All styling above, ie. does not in the @media queries
@@ -453,8 +443,6 @@ img {
     /* temp color changes to make a clear
         differences between devices */
     body {
-        background-color:#6aa6cc;
-        color:blue;
         word-break: keep-all;
     }
 /*  ==================================================
@@ -482,7 +470,7 @@ img {
         minor block/boxdisplay. */
     .title {
         font-size: 2em;
-        color: yellowgreen;
+        //color: yellowgreen;
         display: block;
         float: left;
         margin: 10px 220px;
@@ -543,11 +531,6 @@ img {
 
     /* Styling for widescreens, ie. width > 768px */
     @media screen and (min-width: 1200px) {
-        body {
-            background-color:rgb(74, 167, 45);
-            color:red;
-        }
-
         nav ul {
             width: 85%;
         }
@@ -556,7 +539,6 @@ img {
             min-height: 94%;
             margin: 0 auto;
             padding: 20px 10px;
-            //width: 85%;
             max-width: 85%;
             background: #ffffff;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -611,6 +593,7 @@ img {
             float: right;
         }
 
+        /* TODO: IMPROVE THIS */
         #part3Sales {
             display: inline;
             width: 90%;
@@ -629,8 +612,3 @@ img {
         }
     }
 }
-/*
-#kostnadskontoBlock, #mvaBlock {
-    transform:translateY(2px)
-}
-*/

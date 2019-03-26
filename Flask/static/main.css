@@ -282,7 +282,7 @@ footer {
 
 /* A beige/gray box that surrounds a group of
     elements that are semanticly connected */
-.boxdisplay {
+.box-display {
     display: inline-block;
     padding: 10px;
     margin: 15px 1px;
@@ -383,7 +383,7 @@ img {
     text-align: center;
 }
 
-.boxdisplay {
+.box-display {
     padding: 20px 10px;
     margin: 20px 40px;
     width: 85%;
@@ -597,7 +597,7 @@ img {
                 margin: 10px 220px;
             }
 
-            .boxdisplay {
+            .box-display {
                 padding: 20px 10px;
             / / width: 85 %;
                 max-width: 85%;
@@ -605,7 +605,7 @@ img {
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             }
 
-            .boxdisplay {
+            .box-display {
                 width: 55%;
                 display: block;
                 float: left;
@@ -709,7 +709,7 @@ img {
                     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
                 }
 
-                .boxdisplay {
+                .box-display {
                     width: 55%;
                     display: block;
                     float: left;

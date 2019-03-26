@@ -10,7 +10,7 @@ class User(UserMixin):
     """
 
     # The database shared by all users for storing/retrieving users
-    Dm = DatabaseManager(host="localhost", user="postgres", password="Sebas10an99", database="Sukkertoppen")
+    Dm = DatabaseManager(host="localhost", user="postgres", password="password", database="Sukkertoppen")
 
     def __init__(self, email, password, name):
         """
@@ -80,7 +80,6 @@ class User(UserMixin):
             return User(user_data[0], user_data[1], user_data[2])
         else:
             return None
-
 
 
 

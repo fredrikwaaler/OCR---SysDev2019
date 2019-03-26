@@ -31,6 +31,20 @@ class FikenManager:
         self._fiken_login = username
         self._fiken_pass = password
 
+    def get_fiken_login(self):
+        """
+        Returns the login for fiken-account associated with the fiken-manager
+        :return: The login for the fiken-account associated with the fiken-manager
+        """
+        return self._fiken_login
+
+    def get_company_slug(self):
+        """
+        Returns the company slug
+        :return: The company slug
+        """
+        return self._company_slug
+
     def has_valid_login(self):
         """
         Checks whether or not the manager has been set with valid login for fiken.

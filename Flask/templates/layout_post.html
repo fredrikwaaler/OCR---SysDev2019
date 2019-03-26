@@ -20,7 +20,6 @@
 
         {{ nav.nav.render() }}
 
-        <a href="{{ url_for('log_out') }}">Logg ut</a>
         <div class = wrapper>
         {# TODO - Must be changed to actual current user, now uses app.config in reality #}
         {# TODO - Similar warning-box if not fiken-logged in at all.  #}
@@ -28,7 +27,7 @@
         <div class="fiken_warning">
             <p>
                 Oops: You must set an active company for the fiken-user before you can register sales, purchases and view history.
-                You can do so in the <a href="{{ url_for('profil') }}">profile page.</a>
+                You can do so in the <a href="{{ url_for('profile') }}">profile page.</a>
             </p>
         </div>
         {% endif %}
@@ -38,6 +37,7 @@
             </div>
             <footer>
                 <a href="#">Problemer?</a>
+                <a href="{{ url_for('log_out') }}">Logg ut</a>
                 <p>Copyright Group 8</p>
             </footer>
         </div>

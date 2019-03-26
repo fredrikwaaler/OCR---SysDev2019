@@ -32,10 +32,10 @@ nav = Nav(app)
 app.config['SECRET_KEY'] = 'secretkey'
 
 navbar = Navbar('',
-    View('Kjøp', 'kjoop'),
-    View('Salg', 'salg'),
-    View('Historikk', 'historikk'),
-    View('Profil', 'profil')
+    View('Kjøp', 'purchase'),
+    View('Salg', 'sale'),
+    View('Historikk', 'history'),
+    View('Profil', 'profile')
 )
 nav.register_element('nav', navbar)
 
@@ -52,39 +52,39 @@ app.config["FIKEN_MANAGER"] = FikenManager()
 # Associated the app with a login-manager
 lm = create_login_manager()
 lm.init_app(app)
-lm.login_view = 'logg_inn'
+lm.login_view = 'log_in'
 
 # Create a fiken manager. //TODO Should be created upon log-in.
 # app.config["FIKEN_MANAGER"].set_company_slug("fiken-demo-glass-og-yoga-as2")
 
 
-@app.route('/kjoop', methods=['GET'])
+@app.route('/purchase', methods=['GET'])
 @login_required
-def kjoop(image='dummy.png', pop=False):
-    form = KjoopForm()
+def purchase(image='dummy.png', pop=False):
+    form = PurchaseForm()
     customer_modal_form = CustomerForm()
     # TODO - Use current_user instead of app
     if pop:
-        form.fakturadato.data =  string_to_datetime(pop['fakturadato'])
-        form.forfallsdato.data = string_to_datetime(pop['forfallsdato'])
-        form.fakturanummer.data = pop['fakturanummer']
-        form.tekst.data = pop['tekst']
-        form.bruttobelop.data = pop['bruttobelop']
-        form.nettobelop.data = pop['nettobelop']
-    return render_template('kjoop.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image, current_user=app)
+        form.invoice_date.data =  string_to_datetime(pop['fakturadato'])
+        form.maturity_date.data = string_to_datetime(pop['forfallsdato'])
+        form.invoice_number.data = pop['fakturanummer']
+        form.text.data = pop['tekst']
+        form.gross_amount.data = pop['bruttobelop']
+        form.net_amount.data = pop['nettobelop']
+    return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form, image=image, current_user=app)
 
 
-@app.route('/salg', methods=['GET'])
+@app.route('/sale', methods=['GET'])
 @login_required
-def salg():
-    form = SalgForm()
+def sale():
+    form = SaleForm()
     # TODO - Use current_user instead of app
-    return render_template('salg.html', title="Salg", form=form, current_user=app)
+    return render_template('sale.html', title="Salg", form=form, current_user=app)
 
 
-@app.route('/historikk', methods=['GET', 'POST'])
+@app.route('/history', methods=['GET', 'POST'])
 @login_required
-def historikk():
+def history():
     history_presenter = HistoryPresenter(app.config["FIKEN_MANAGER"])
     # TODO - Should use user-specific FM.
     try:
@@ -97,21 +97,21 @@ def historikk():
 
     # If the method is get, we just retrieved the page with default value "all".
     if request.method == 'GET':
-        return render_template('historikk.html', title="Historikk", entry_view=sales + purchases, current_user=app)
+        return render_template('history.html', title="Historikk", entry_view=sales + purchases, current_user=app)
     else:
         data_type = request.form["type"]
         if data_type == "all":
             return redirect(url_for('historikk'))
         elif data_type == "purchases":
-            return render_template('historikk.html', title="Historikk", entry_view=purchases, checked="purchases", current_user=app)
+            return render_template('history.html', title="Historikk", entry_view=purchases, checked="purchases", current_user=app)
         elif data_type == "sales":
-            return render_template('historikk.html', title="Historikk", entry_view=sales, checked="sales", current_user=app)
+            return render_template('history.html', title="Historikk", entry_view=sales, checked="sales", current_user=app)
 
 
-@app.route('/profil', methods=['GET'])
+@app.route('/profile', methods=['GET'])
 @login_required
-def profil():
-    form = ProfilForm()
+def profile():
+    form = ProfileForm()
     fiken_modal_form = FikenModalForm()
     # TODO - Get profile data from database
     name = "Ola Normann"
@@ -122,15 +122,15 @@ def profil():
     companies = []
     for i in range(len(cmps)):
         companies.append((cmps[i], i))
-    return render_template('profil.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email,
+    return render_template('profile.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email,
                            companies=companies, current_user=app)
 
 
 @app.route('/', methods=['GET', 'POST'])
-@app.route('/logg_inn', methods=['GET', 'POST'])
-def logg_inn():
+@app.route('/log_in', methods=['GET', 'POST'])
+def log_in():
     if current_user.is_authenticated:
-        return redirect(url_for('kjoop'))
+        return redirect(url_for('purchase'))
     form = LoginForm()
     if form.validate_on_submit():
         email = form.data["email"]
@@ -139,19 +139,20 @@ def logg_inn():
             password = form.data["password"]
             if PasswordHandler.compare_hash_with_text(user.password, password):
                 login_user(user)
-                next_page = request.args.get("next", url_for('kjoop'))
+                next_page = request.args.get("next", url_for('purchase'))
                 return redirect(next_page)
             else:
                 flash("Invalid credentials, try again.")
         else:
             flash("Invalid credentials, try again.")
-    return render_template('logg_inn.html', title="Logg inn", form=form)
+    return render_template('log_in.html', title="Logg inn", form=form)
 
 
 @app.route('/log_out')
 def log_out():
     logout_user()
-    return redirect(url_for('logg_inn'))
+    return redirect('log_in')
+
 
 @app.route('/sign_up', methods=['GET', 'POST'])
 @login_required
@@ -174,7 +175,7 @@ def sign_up():
         if not fault:
             # TODO - Create new user in database
             session['email'] = 'test_value'
-            return redirect(url_for('logg_inn'))
+            return redirect(url_for('log_in'))
 
     return render_template('sign_up.html', title="Sign up", form=form)
 
@@ -216,11 +217,10 @@ def is_valid_password(password):
         return False
 
 
-@app.route('/glemt_passord', methods=['GET', 'POST'])
-@login_required
-def glemt_passord():
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
     form = ForgotForm()
-    return render_template('glemt_passord.html', title="Glemt Passord", form=form)
+    return render_template('forgot_password.html', title="Glemt Passord", form=form)
 
 
 @app.route('/upload_file', methods=['POST'])
@@ -246,8 +246,13 @@ def upload_file():
             # Change filename here when adding own parsed data
             with open('test_population.json', 'r') as f:
                 parsed_data = json.load(f)
-            return kjoop(image=filename, pop=parsed_data)
+            return purchase(image=filename, pop=parsed_data)
     return "EMPTY PAGE"
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/send_purchase_form', methods=['POST'])
@@ -314,7 +319,7 @@ def set_active_company():
     new_active_index = int(request.form["company_keys"])
     new_active = fm.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
     fm.set_company_slug(new_active)
-    return redirect(url_for('profil'))
+    return redirect(url_for('profile'))
 
 
 @app.route('/get_user_data', methods=['POST'])

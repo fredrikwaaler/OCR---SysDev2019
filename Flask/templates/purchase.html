@@ -2,11 +2,11 @@
 {% block container %}
 <h2>Nytt Kjøp</h2>
 {% if image %}
-<div class="imagebox" id="imagebox_id">
+<div class="imagebox" id="imagebox-id">
     <img src="static/uploads/{{ image }}" class="img_class" id="img_id" alt="Uploaded Image">
 </div>
 {% endif %}
-<div class="boxdisplay">
+<div class="box-display">
     <form method="POST" action="/upload_file" enctype=multipart/form-data>
         <input type=file name=file>
         <input type=submit value=Upload>
@@ -14,63 +14,63 @@
 </div>
 <div class="form_section">
     <form method="POST" action="{{ url_for('send_purchase_form') }}">
-        <div class="boxdisplay">
+        <div class="box-display">
             {{ form.csrf_token }}
             <div class="left">
-                <div id ="kjoopBlock">
+                <div class="form-input" id="purchase-block">
                         <h3>Type kjøp</h3>
-                        {{ form.type_kjoop }}
+                        {{ form.purchase_type }}
                     </div>
-                    <div id = "leverandorBlock">
+                    <div class="form-input" id="supplier-block">
                         <h3>Leverandør</h3>
-                        {{ form.leverandor}}
-                        <input class ="modal_button" type="button" Value="Opprett ny">
+                        {{ form.supplier }}
+                        <input class="modal_button" type="button" Value="Opprett ny">
                     </div>
-                    <div id = "fakturadatoBlock">
+                    <div class="form-input" id="invoice_date-block">
                         <h3>Fakturadato</h3>
-                        {{ form.fakturadato }}
+                        {{ form.invoice_date }}
                 </div>
             </div>
             <div class="right">
                 <p class="italic">Valgfrie felter:</p>
-                <div id = "fakturanummerBlock">
+                <div class="form-input" id="invoice_number-block">
                     <h3>Fakturanummer</h3>
-                    {{ form.fakturanummer }}
+                    {{ form.invoice_number }}
                 </div>
-                <div id = "forfallsdatoBlock">
+                <div class="form-input" id="maturity_date-block">
                         <h3>Forfallsdato</h3>
-                        {{ form.forfallsdato }}
+                        {{ form.maturity_date }}
                 </div>
             </div>        
         </div>
         
     <!-- Bilde her -->
-        <div class="boxdisplay">    
-            <div id ="tekstBlock">
+        <div class="box-display">
+            <div class="form-input" id="text-block">
                 <h3>Tekst</h3>
-                {{ form.tekst }}
+                {{ form.text }}
             </div>
-            <div id = "kostnadskontoBlock">
+            <div class="form-input" id="billing_account-block">
                 <h3>Kostnadskonto</h3>
-                {{ form.kostnadskonto }}
+                {{ form.billing_account }}
             </div>
-            <div id ="bruttobeloopBlock">
+            <div class="form-input" id="gross_amount-block">
                 <h3>Bruttobeløp</h3>
-                {{ form.bruttobelop }}
+                {{ form.gross_amount }}
             </div>
-            <div id ="mvaBlock">
+            <div class="form-input" id="vat-block">
                 <h3>Mva</h3>
-                {{ form.mva }}
+                {{ form.vat }}
             </div>
-            <div id ="nettobeloopBlock">
+            <div class="form-input" id="net_amount-block">
                 <h3>Nettobeløp</h3>
-                {{ form.nettobelop}}
+                {{ form.net_amount}}
             </div>
         </div>
 
-        <div class="boxdisplay" id="prePaid">
+        <div class="box-display" id="prePaid">
             <h3>Betalt</h3>
-            {{ form.betalt }}
+            {{ form.paid }}
             <h4>Kryss av dersom handelen er betalt</h4>
         </div>
         <input type="submit" Value="Send inn" class="buttons" id="sendFormButton">

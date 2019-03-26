@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 from HistoryPresenter import HistoryPresenter
 from user import User
 from PasswordHandler import PasswordHandler
+from FormValidator import validate_new_name
 
 
 def create_login_manager():
@@ -283,12 +284,14 @@ def dated_url_for(endpoint, **values):
 @login_required
 def change_name():
     new_name = request.form["new_name"]
-    if new_name.strip() != "" and "abh".is:
+    validated, errors = validate_new_name(new_name)
+    if validated:
         current_user.name = new_name
         current_user.store_user()
     else:
         # TODO - Display flash in html
-        flash("New name cannot be empty.")
+        for error in errors:
+            flash(error)
     return redirect(url_for('profil'))
 
 

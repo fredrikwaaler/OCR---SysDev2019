@@ -107,6 +107,29 @@ input[type="submit"], input[type="button"] {
     text-transform: none;
 }
 
+/* Buttons that should stack, floats are cleared. */
+.stacked_button {
+    float: none !important;
+    margin: 5px 0 0 0 !important;
+    display: inline-block !important;
+}
+
+/* Info about active user and fiken user */
+.active_info {
+    font-style: italic;
+    font-size: 50%;
+    text-overflow: ellipsis;
+}
+
+/* Warning box for not having set FM properly */
+.fiken_warning {
+    background-color: lightcoral;
+    padding: 1%;
+    border-radius: 5px;
+    width: auto;
+    margin-bottom: 5%;
+}
+
 /* Buttons that are inside a boxdisplay */
 input[type="submit"].boxedButton, #boxedButtonPointer{
     float: left;

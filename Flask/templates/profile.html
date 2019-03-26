@@ -4,7 +4,7 @@
 <h2>Min Konto</h2>
 <!--Info about the users name and email that we have-->
 <!--Structure: "Name:"    <actual name>  <Change button> -->
-<div class="boxdisplay">
+<div class="box-display">
     <form method="POST" action="{{ url_for('change_name') }}">
         <h3>Navn</h3>
         <p>{{ name }}</p>
@@ -13,7 +13,7 @@
     </form>
 </div>
 
-<div class="boxdisplay">
+<div class="box-display">
     <form method="POST" action="{{ url_for('change_email') }}">
         <h3>Email</h3>
         <p>{{ email }}</p>
@@ -22,7 +22,7 @@
     </form>
 </div>
 
-<div class="boxdisplay">
+<div class="box-display">
     <h3>Fikenbruker</h3>
     <input class="stacked_button modal_button" id="boxedButtonPointer" type="submit" Value="Endre bruker">
     {% if current_user.fiken_manager.get_fiken_login() %}
@@ -82,7 +82,7 @@
 <!--Just a line to make sure the user understands the semantic change-->
 <div class="newline"></div>
 <!--Change password here-->
-<div class=boxdisplay>
+<div class=box-display>
     <form method="POST" action="{{ url_for('change_password') }}">
         <h3>Nytt passord</h3>
         {{ form.new_password }}

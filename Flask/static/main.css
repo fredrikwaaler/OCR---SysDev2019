@@ -537,7 +537,12 @@ Fiken user css
         }
 
         .wrapper {
+            min-height: 94%;
+            margin: 0 auto;
+            padding: 20px 10px;
             max-width: 85%;
+            background: #ffffff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
         .box-display {

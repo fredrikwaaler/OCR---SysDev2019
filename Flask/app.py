@@ -278,8 +278,13 @@ def dated_url_for(endpoint, **values):
 @app.route('/change_name', methods=['POST'])
 @login_required
 def change_name():
-    current_user.name = request.form["new_name"]
-    current_user.store_user()
+    new_name = request.form["new_name"]
+    if new_name.strip() != "" and "abh".is:
+        current_user.name = new_name
+        current_user.store_user()
+    else:
+        # TODO - Display flash in html
+        flash("New name cannot be empty.")
     return redirect(url_for('profil'))
 
 
@@ -309,6 +314,7 @@ def set_active_company():
         new_active_index = int(request.form["company_keys"])
         new_active = current_user.fiken_manager.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
         current_user.fiken_manager.set_company_slug(new_active)
+        current_user.store_user()
     return redirect(url_for('profil'))
 
 

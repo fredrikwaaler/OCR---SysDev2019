@@ -54,7 +54,7 @@ h3 {
 
 /* h4 is used for side info */
 h4 {
-    font-size: 0,9em;
+    font-size: 0.9em;
     font-family: 'Overpass', sans-serif;
     font-weight: 400;
     margin: 5px auto;
@@ -143,24 +143,6 @@ input[type="file"] {
     max-width: 207px;
 }
 
-/* Email input fields have type = "text", but id = "email" */
-/*
-#email, #password {
-    border-radius: 5px;
-    margin: 0;
-    padding: 0;
-    max-width: 400px;
-    min-width: 200px;
-    min-height: 33px;
-    width: 90%;
-}*/
-
-/* Highlighted email input field */
-/*
-#email:focus {
-}
-*/
-
 /* Styling for delete user data button */
 #warning {
     background-color: red;
@@ -223,14 +205,14 @@ nav li {
 
 nav a {
     display: block;
-    padding: 15px 0px;
+    padding: 15px 0;
     margin: 0;
     width: 80px;
     color: black;
     text-decoration: none;
 }
 
-#type_kjoop {
+purchase_type {
     list-style-type: none;
     padding-left: 5px;
 }
@@ -563,7 +545,6 @@ Fiken user css
             min-height: 94%;
             margin: 0 auto;
             padding: 20px 10px;
-            //width: 85%;
             max-width: 85%;
             background: #ffffff;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -636,8 +617,3 @@ Fiken user css
         }
     }
 }
-/*
-#kostnadskontoBlock, #mvaBlock {
-    transform:translateY(2px)
-}
-*/

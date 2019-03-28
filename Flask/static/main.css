@@ -43,6 +43,11 @@ h3 {
     font-size: 1.5em;
     font-family: 'Overpass', system-ui;
     margin: 15px 0 0 0;
+    clear: both;
+}
+
+p {
+    margin: 5px 0;
 }
 
 /* some h2 are elements are used as title for a
@@ -67,6 +72,11 @@ li {
 
 label {
     margin: 5px 0 0 0;
+}
+
+form {
+    display: block;
+    clear: left;
 }
 
 /* Styling for text fields */
@@ -111,7 +121,13 @@ input[type="submit"], input[type="button"] {
 /* Buttons that are inside a boxdisplay */
 input[type="submit"].boxedButton, #boxedButtonPointer{
     float: left;
-    margin: 5px 0 0 0;
+    margin: 5px 0 30px 0;
+}
+
+
+input[type="submit"].last-boxed-button {
+    float: left;
+    margin: 5px 0px 0 0;
 }
 
 /* styling for active/highlighted buttons */
@@ -144,7 +160,7 @@ input[type="file"] {
     max-width: 207px;
 }
 
-/* Styling for delete user data button */
+/* Styling for buttons on profile page */
 #warning {
     background-color: red;
 }
@@ -152,6 +168,10 @@ input[type="file"] {
 #warning:focus {
     background-color: blue;
     border: 3px solid yellow;
+}
+
+#dlUserData {
+    margin: 0 2% 0 0;
 }
 
 /*  This will be added and styled LATER
@@ -245,12 +265,33 @@ footer {
     display: inline-block;
     padding: 10px;
     margin: 15px 1px;
+    width: 90%;
     min-width: 290px;
     border: 1px solid #e3e3e3;
     background-color: #f5f5f5;
     border-radius: 4px;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-    width: 90%
+}
+
+/* a invisable box to align content with box-display */
+.box-invis {
+    display: inline-block;
+    /* added 1px due to border */
+    padding: 11px;
+    margin: 15px 1px;
+    width: 90%;
+    min-width: 290px;
+
+}
+
+/* Unable to recreate exactly the same look as fiken
+    due to HTML5 not supporting all attributes */
+hr {
+    margin: 20px 1px;
+    border-top: 1px solid #eeeeee;
+    width: 95%;
+    min-width: 310px;
+    max-width: 450px;
 }
 
 /* Just a div placed on certain pages
@@ -425,8 +466,6 @@ Fiken user css
     margin-bottom: 5%;
 }
 
-
-
 /* NEW!
 
     IMPORTANT: All styling above, ie. does not in the @media queries
@@ -476,6 +515,7 @@ Fiken user css
         margin: 10px 220px;
     }
 
+    /* TODO: finn min-width */
     .box-display {
         padding: 20px 10px;
         margin: 20px 40px;
@@ -483,6 +523,11 @@ Fiken user css
         max-width: 840px;
     }
 
+    hr {
+        margin: 20px 40px;
+        width: 87%;
+        max-width: 860px;
+    }
 
     .left, .right {
         float: none;
@@ -552,6 +597,20 @@ Fiken user css
             max-width: 560px;
         }
 
+        #user-account, #fiken-account {
+            width: 85%;
+            max-width: 1100px;
+            margin: 20px 40px;
+        }
+
+        hr {
+            margin: 40px 40px 20px 40px; 
+            margin: 20px 40px;
+            width: 87%;
+            max-width: 1113px;
+            clear: both;
+        }
+
         .imagebox {
             width: 100%;
             margin: 0 2% 0 0;
@@ -585,11 +644,13 @@ Fiken user css
         #part1Sales {
             display: block;
             float: left;
+            clear: none;
         }
 
         #part2Sales {
             display: block;
             float: right;
+            clear: none;
         }
 
         /* TODO: IMPROVE THIS */

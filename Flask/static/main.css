@@ -40,7 +40,7 @@ h2 {
 
 /* h3 is used for field; headings */
 h3 {
-    font-size: 1.5 em;
+    font-size: 1.5em;
     font-family: 'Overpass', system-ui;
     margin: 15px 0 0 0;
 }
@@ -471,7 +471,6 @@ Fiken user css
         minor block/boxdisplay. */
     .title {
         font-size: 2em;
-        //color: yellowgreen;
         display: block;
         float: left;
         margin: 10px 220px;
@@ -484,6 +483,7 @@ Fiken user css
         max-width: 840px;
     }
 
+
     .left, .right {
         float: none;
     }
@@ -494,10 +494,6 @@ Fiken user css
         width: 90%;
         display: inline-block;
         position: relative;
-    }
-
-    #billing_account-block, #vat-block {
-        margin-left: 15px;
     }
 
     .img_class {
@@ -529,7 +525,10 @@ Fiken user css
     #kostnadskontoBlock {
         margin: 0 20px 0 0;
     }
-
+    #purchase1, #purchase2, #purchase3 {
+        display: block;
+        float:none;
+    }
     /* Styling for widescreens, ie. width > 768px */
     @media screen and (min-width: 1200px) {
         nav ul {
@@ -550,7 +549,6 @@ Fiken user css
             display: block;
             float: left;
             margin: 0 20px 40px 0;
-            width: 520px;
             max-width: 560px;
         }
 

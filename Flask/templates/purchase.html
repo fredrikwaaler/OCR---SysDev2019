@@ -6,7 +6,7 @@
     <img src="static/uploads/{{ image }}" class="img_class" id="img_id" alt="Uploaded Image">
 </div>
 {% endif %}
-<div class="box-display">
+<div class="box-display" id="purchase1">
     <form method="POST" action="/upload_file" enctype=multipart/form-data>
         <input type=file name=file>
         <input type=submit value=Upload>
@@ -14,7 +14,7 @@
 </div>
 <div class="form_section">
     <form method="POST" action="{{ url_for('send_purchase_form') }}">
-        <div class="box-display">
+        <div class="box-display" id="purchase2">
             {{ form.csrf_token }}
             <div class="left">
                 <div class="form-input" id="purchase-block">
@@ -45,7 +45,7 @@
         </div>
         
     <!-- Bilde her -->
-        <div class="box-display">
+        <div class="box-display" id="purchase3">
             <div class="form-input" id="text-block">
                 <h3>Tekst</h3>
                 {{ form.text }}

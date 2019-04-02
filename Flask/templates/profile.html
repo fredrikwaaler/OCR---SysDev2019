@@ -6,7 +6,7 @@
 <!--Structure: "Name:"    <actual name>  <Change button> -->
 <div class="box-display" id="user-account">
     <form method="POST" action="{{ url_for('change_name') }}">
-        <h3>Navn</h3>
+        <h3 class="first-field-title">Navn</h3>
         <p>{{ name }}</p>
         {{ form.new_name }}
         <input class="boxedButton" type="submit" Value="Endre">
@@ -34,7 +34,7 @@
 
 <!-- Change/connect to fiken user here -->
 <div class="box-display" id="fiken-account">
-    <h3>Fikenbruker</h3>
+    <h3 class="first-field-title">Fikenbruker</h3>
     <input class="stacked_button modal_button" id="boxedButtonPointer" type="submit" Value="Endre bruker">
     {% if current_user.fiken_manager.has_valid_login() %}
     <span class="active_info">{{ current_user.fiken_manager.get_fiken_login() }}</span>

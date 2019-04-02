@@ -18,7 +18,7 @@
             {{ form.csrf_token }}
             <div class="left">
                 <div class="form-input" id="purchase-block">
-                        <h3>Type kjøp</h3>
+                        <h3 class="first-field-title">Type kjøp</h3>
                         {{ form.purchase_type }}
                     </div>
                     <div class="form-input" id="supplier-block">
@@ -43,15 +43,17 @@
                 </div>
             </div>        
         </div>
+
+        <hr class="small-hr">
         
     <!-- Bilde her -->
         <div class="box-display" id="purchase3">
             <div class="form-input" id="text-block">
-                <h3>Tekst</h3>
+                <h3 class="first-field-title">Tekst</h3>
                 {{ form.text }}
             </div>
             <div class="form-input" id="billing_account-block">
-                <h3>Kostnadskonto</h3>
+                <h3 class="first-field-title"> Kostnadskonto</h3>
                 {{ form.billing_account }}
             </div>
             <div class="form-input" id="gross_amount-block">
@@ -67,9 +69,11 @@
                 {{ form.net_amount}}
             </div>
         </div>
+        
+        <hr>
 
         <div class="box-display" id="prePaid">
-            <h3>Betalt</h3>
+            <h3 class="first-field-title">Betalt</h3>
             {{ form.paid }}
             <h4>Kryss av dersom handelen er betalt</h4>
         </div>

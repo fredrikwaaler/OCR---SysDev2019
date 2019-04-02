@@ -24,14 +24,21 @@
 
 <div class="box-display">
     <h3>Fikenbruker</h3>
-    <input class="stacked_button modal_button" id="boxedButtonPointer" type="submit" Value="Endre bruker">
-    {% if current_user.fiken_manager.has_valid_login() %}
-    <span class="active_info">{{ current_user.fiken_manager.get_fiken_login() }}</span>
-    <br>
-    <input class="stacked_button modal_button" type="submit" Value="Endre firma">
+
+    {% if not current_user.fiken_manager.has_valid_login() %}
+        <input class="stacked_button modal_button" type="submit" Value="Logg Inn" >
+        <span class="modal_button"></span>
+    {% else %}
+        <input class="stacked_button modal_button" type="submit" Value="Endre bruker">
+        <span class="active_info">{{ current_user.fiken_manager.get_fiken_login() }}</span>
+        <br>
+        <input class="stacked_button modal_button" type="submit" Value="Endre firma">
     {%  if current_user.fiken_manager.get_active_company_name() %}
-    <span class="active_info">{{ current_user.fiken_manager.get_active_company_name() }}</span>
+        <span class="active_info">{{ current_user.fiken_manager.get_active_company_name() }}</span>
     {% endif %}
+        <form action="{{ url_for('log_out_fiken') }}">
+            <input class="stacked_button" type="submit" Value="Logg ut">
+        </form>
     {% endif %}
 </div>
 <!-- Code for modal content for the change Fiken user functionality-->
@@ -105,8 +112,13 @@
             <form method="POST" action="{{ url_for('delete_account') }}">
                 <h2>Slett konto</h2>
                 <p>All brukerdata vil bli slettet</p>
+                <p>Vennligst bekreft passordet ditt før du kan slette kontoen.</p>
+                Passord: {{ confirm_password_form.password }}
                 <input class="boxedButton" id="warning" type="submit" Value="Slett konto">
             </form>
         </div>
     </div>
+
+
+
 {% endblock container %}

@@ -129,6 +129,11 @@ input[type="checkbox"] {
     margin: 5px 5px 5px 0;
 }
 
+#admin {
+    float: none;
+    position: static;
+}
+
 /* just for radio buttons */
 input[type="radio"] {
     position: relative;
@@ -396,9 +401,43 @@ img {
     box-sizing: border-box;
 }
 
-/*
-Fiken user css
- */
+.no_history {
+    font-size: 200%;
+    padding: 5%;
+    text-align: center;
+}
+
+.modal_switch {
+    display: none;
+}
+
+
+/* Pop-up for å endre selskap i fiken */
+
+.company_table {
+    background-color: white;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2%;
+    border-collapse: collapse;
+    box-shadow: 1px 1px #b0b0b0;
+}
+
+.company_table td {
+    text-overflow: ellipsis;
+    border: 1px solid #ddd;
+    padding: 1%;
+    text-align: left;
+}
+
+.company_table td input[type="radio"] {
+    border: 1px solid #fff;
+    margin: 0;
+}
+
+.org_num {
+    font-style: italic;
+}
 
 
 /* Buttons that should stack, floats are cleared. */

@@ -2,16 +2,12 @@
 {% block container %}
 <h2>Registrer ny bruker</h2>
 <form method="POST" id="sign_up_form" action="{{ url_for('sign_up') }}">
-    <h3>Fornavn</h3>
-    {{ form.first_name }}
-    <h3>Etternavn</h3>
-    {{ form.last_name }}
+    <h3>Navn</h3>
+    {{ form.name }}
     <h3>Email</h3>
     {{ form.email }}
-    <h3>Passord</h3>
-    {{ form.password }}
-    <h3>Gjenta Passord</h3>
-    {{ form.repeat_password }}
+    <h3>Admin</h3>
+    {{ form.admin }}
     <!-- Flash messages -->
     {% include 'flash.html' %}
     <input type="submit" class="boxedButton" id="sign_up_button" Value="Registrer">

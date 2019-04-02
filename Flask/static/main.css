@@ -8,6 +8,7 @@ html {
 body {
     font-family: 'Overpass', sans-serif;
     height: 100%;
+    overflow-x: hidden;
 }
 
 /* This continer currently holds all content,
@@ -39,9 +40,18 @@ h2 {
 
 /* h3 is used for field; headings */
 h3 {
-    font-size: 1.5 em;
+    font-size: 1.5em;
     font-family: 'Overpass', system-ui;
     margin: 15px 0 0 0;
+    clear: both;
+}
+
+.first-field-title {
+    margin: 0;
+}
+
+p {
+    margin: 5px 0;
 }
 
 /* some h2 are elements are used as title for a
@@ -67,6 +77,11 @@ li {
 label {
     margin: 5px 0 0 0;
 }
+
+form {
+    display: block;
+    clear: left;
+} 
 
 /* Styling for text fields */
 select, input[type="text"], input[type="password"] {
@@ -97,7 +112,7 @@ input[type="submit"], input[type="button"] {
     padding: 6px 12px;
     display: block;
     float: right;
-    margin: 0 5% 0 0;
+    margin: 0 2% 0 0;
     font-size: 14px;
     text-align: center;
     white-space: nowrap;
@@ -110,7 +125,13 @@ input[type="submit"], input[type="button"] {
 /* Buttons that are inside a boxdisplay */
 input[type="submit"].boxedButton, #boxedButtonPointer{
     float: left;
-    margin: 5px 0 0 0;
+    margin: 5px 0 30px 0;
+}
+
+
+input[type="submit"].last-boxed-button {
+    float: left;
+    margin: 5px 0px 0 0;
 }
 
 /* styling for active/highlighted buttons */
@@ -148,14 +169,19 @@ input[type="file"] {
     max-width: 207px;
 }
 
-/* Styling for delete user data button */
+/* Styling for buttons on profile page */
 #warning {
     background-color: red;
+    color: #ffffff;
 }
 
 #warning:focus {
     background-color: blue;
     border: 3px solid yellow;
+}
+
+#dlUserData {
+    margin: 0 2% 0 0;
 }
 
 /*  This will be added and styled LATER
@@ -174,10 +200,6 @@ input.success {
     background-color: #449d44;
     border-color: #398439;
 
-}
-
-#warning {
-    color: #ffffff;
 }
 
 nav {
@@ -247,14 +269,32 @@ footer {
     elements that are semanticly connected */
 .box-display {
     display: inline-block;
-    padding: 10px;
-    margin: 15px 1px;
+    padding: 20px 10px;
+    margin: 20px 2%;
+    width: 90%;
     min-width: 290px;
     border: 1px solid #e3e3e3;
     background-color: #f5f5f5;
     border-radius: 4px;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-    width: 90%
+}
+
+hr {
+    border-top: 1px solid #eeeeee;
+    margin: 10px 2%; 
+    width: 94%;
+    min-width: 290px;
+}
+
+/* a invisable box to align content with box-display */
+.box-invis {
+    display: inline-block;
+    /* added 1px due to border */
+    padding: 11px;
+    margin: 15px 1px;
+    width: 90%;
+    min-width: 290px;
+
 }
 
 /* Just a div placed on certain pages
@@ -462,20 +502,6 @@ img {
     width: auto;
     margin-bottom: 5%;
 }
-
-
-
-/* NEW!
-
-    IMPORTANT: All styling above, ie. does not in the @media queries
-    are intended for mobile view!
-
-    Responsive design for 3 different resolutions:
-    phone, non-widescreen and widescreen
-    phone: width < 480px
-    non-widescreen: 480px < width > 768px
-    widescreen: width > 768px */
-
     /* Styling for non-widescren (not phones)
     480px < width > 1200px */
 @media screen and (min-width: 480px) {
@@ -509,7 +535,6 @@ img {
         minor block/boxdisplay. */
     .title {
         font-size: 2em;
-        //color: yellowgreen;
         display: block;
         float: left;
         margin: 10px 220px;
@@ -520,6 +545,12 @@ img {
         margin: 20px 40px;
         width: 85%;
         max-width: 840px;
+    }
+
+    hr {
+        margin: 20px 40px;
+        width: 90%;
+        max-width: 860px;
     }
 
     .left, .right {
@@ -534,10 +565,6 @@ img {
         position: relative;
     }
 
-    #billing_account-block, #vat-block {
-        margin-left: 15px;
-    }
-
     .img_class {
         margin: 0;
     }
@@ -548,7 +575,7 @@ img {
 
     input[type="submit"].buttons {
         display: inline-block;
-        margin: 0 8% 0 0;
+        margin: 0 2% 0 0;
     }
 
     #mvaBlock {
@@ -568,6 +595,10 @@ img {
         margin: 0 20px 0 0;
     }
 
+    #purchase1, #purchase2, #purchase3 {
+        display: block;
+        float: none;
+    }
     /* Styling for widescreens, ie. width > 768px */
     @media screen and (min-width: 1200px) {
         nav ul {
@@ -588,8 +619,28 @@ img {
             display: block;
             float: left;
             margin: 0 20px 40px 0;
-            width: 520px;
             max-width: 560px;
+        }
+
+        .small-hr {
+            display: block;
+            margin: 0 20px 40px 0;
+            max-width: 580px;
+            clear: none;
+        }
+
+        #user-account, #fiken-account {
+            width: 85%;
+            max-width: 1100px;
+            margin: 20px 40px;
+        }
+
+        hr {
+            margin: 40px 40px 20px 40px; 
+            margin: 20px 40px;
+            width: 87%;
+            max-width: 1113px;
+            clear: both;
         }
 
         .imagebox {
@@ -625,11 +676,13 @@ img {
         #part1Sales {
             display: block;
             float: left;
+            clear: none;
         }
 
         #part2Sales {
             display: block;
             float: right;
+            clear: none;
         }
 
         /* TODO: IMPROVE THIS */

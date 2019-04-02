@@ -4,7 +4,7 @@
 <form method="POST" action="{{ url_for('send_sale_form') }}">
 {{ form.csrf_token }}
     <div class="box-display" id="part1Sales">
-        <h3>Type</h3>
+        <h3 class="first-field-title">Type</h3>
         {{ form.sale_type }}
         <h3>Dato</h3>
         {{ form.date }}
@@ -17,13 +17,15 @@
     </div>
 
     <div class="box-display" id="part2Sales">
-        <h3>Kontakt</h3>
+        <h3 class="first-field-title">Kontakt</h3>
         {{ form.contact }}
         <h3>Vår referanse</h3>
         {{ form.our_reference }}
         <h3>Deres referanse</h3>
         {{ form.their_reference }}
     </div>
+
+<hr>
 
     <div class="box-display" id="part3Sales">
         <h3 class="title">Varelinjer</h3>

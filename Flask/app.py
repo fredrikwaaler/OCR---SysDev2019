@@ -68,6 +68,20 @@ def purchase(image='dummy.png', pop=False):
                        current_user=current_user)
 
 
+@app.route('/widget', methods=["GET"])
+@login_required
+def widget():
+    form = PurchaseForm()
+    return render_template('purchase_widget.html', form=form)
+
+
+@app.route('/widget2', methods=["GET"])
+@login_required
+def widget2():
+    form = SaleForm()
+    return render_template('sale_widget.html', form=form)
+
+
 @app.route('/sale', methods=['GET'])
 @login_required
 def sale():

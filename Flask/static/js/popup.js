@@ -20,6 +20,6 @@ close[0].onclick = function () {
 
 close_btn[0].onclick = function () {
     popup[0].style.display = "none";
-    body.style.overflow = "hidden";
+    body.style.overflow = "auto";
 };
 

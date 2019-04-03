@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sale Widget</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='purchase_widget.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+
+<form class="main-form" id="sale-form" method="post" action="{{ url_for('send_sale_form') }}">
+    <div class="sf-upper">
+        <div class="sf-part">
+            <div class="sf-group">
+                <div class="sf-form-input" id="sale_type-block">
+                    <h4>Type</h4>
+                    {{ form.sale_type }}
+                </div>
+                <div class="sf-form-input" id="date-block">
+                    <h4>Dato</h4>
+                    {{ form.date }}
+                </div>
+                <div class="sf-form-input" id="days_to_maturity-block">
+                    <h4>Dager til forfall</h4>
+                    {{ form.days_to_maturity }}
+                    <div class="empty"></div>
+                    <p id="maturity-text">Forfallsdato: 15.04.2019</p>
+                </div>
+                <div class="sf-form-input" id="comment-block">
+                    <h4 id="comment">Kommentar</h4>
+                    {{ form.comment(rows='3') }}
+                </div>
+                <div class="sf-form-input" id="account_number-block">
+                    <h4>Kontonummer</h4>
+                    {{ form.account_number }}
+                    <div class="empty"></div>
+                    <input class="modal_button sf-button" id="new-account-button" type="button" value="Opprett ny">
+                </div>
+            </div>
+        </div>
+        <div class="sf-part">
+            <div class="sf-form-input" id="contact-block">
+                <h4>Kontakt</h4>
+                {{ form.contact }}
+                <div class="empty"></div>
+                <input class="modal_button" id="supplier-button" type="button" value="Opprett ny">
+            </div>
+            <div class="sf-form-input" id="our_reference-block">
+                <h4>Vår referanse</h4>
+                {{ form.our_reference }}
+            </div>
+            <div class="sf-form-input" id="their_reference-block">
+                <h4>Deres referanse</h4>
+                {{ form.their_reference }}
+            </div>
+        </div>
+    </div>
+    <div class="sf-lower">
+        <div class="sf-part">
+            <div id="sf-lines-top-big">
+                <h4>Beskrivelse</h4>
+                <h4>Pris</h4>
+                <h4>Rabatt</h4>
+                <h4>Antall</h4>
+                <h4>Mva</h4>
+            </div>
+            <div id="sf-lines-top-small">
+                <p id="line-text">Varelinjer</p>
+            </div>
+            <div id="sf-lines">
+                <!--
+                <div class="sf-line">
+                    <div class="description-column">
+                        <div class="sf-line-input">
+                            <select id="product-1" name="product-1"></select>
+                        </div>
+                        <div class="sf-line-input">
+                            <h4 class="sf-header-hidden">Kommentar</h4>
+                            <input id="sale_comment-1" name="sale_comment-1" type="text" placeholder="Kommentar (ikke påkrevd)">
+                        </div>
+                    </div>
+                    <div class="sf-line-input line-split">
+                        <h4 class="sf-header-hidden">Pris</h4>
+                        <input id="price-1" name="price-1" type="number">
+                    </div>
+                    <div class="sf-line-input line-split">
+                        <h4 class="sf-header-hidden">Rabatt</h4>
+                        <input id="discount-1" name="discount-1" type="number">
+                    </div>
+                    <div class="sf-line-input line-split">
+                        <h4 class="sf-header-hidden">Antall</h4>
+                        <input id="amount-1" name="amount-1" type="number" >
+                    </div>
+                    <div class="sf-line-input line-split">
+                        <h4 class="sf-header-hidden">Mva</h4>
+                        <select id="sale_vat-1" name="sale_vat-1"></select>
+                    </div>
+                    <div class="sf-line-input sf-line-button">
+                        <p class="sf-line-total" id="sf-line-total-1">1500.00</p>
+                        <input class="sf-button" id="sf-button-1" type="button" Value="Slett linje" onclick="remove_line(this.parentNode.parentNode.id)">
+                    </div>
+                    <div class="sf-line-input">
+
+                    </div>
+                </div>
+                <div class="sf-line">
+                    <div class="description-column">
+                        <div class="sf-line-input">
+                            <h4 class="sf-header-hidden">Tekst</h4>
+                            <input id="description" name="description" type="text">
+                        </div>
+                        <ul class="sf-line-input" id="sale-type">
+                            <li>
+                                <input id="sale_type-0", name="sale_type" type="radio" value="1" checked="checked">
+                                <label for="sale_type-0">Vare (for videresalg)</label>
+                            </li>
+                            <li>
+                                <input id="sale_type-1", name="sale_type" type="radio" value="2">
+                                <label for="sale_type-1">Vare (egenprodusert)</label>
+                            </li>
+                            <li>
+                                <input id="sale_type-2", name="sale_type" type="radio" value="3">
+                                <label for="sale_type-2">Tjeneste</label>
+                            </li>
+                            <li>
+                            <input id="sale_type-3", name="sale_type" type="radio" value="4">
+                            <label for="sale_type-3">Annet</label>
+                            </li>
+                        </ul>
+                        <div class="sf-line-input">
+                            <h4 class="sf-header-hidden">Kommentar</h4>
+                            <input id="sale_comment-1" name="sale_comment-1" type="text">
+                        </div>
+                    </div>
+                    <div class="sf-line-input line-split">
+                        <h4 class="sf-header-hidden">Pris</h4>
+                        <input id="price-1" name="price-1" type="number">
+                    </div>
+                    <div class="sf-line-input line-split">
+                        <h4 class="sf-header-hidden">Rabatt</h4>
+                        <input id="discount-1" name="discount-1" type="number">
+                    </div>
+                    <div class="sf-line-input line-split">
+                        <h4 class="sf-header-hidden">Antall</h4>
+                        <input id="amount-1" name="amount-1" type="number">
+                    </div>
+                    <div class="sf-line-input line-split">
+                        <h4 class="sf-header-hidden">Mva</h4>
+                        <select id="sale_vat-1" name="sale_vat-1"></select>
+                    </div>
+                    <div class="sf-line-input sf-line-button">
+                        <p class="sf-line-total" id="sf-line-total-2">1500.00</p>
+                        <input class="sf-button" id="sf-button-1" type="button" Value="Slett linje" onclick="remove_line(this.parentNode.parentNode.id)">
+                    </div>
+                </div>
+                -->
+            </div>
+            <div class="sf-lines-bottom">
+                <h4 class="total-amount">0.00 (0.00 inkl. mva)</h4>
+                <input class="sf-button" type="button" Value="Ny produkt-linje" onclick="add_product_line()">
+                <input class="sf-button" type="button" Value="Ny fritekst-linje" onclick="add_freetext_line()">
+            </div>
+        </div>
+        <div class="sf-part">
+        <div class="pf-buttons">
+            <input class="button-red" type="button" value="Slett utkast" onclick="clear_sale_form()">
+            <input class="button-green" type="submit" value="Opprett faktura">
+        </div>
+    </div>
+    </div>
+</form>
+<script src="{{ url_for('static',filename='js/widget.js') }}"></script>
+
+</body>
+</html>

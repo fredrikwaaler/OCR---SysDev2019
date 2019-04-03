@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, BooleanField, RadioField
+from wtforms import StringField, PasswordField, SelectField, BooleanField, RadioField, DecimalField, TextAreaField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 
@@ -14,29 +14,31 @@ class ForgotForm(FlaskForm):
 
 
 class PurchaseForm(FlaskForm):
-    purchase_type = RadioField('Label', choices=[('1','Kjøp fra leverandør'),('2','Kontantkjøp')])
-    supplier = SelectField('Leverandør', choices=[('1', 'Meny'), ('2', 'Kiwi')])
+    purchase_type = RadioField('Label', choices=[('0', ''), ('1','Kjøp fra leverandør'),('2','Kontantkjøp')])
+    supplier = SelectField('Leverandør', choices=[('0', ''), ('1', 'Meny'), ('2', 'Kiwi')])
     invoice_date = DateField('Faktura')
     maturity_date = DateField('Forfall')
     invoice_number = StringField('Fakturanummer')
 
     text = StringField('Tekst')
-    billing_account = SelectField('Kostnadskonto', choices=[("100", "Matkonto"), ("101", "Utstyrskonto")])
-    gross_amount = StringField('Bruttobeløp')
-    vat = SelectField("Mva", choices=[('1', '25%'), ('2', '12%')])
-    net_amount = StringField("Nettobeløp")
+    billing_account = SelectField('Kostnadskonto', choices=[('0', ''), ("100", "Matkonto"), ("101", "Utstyrskonto")])
+    gross_amount = DecimalField('Bruttobeløp')
+    vat = SelectField("Mva", choices=[('0', ''), ('1', '25%'), ('2', '12%')])
+    net_amount = DecimalField("Nettobeløp")
 
     paid = BooleanField('Betalt')
+    account = SelectField('Betalt fra', choices=[('0', ''), ('1', 'Bankkonto'),('2', 'Kontanter') ])
+    amount = DecimalField('Amount')
 
 
 class SaleForm(FlaskForm):
-    sale_type = SelectField('Type', choices=[])
+    sale_type = SelectField('Type', choices=[('0', ''), ('1', 'Faktura')])
     date = DateField('Dato')
     days_to_maturity = StringField("Dager til forfalll")
-    comment = StringField('Kommentar')
-    account_number = StringField('Kontonummer')
+    comment = TextAreaField('Kommentar')
+    account_number = SelectField('Kontonummer', choices=[('1', 'Demokonto')])
 
-    contact = SelectField('Kontakt', choices=[("1", "Kontakt 1"), ("2", "Kontakt 2") ])
+    contact = SelectField('Kontakt', choices=[('0', ''), ("1", "Kontakt 1"), ("2", "Kontakt 2") ])
     our_reference = StringField('Din Referanse')
     their_reference = StringField('Deres Referanse')
 
@@ -65,10 +67,6 @@ class FikenModalForm(FlaskForm):
     password = PasswordField('Passord')
 
 
-class ConfirmPasswordForm(FlaskForm):
-    password = PasswordField('Bekreft Passordet')
-
-
 class CustomerForm(FlaskForm):
     name = StringField('Navn')
     org_nr = StringField('Org.nr')
@@ -85,6 +83,8 @@ class CustomerForm(FlaskForm):
 
 
 class SignUpForm(FlaskForm):
-    name = StringField('Name')
+    first_name = StringField('First name')
+    last_name = StringField('Last name')
     email = StringField('Email')
-    admin = BooleanField('Admin')
+    password = PasswordField('Password')
+    repeat_password = PasswordField('Password')

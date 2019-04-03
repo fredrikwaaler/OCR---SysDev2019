@@ -359,7 +359,6 @@ def change_fiken():
     if validated:
         current_user.fiken_manager.set_fiken_credentials(login, password)
         current_user.store_user()
-        flash("Du er nå logget inn med fiken.")
     else:
         for error in errors:
             flash(error)
@@ -388,10 +387,8 @@ def set_active_company():
     if "company_keys" in request.form.keys():
         new_active_index = int(request.form["company_keys"])
         new_active = current_user.fiken_manager.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
-        new_active_firm = current_user.fiken_manager.get_company_info()[new_active_index][0]
         current_user.fiken_manager.set_company_slug(new_active)
         current_user.store_user()
-        flash("{} valgt som aktivt firma.".format(new_active_firm))
     return redirect(url_for('profile'))
 
 
@@ -400,7 +397,6 @@ def set_active_company():
 def log_out_fiken():
     current_user.fiken_manager.set_fiken_credentials(None, None)
     current_user.store_user()
-    flash("Du er nå logget ut av fiken.")
     return redirect(url_for('profile'))
 
 

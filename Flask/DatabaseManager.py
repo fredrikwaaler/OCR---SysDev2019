@@ -14,27 +14,32 @@ class DatabaseManager:
         """
         self._database = CursorFromConnectionPool(**kwargs)
 
-    def store_user_info(self, email, password, name, fiken_manager, admin):
+    def store_user_info(self, email, password, name=None, fiken_manager=None):
         """
         Creates a record in the database.
         :param email: The email used to login the user
         :param password: The password to hash and store
         :param name: The users name
         :param fiken_manager: The fiken manager. Should be stored as a pickled byte object.
-        :param admin: '0' / false implies not admin, this is default. '1' / true is admin.
         """
+
+        '''
+        if fiken_manager:
+            if type(fiken_manager) is not bytes:
+                raise ValueError("The FikenManager must be a pickled byte object.")
+        '''
 
         # Then, store the record in the database
         with self._database as cursor:
             try:
-                cursor.execute('INSERT INTO UserInfo VALUES (%s, %s, %s, %s, %s) ', (email, password, name,
-                                                                                     fiken_manager, admin))
+                cursor.execute('INSERT INTO UserInfo VALUES (%s, %s, %s, %s) ', (email, password, name,
+                                                                                     fiken_manager))
             except ProgrammingError:
                 traceback.print_exc()
 
     def get_user_info_by_email(self, email):
         """
-        Queries the database for user info belonging to the user with the specified email.'
+        Queries the database for user info belonging to the user with the specified email.
         The user info is returned as a single tuple.
         :param email: The email to search by.
         :return: If the mail is present in the database, the corresponding data is returned as a tuple.
@@ -80,13 +85,14 @@ class DatabaseManager:
         :param email: The email of the relation to delete.
         """
         with self._database as cursor:
-            cursor.execute('DELETE FROM userinfo WHERE email = %s', (email,))
+            cursor.execute("DELETE FROM userinfo WHERE email = {}".format(email))
 
 
 
 
 
 
+# a = DatabaseManager(host="localhost", user="postgres", password="Sebas10an99", database="Sukkertoppen")
 
 
 

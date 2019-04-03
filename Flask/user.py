@@ -11,22 +11,24 @@ class User(UserMixin):
     """
 
     # The database shared by all users for storing/retrieving users
-    Dm = DatabaseManager(host="localhost", user="postgres", password="Sebas10an99", database="sukkertoppen")
+    Dm = DatabaseManager(host="localhost", user="postgres", password="password", database="Sukkertoppen")
 
-    def __init__(self, email, password, name, admin=False):
+    def __init__(self, email, password, name, new=False):
         """
         A user has an email, a password and a name.
         A user also has a associated FikenManager.
         This is retrieved automatically if the user already has one. Else, a new one is created.
         :param email: The users email
-        :param password: The users password - should be hashed.
+        :param password: The users password (not hashed - hashed automatically upon storing)
         :param name: The users name (first and last).
-        :param admin: Specifies whether or not the user is admin.
+        :param new: Specifies whether or not the user is new. Action is taken accordingly.
         """
         self.email = email
-        self.password = password
+        if new:
+            self.password = PasswordHandler.generate_hashed_password(password)
+        else:
+            self.password = password
         self.name = name
-        self.admin = admin
         self.active = True
         self.fiken_manager = self._get_fiken_manager()
 
@@ -45,28 +47,18 @@ class User(UserMixin):
         """
         return self.active
 
-    @property
-    def is_admin(self):
-        """
-        Returns whether or not the user is admin.
-        :return: True if the user is admin, else False.
-        """
-        return self.admin
-
     def change_password(self, new_pass):
         """
         Changes the password of the user. Hashes upon setting.
         :param new_pass: The new password.
         """
         self.password = PasswordHandler.generate_hashed_password(new_pass)
-        self.store_user()
 
     def change_email(self, new_email):
         """
-        Changes the mail of the current user.
+        Changes the mail of the current user. Will, naturally, only change the password if the user is stored.
         :param new_email: The new email
         """
-        # Validate that the supplied user is valid before changing password.
         if self.Dm.get_user_info_by_email(self.email):
             self.Dm.edit_user_info(self.email, email=new_email)
             self.email = new_email
@@ -79,12 +71,10 @@ class User(UserMixin):
         fm_to_store = pickle.dumps(self.fiken_manager)
         # If the user already exists, edit existing relation.
         if self.Dm.get_user_info_by_email(self.email):
-            self.Dm.edit_user_info(self.email, password=self.password, name=self.name, fiken_manager=fm_to_store,
-                                   admin=self.admin)
+            self.Dm.edit_user_info(self.email, password=self.password, name=self.name, fiken_manager=fm_to_store)
         # If the user does not exits, create a new relation.
         else:
-            self.Dm.store_user_info(email=self.email, password=self.password, name=self.name, fiken_manager=fm_to_store,
-                                    admin=self.admin)
+            self.Dm.store_user_info(email=self.email, password=self.password, name=self.name, fiken_manager=fm_to_store)
 
     def _get_fiken_manager(self):
         """
@@ -98,19 +88,6 @@ class User(UserMixin):
         else:
             return FikenManager()
 
-    def delete_user(self):
-        self.Dm.delete_user_by_email(self.email)
-
-    def generate_new_password(self):
-        """
-        Generates a new random password for the user.
-        :return: The new random password.
-        """
-        new_password = PasswordHandler.generate_random_password()
-        self.password = PasswordHandler.generate_hashed_password(new_password)
-        self.store_user()
-        return new_password
-
     @staticmethod
     def get_user(email):
         """
@@ -121,21 +98,9 @@ class User(UserMixin):
         # Get the user data from db if exists:
         user_data = User.Dm.get_user_info_by_email(email)
         if user_data:
-            return User(user_data[0], user_data[1], user_data[2], user_data[4])
+            return User(user_data[0], user_data[1], user_data[2])
         else:
             return None
-
-    @staticmethod
-    def user_exists(email):
-        """
-        Returns whether or not a user with the given email exists in the database used for users.
-        :param email: The email to check for.
-        :return: True if such a user exists, else False.
-        """
-        if User.Dm.get_user_info_by_email(email):
-            return True
-        else:
-            return False
 
 
 

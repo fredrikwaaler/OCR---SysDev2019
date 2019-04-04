@@ -93,12 +93,13 @@ class TextProcessor:
         :return: a suggestion for all the invoice information needed to register a purchase
         """
 
-        supplier = self.get_supplier_from_invoice()
-        invoice_date = self.get_invoice_date_from_invoice()
-        invoice_number = self.get_invoice_number_from_invoice()
-        maturity_date = self.get_maturity_date_from_invoice()
-        gross_amount = self.get_gross_amount_from_invoice()
-        vat = self.get_vat_from_invoice()
+        invoice_info = {"supplier": self.get_supplier_from_invoice(),
+                        "invoice_date": self(),
+                        "maturity_date": self.get_invoice_date(),
+                        "vat_and_gross_amount": self.get_total_vat_and_amount(),
+                        "organization_number": self.get_organization_number_for_receipt()
+                        }
+        return invoice_info
     def get_invoice_date(self):
         """
         gets invoice date from a text string made by the google vision api
@@ -114,13 +115,56 @@ class TextProcessor:
                 date = datetime.strptime(match.group(), '%d/%m/%Y').date()
                 return date
             except ValueError:
-                print("ValueError occured")
+                try:
+                    match = re.search(r'\d{2}.\d{2}.\d{2}', self._text_string)
+                    date = datetime.strptime(match.group(), '%d.%m.%y').date()
+                    return date
+                except ValueError:
+                    print("ValueError occured")
+                except AttributeError:
+                    match = re.search(r'\d{2}.\d{2}.\d{2}', self._text_string)
+                    date = datetime.strptime(match.group(), '%d.%m.%y').date()
+                    return date
+            except AttributeError:
+                match = re.search(r'\d{2}.\d{2}.\d{2}', self._text_string)
+                date = datetime.strptime(match.group(), '%d.%m.%y').date()
+                return date
+        except AttributeError:
+            match = re.search(r'\d{2}.\d{2}.\d{2}', self._text_string)
+            date = datetime.strptime(match.group(), '%d.%m.%y').date()
+            return date
 
     def get_invoice_number(self):
         """
         gets invoice number from a larger string
         :return: invoice number
         """
+        if "proteinfabrikken" in self._text_string:
+            start = self._text_string.index("Fakturanummer\n") + 13
+            end = self._text_string.index("Laís Marcolongo\n")
+            match = self._text_string[start: end:1]
+            return match
+        if "Best Emballasje AS" in self._text_string:
+            start = self._text_string.index("EMBALLASJE\n")
+            end = self._text_string.index("Faktura\n")
+            match = self._text_string[start: end:1]
+            list = match.split("\n")
+            invoice_number = list[2]
+            return invoice_number
+        else:
+            list = self._text_string.split("\n")
+            index_of_invoice_number = list.index("Fakturanummer")
+            found = False
+            invoice_number = None
+            while not found:
+                test_for = list[index_of_invoice_number]
+                if int(test_for):
+                    found = True
+                else:
+                    index_of_invoice_number = index_of_invoice_number + 1
+
+
+
 
     def get_total_amount_paid(self):
         """
@@ -128,8 +172,8 @@ class TextProcessor:
         :return: total amount paid for in NOK, returns None if the total amount is not found.
         """
         try:
-            start = self._text_string.index("NOK\n") +3;
-            end = self._text_string.index("GODKJENT\n")
+            start = self._text_string.index("NOK\n") + 4
+            end = self._text_string.index("GODKJENT\n") - 1
             match = self._text_string[start: end:1]
             return match
         except ValueError:
@@ -177,22 +221,26 @@ class TextProcessor:
         :return:
         """
         if "KIWI" in self.get_supplier_for_receipts():
-            try:
-                start = self._text_string.index("Grunnlag\n") + 9
-                end = self._text_string.index("Mva\n") - 1
-                match = self._text_string[start: end:1]
-                vat = match.split('\n')
-                new_start = end - 3
-                new_string = self._text_string[new_start:len(self._text_string)]
-                new_string = new_string.split('\n')
-                amount1 = new_string[4]
-                amount2 = new_string[5]
-                paired_vat_and_amount = {vat[0]: amount1, vat[1]: amount2}
-                print(paired_vat_and_amount)
-                #paired_vat_and_amount = {"15": self.get_total_amount_paid()}
+            if "25%" not in self._text_string:
+                paired_vat_and_amount = {"15": self.get_total_amount_paid()}
                 return paired_vat_and_amount
-            except ValueError:
-                print("ValueError occured")
+            else:
+                try:
+                    start = self._text_string.index("Grunnlag\n") + 9
+                    end = self._text_string.index("Mva\n") - 1
+                    match = self._text_string[start: end:1]
+                    vat = match.split('\n')
+                    new_start = end - 3
+                    new_string = self._text_string[new_start:len(self._text_string)]
+                    new_string = new_string.split('\n')
+                    amount1 = new_string[4]
+                    amount2 = new_string[5]
+                    paired_vat_and_amount = {vat[0]: amount1, vat[1]: amount2}
+                    print(paired_vat_and_amount)
+                    #paired_vat_and_amount = {"15": self.get_total_amount_paid()}
+                    return paired_vat_and_amount
+                except ValueError:
+                    print("ValueError occured")
         if "KITCH'N" in self._text_string:
             start = self._text_string.index("NOk\n") + 4
             end = self._text_string.index("GODKJENT\n") - 1
@@ -200,6 +248,9 @@ class TextProcessor:
             amount1 = match
             paired_vat_and_amount = {"25": amount1}
             return paired_vat_and_amount
+        if "BlomstesGarden" in self._text_string:
+            vat_and_gross_amount = {"25":self.get_total_amount_paid()}
+            return vat_and_gross_amount
         else:
             return None
 
@@ -277,6 +328,28 @@ class TextProcessor:
         :param receipt_supplier: the supplier you wish to add to the list of suppliers who'm specifically uses receipts
         """
         self._receipt_suppliers.append(receipt_supplier)
+    def get_maturity_date_from_invoice(self):
+        """
+        gets a suggestion for the maturity date of the invoice given
+        :return: a suggestion for the maturity date of the invoice given
+        """
+
+        start = self._text_string.index("Forfall") + 7
+        end = len(self._text_string)
+        new_string = self._text_string[start: end:1]
+        try:
+            match = re.search(r'\d{2}.\d{2}.\d{4}', new_string)
+            date = datetime.strptime(match.group(), '%d.%m.%Y').date()
+            return date
+        except ValueError:
+            try:
+                match = re.search(r'\d{2}.\d{2}.\d{2}', new_string)
+                date = datetime.strptime(match.group(), '%d.%m.%y').date()
+                return date
+            except ValueError:
+                print("ValueError occured...")
+
+
 
 
 
@@ -302,11 +375,14 @@ class TextProcessor:
 
 #Customer presentation
 vision_manager = VisionManager("key.json")
-img_text = vision_manager.get_text_detection_from_img("kvit.jpg")
+img_text = vision_manager.get_text_detection_from_img("fakt3.jpg")
 text_processor = TextProcessor(img_text)
-print(text_processor.get_receipt_info())
+#print(img_text)
+#print(text_processor.get_invoice_date())
+print(text_processor.get_invoice_number())
+#print(text_processor.get_maturity_date_from_invoice())
+#print(text_processor.get_invoice_info())
 #text_processor.get_receipt_info()
-print(img_text)
 # # print("Invoice supplier:")
 # # print(text_processor.get_supplier_from_invoice())
 # # print("ORG NR:")

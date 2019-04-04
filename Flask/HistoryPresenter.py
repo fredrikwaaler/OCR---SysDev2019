@@ -20,7 +20,12 @@ class HistoryPresenter:
                 if key in money_values:
                     purchase[key] = self.comma_adder(purchase[key])
 
-            purchase["type"] = "Purchase"
+            if purchase["paid"] == "False":
+                purchase["paid"] = "Nei"
+            else:
+                purchase["paid"] = "Ja"
+
+            purchase["type"] = "Kjøp"
             return_view.append((purchase, externals))
         return return_view
 
@@ -31,7 +36,18 @@ class HistoryPresenter:
         for sale in sales:
             if "customer" in sale.keys():
                 externals["customer"] = self.fiken_manager.make_fiken_get_request(sale["customer"])
-            sale["type"] = "Sale"
+
+            for key in sale.keys():
+                if key in money_values:
+                    sale[key] = self.comma_adder(sale[key])
+
+            if sale["paid"] == "False":
+                sale["paid"] = "Nei"
+            else:
+                sale["paid"] = "Ja"
+
+            sale["type"] = "Salg"
+
             return_view.append((sale, externals))
         return return_view
 

@@ -4,8 +4,6 @@ var span = document.getElementsByClassName('close');
 
 var body = document.querySelector('body');
 
-console.log(modal);
-console.log(btn);
 
 /*
 for (i = 0; i < modal.length; i++) {
@@ -50,6 +48,8 @@ span[2].onclick = function () {
     modal[2].style.display = "none";
     body.style.overflow = "auto";
 };
+
+
 
 window.onclick = function(event) {
     if (event.target == modal) {

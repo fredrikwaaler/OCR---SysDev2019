@@ -2,16 +2,26 @@
     padding: 0;
     display: block;
 }
-.message {
+.message, .success {
     margin: 20px 2px 0 0;
     display: block;
     list-style: None;
     padding: 6px 14px;
-    border: 1px red solid;
     border-radius: 4px;
-    background-color: rgba(244, 119, 119, 0.5);
     width: 80%;
 }
+
+.message {
+    background-color: rgba(244, 119, 119, 0.5);
+    border: 1px red solid;
+}
+
+.success {
+    background-color: rgba(144, 255, 0, 0.5);
+    border: 1px green solid;
+}
+
+
 
 @media screen and (min-width: 480px) {
   .message {

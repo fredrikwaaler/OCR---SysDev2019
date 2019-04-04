@@ -1,6 +1,7 @@
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_fresh
 import os, datetime, json, re
-from flask import Flask, render_template, flash, request, redirect, url_for, session, abort
+
+from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup
 from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
@@ -72,20 +73,6 @@ def purchase(image='dummy.png', pop=False):
         form.net_amount.data = pop['nettobelop']
     return render_template('purchase.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image,
                        current_user=current_user)
-
-
-@app.route('/widget', methods=["GET"])
-@login_required
-def widget():
-    form = PurchaseForm()
-    return render_template('purchase_widget.html', form=form)
-
-
-@app.route('/widget2', methods=["GET"])
-@login_required
-def widget2():
-    form = SaleForm()
-    return render_template('sale_widget.html', form=form)
 
 
 @app.route('/sale', methods=['GET'])
@@ -185,24 +172,25 @@ def sign_up():
         admin = form.data["admin"]
         validated, errors = validate_sign_up(name, email)
         if validated:
-            # Create new user and store to DB
             new_password = PasswordHandler.generate_random_password()
             hashed_new = PasswordHandler.generate_hashed_password(new_password)
-            new_user = User(email, hashed_new, name, admin)
-            new_user.store_user()
-
-            # Send a mail to the new user with credentials
             try:
                 mailer = Mailer(app.config["MAIL_LOGIN"], app.config["MAIL_PASSWORD"])
                 mailer.open_server()
                 mailer.send_new_user(email, new_password)
                 mailer.close_server()
-                flash("User was successfully registered. Email sent to user.")
+                flash("Bruker suksessfullt registrert. Mail sendt til bruker med info.", "success")
+
+                # Create new user and store to DB
+                new_user = User(email, hashed_new, name, admin)
+                new_user.store_user()
             except smtplib.SMTPException:
-                flash("Something went wrong. Please try again later or contact us if the problem consists.")
+                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
         else:
             for error in errors:
                 flash(error)
+
+        return redirect(url_for('sign_up'))
 
     return render_template('sign_up.html', title='Sign up', form=form)
 
@@ -259,9 +247,9 @@ def forgot_password():
                 mailer.send_password_reset(email, new_password)
                 mailer.close_server()
             except smtplib.SMTPException:
-                flash("Something went wrong. Please try again later or contact us if the problem persists.")
+                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
         else:
-            flash("No such user exists. Please enter a valid email.")
+            flash("Obs: Finner ingen bruker med den angitte epsoten.")
 
         return redirect(url_for('log_in'))
 
@@ -340,8 +328,8 @@ def change_name():
     if validated:
         current_user.name = new_name
         current_user.store_user()
+        flash("Ditt navn er nå endret til {}.".format(new_name))
     else:
-        # TODO - Display flash in html
         for error in errors:
             flash(error)
     return redirect(url_for('profile'))
@@ -355,12 +343,11 @@ def change_email():
     if validated:
         current_user.change_email(new_email)
         login_user(current_user)
+        flash("Din epost er nå endret til {}.".format(new_email))
     else:
-        # TODO - Display flash in html
         for error in errors:
             flash(error)
     return redirect(url_for('profile'))
-
 
 
 @app.route('/change_fiken', methods=['POST'])
@@ -371,10 +358,14 @@ def change_fiken():
 
     validated, errors = validate_new_fiken_user(login, password)
     if validated:
+        prev_logged_in = current_user.fiken_manager.has_valid_login()
         current_user.fiken_manager.set_fiken_credentials(login, password)
         current_user.store_user()
+        if not prev_logged_in:
+            flash("Logget inn på fiken som \"{}\".".format(login))
+        else:
+            flash("Endret fikenbruker til \"{}\".".format(login))
     else:
-        # TODO - Display flash in html
         for error in errors:
             flash(error)
     return redirect(url_for('profile'))
@@ -389,8 +380,8 @@ def change_password():
     if validated:
         current_user.change_password(new_pass)
         login_user(current_user)
+        flash("Passordet er nå endret.")
     else:
-        # TODO - Display flash in html
         for error in errors:
             flash(error)
     return redirect(url_for('profile'))
@@ -403,8 +394,10 @@ def set_active_company():
     if "company_keys" in request.form.keys():
         new_active_index = int(request.form["company_keys"])
         new_active = current_user.fiken_manager.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
+        new_active_firm = current_user.fiken_manager.get_company_info()[new_active_index][0]
         current_user.fiken_manager.set_company_slug(new_active)
         current_user.store_user()
+        flash("{} satt som nytt aktivt selskap i fiken.".format(new_active_firm))
     return redirect(url_for('profile'))
 
 
@@ -413,6 +406,7 @@ def set_active_company():
 def log_out_fiken():
     current_user.fiken_manager.set_fiken_credentials(None, None)
     current_user.store_user()
+    flash("Du er nå logget ut av fiken.")
     return redirect(url_for('profile'))
 
 

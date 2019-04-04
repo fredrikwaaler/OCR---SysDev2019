@@ -67,6 +67,10 @@ class FikenModalForm(FlaskForm):
     password = PasswordField('Passord')
 
 
+class ConfirmPasswordForm(FlaskForm):
+    password = PasswordField('Bekreft Passordet')
+
+
 class CustomerForm(FlaskForm):
     name = StringField('Navn')
     org_nr = StringField('Org.nr')

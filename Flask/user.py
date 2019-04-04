@@ -3,6 +3,7 @@ from DatabaseManager import DatabaseManager
 from FikenManager import FikenManager
 from PasswordHandler import PasswordHandler
 import pickle
+import settings
 
 
 class User(UserMixin):
@@ -11,7 +12,7 @@ class User(UserMixin):
     """
 
     # The database shared by all users for storing/retrieving users
-    Dm = DatabaseManager(host="localhost", user="postgres", password="password", database="Sukkertoppen")
+    Dm = DatabaseManager(host=settings.DB_HOST, user=settings.DB_USER, password=settings.DB_PASSWORD, database=settings.DB_DATABASE)
 
     def __init__(self, email, password, name, new=False):
         """
@@ -101,6 +102,19 @@ class User(UserMixin):
             return User(user_data[0], user_data[1], user_data[2])
         else:
             return None
+
+    @staticmethod
+    def user_exists(email):
+        """
+        Returns whether or not a user with the given email exists in the database used for users.
+        :param email: The email to check for.
+        :return: True if such a user exists, else False.
+        """
+        if User.Dm.get_user_info_by_email(email):
+            return True
+        else:
+            return False
+
 
 
 

@@ -342,11 +342,11 @@ def change_email():
     if validated:
         current_user.change_email(new_email)
         login_user(current_user)
+        flash("Din epost er nå endret til {}.".format(new_email))
     else:
         for error in errors:
             flash(error)
     return redirect(url_for('profile'))
-
 
 
 @app.route('/change_fiken', methods=['POST'])
@@ -357,8 +357,13 @@ def change_fiken():
 
     validated, errors = validate_new_fiken_user(login, password)
     if validated:
+        prev_logged_in = current_user.fiken_manager.has_valid_login()
         current_user.fiken_manager.set_fiken_credentials(login, password)
         current_user.store_user()
+        if not prev_logged_in:
+            flash("Logget inn på fiken som \"{}\"".format(login))
+        else:
+            flash("Endret fikenbruker til \"{}\"".format(login))
     else:
         for error in errors:
             flash(error)
@@ -374,6 +379,7 @@ def change_password():
     if validated:
         current_user.change_password(new_pass)
         login_user(current_user)
+        flash("Passordet er nå endret.")
     else:
         for error in errors:
             flash(error)
@@ -387,8 +393,10 @@ def set_active_company():
     if "company_keys" in request.form.keys():
         new_active_index = int(request.form["company_keys"])
         new_active = current_user.fiken_manager.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
+        new_active_firm = current_user.fiken_manager.get_company_info()[new_active_index][0]
         current_user.fiken_manager.set_company_slug(new_active)
         current_user.store_user()
+        flash("{} satt som nytt aktivt selskap i fiken.".format(new_active_firm))
     return redirect(url_for('profile'))
 
 
@@ -397,6 +405,7 @@ def set_active_company():
 def log_out_fiken():
     current_user.fiken_manager.set_fiken_credentials(None, None)
     current_user.store_user()
+    flash("Du er nå logget ut av fiken.")
     return redirect(url_for('profile'))
 
 

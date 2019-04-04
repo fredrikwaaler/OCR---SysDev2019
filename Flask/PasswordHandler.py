@@ -1,4 +1,6 @@
 from flask_bcrypt import Bcrypt
+from string import ascii_letters, digits
+import random
 
 
 class PasswordHandler:
@@ -28,3 +30,16 @@ class PasswordHandler:
         """
         matching = PasswordHandler._bcrypt_agent.check_password_hash(hashed_password, text_password)
         return matching
+
+    @staticmethod
+    def generate_random_password():
+        """
+        Generates a random password of upper- and lowercase letters and digits.
+        Password has random length from 6 to 9 (including boundaries).
+        :return: Returns a random password.
+        """
+        password = ""
+        valid_chars = ascii_letters + digits
+        for i in range(random.randint(6, 9)):
+            password += random.choice(valid_chars)
+        return password

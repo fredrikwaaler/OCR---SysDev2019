@@ -39,13 +39,13 @@ class VisionManager:
         texts = response.text_annotations
         text_string = ""
         for text in texts:
-            print('\n"{}"'.format(text.description) + "")
+            #print('\n"{}"'.format(text.description) + "")
             text_string = text_string + text.description
 
             vertices = (['({},{})'.format(vertex.x, vertex.y)
                          for vertex in text.bounding_poly.vertices])
 
-            print('bounds: {}'.format(','.join(vertices)))
+            #print('bounds: {}'.format(','.join(vertices)))
 
         return text_string
 
@@ -68,7 +68,37 @@ class TextProcessor:
         the VisionManager class to work properly.
         '''
         self._text_string = text_string
+        self._invoice_suppliers = ['proteinfabrikken', 'MARISOL KAKEDESIGN BARRETO', 'Best Emballasje AS']
+        self._receipt_suppliers = ['KIWI HATLANE', "KITCH'N MOA", "Blomster Gården AS"]
 
+
+    def get_receipt_info(self):
+        """
+        gets a suggestion for all the receipt information needed to ledger a purchase
+        :return: a suggestion for all the receipt information needed to ledger a purchase
+        """
+
+        receipt_info = {"supplier": self.get_supplier_for_receipts(),
+                        "invoice_date": self.get_invoice_date(),
+                        "maturity_date": self.get_invoice_date(),
+                        "vat_and_gross_amount": self.get_total_vat_and_amount(),
+                        "organization_number": self.get_organization_number_for_receipt()
+                        }
+
+        return receipt_info
+
+    def get_invoice_info(self):
+        """
+        gets a suggestion for all the invoice information needed to register a purchase
+        :return: a suggestion for all the invoice information needed to register a purchase
+        """
+
+        supplier = self.get_supplier_from_invoice()
+        invoice_date = self.get_invoice_date_from_invoice()
+        invoice_number = self.get_invoice_number_from_invoice()
+        maturity_date = self.get_maturity_date_from_invoice()
+        gross_amount = self.get_gross_amount_from_invoice()
+        vat = self.get_vat_from_invoice()
     def get_invoice_date(self):
         """
         gets invoice date from a text string made by the google vision api
@@ -91,6 +121,7 @@ class TextProcessor:
         gets invoice number from a larger string
         :return: invoice number
         """
+
     def get_total_amount_paid(self):
         """
         gets the total amount paid for within a string of a receipt processed by Googles vision api
@@ -104,26 +135,74 @@ class TextProcessor:
         except ValueError:
             print("ValueError occured")
 
-    def get_supplier(self):
+    def get_supplier_for_receipts(self):
         """
         gets a suggestion of the name of the supplier from a a text string of a receipt processed by Googles vision api
         the text string needs to come from the VisionManager class to work properly
         :return: the name of the supplier, returns None if the supplier is not found
         """
-        supplier = self._text_string.partition(' ')[0]
-        if("AS" in supplier):
-            supplier = supplier.split("AS")[0] + "AS"
-        if("Salaskvitterins" or "Salgskvittering" in supplier):
-            new_supplier = supplier.replace('Salaskvitterins', '')
-            return new_supplier
+        current_supplier = None
+        for supplier in self._receipt_suppliers:
+            if supplier in self._text_string:
+                current_supplier = supplier
+        if current_supplier is None:
+            supplier = self._text_string.partition(' ')[0]
+            if ("AS" in supplier):
+                supplier = supplier.split("AS")[0] + "AS"
+            if ("Salaskvitterins" or "Salgskvittering" in supplier):
+                if "Salaskvitterins" in supplier:
+                    supplier = supplier.replace('Salaskvitterins', '')
+                if "Salgskvittering" in supplier:
+                    supplier = supplier.replace('Salgskvittering', '')
+                return supplier
+            else:
+                return supplier
         else:
-            return supplier
+            return current_supplier
 
-    def get_inidvidual_supplies(self):
+    def get_individual_supplies(self):
         """
         gets a suggestion of the individual supplies that where listed on the given receipt.
         :return: a dictionary of the individual supplies that where listed on the given receipt.
         """
+        if self.get_supplier().lower() == "kiwi":
+            return self.get_individual_supplies_from_kiwi()
+        else:
+            return_string = "Could not find supplies"
+            return return_string
+
+    def get_total_vat_and_amount(self):
+        """
+
+        :return:
+        """
+        if "KIWI" in self.get_supplier_for_receipts():
+            try:
+                start = self._text_string.index("Grunnlag\n") + 9
+                end = self._text_string.index("Mva\n") - 1
+                match = self._text_string[start: end:1]
+                vat = match.split('\n')
+                new_start = end - 3
+                new_string = self._text_string[new_start:len(self._text_string)]
+                new_string = new_string.split('\n')
+                amount1 = new_string[4]
+                amount2 = new_string[5]
+                paired_vat_and_amount = {vat[0]: amount1, vat[1]: amount2}
+                print(paired_vat_and_amount)
+                #paired_vat_and_amount = {"15": self.get_total_amount_paid()}
+                return paired_vat_and_amount
+            except ValueError:
+                print("ValueError occured")
+        if "KITCH'N" in self._text_string:
+            start = self._text_string.index("NOk\n") + 4
+            end = self._text_string.index("GODKJENT\n") - 1
+            match = self._text_string[start: end:1]
+            amount1 = match
+            paired_vat_and_amount = {"25": amount1}
+            return paired_vat_and_amount
+        else:
+            return None
+
 
 
     def get_individual_supplies_from_kiwi(self):
@@ -149,19 +228,97 @@ class TextProcessor:
             return supply_list
         except ValueError:
             print("ValueError occured")
-            print(ValueError.with_traceback())
+
+    def get_organization_number_for_receipt(self):
+        """
+        gets a suggestion for the organization number of the supplier on the receipt given as a string.
+        :return: a suggestion for the organization number of the supplier on the receipt given as a string.
+        """
+        if "kiwi" in self._text_string:
+            try:
+                start = self._text_string.index("ORG. NR.") + 9
+                end = self._text_string.index("MVA")
+                match = self._text_string[start: end:1]
+                return match
+            except ValueError:
+                print("ValueError occured")
+
+        if "kiwi" not in self._text_string:
+            try:
+                match = re.search(r'\d{3} \d{3} \d{3}', self._text_string)
+                org_nr = match.group(0)
+                return org_nr
+            except ValueError:
+                print("ValueError occured")
+        else:
+            return "could not find organization number..."
+
+    def get_supplier_from_invoice(self):
+        """
+        gets a suggestion ofor the supplier on the invoice given.
+        :return: a suggestion ofor the supplier on the invoice given.
+        """
+        current_supplier = None
+        for supplier in self._suppliers:
+            if supplier in self._text_string:
+                current_supplier = supplier
+        return current_supplier
+
+    def add_invoice_supplier(self, invoice_supplier):
+        """
+        adds a supplier to the list of suppliers who'm specifically uses invoices
+        :param invoice_supplier: the supplier you wish to add to the list of suppliers who'm specifically uses invoices
+        """
+        self._invoice_suppliers.append(invoice_supplier)
+
+    def add_receipt_supplier(self, receipt_supplier):
+        """
+        adds a supplier to the list of suppliers who'm specifically uses receipts
+        :param receipt_supplier: the supplier you wish to add to the list of suppliers who'm specifically uses receipts
+        """
+        self._receipt_suppliers.append(receipt_supplier)
 
 
+
+
+#
+# vision_manager = VisionManager("key.json")
+# img_text = vision_manager.get_text_detection_from_img("kvit.jpg")
+#print(img_text)
+# text_processor = TextProcessor(img_text)
+# print("Amount paid:")
+# print(text_processor.get_total_amount_paid())
+# print("Invoice date:")
+# print(text_processor.get_invoice_date())
+# print("Supplier:")
+# print(text_processor.get_supplier())
+# print("Individual supplies:")
+# for string in text_processor.get_individual_supplies_from_kiwi():
+#     print(string)
+# print("individual vat:")
+# print(text_processor.get_individual_vat_from_kiwi())
+
+
+
+#Customer presentation
 vision_manager = VisionManager("key.json")
 img_text = vision_manager.get_text_detection_from_img("kvit.jpg")
-print(img_text)
 text_processor = TextProcessor(img_text)
-print("Amount paid:")
-print(text_processor.get_total_amount_paid())
-print("Invoice date:")
-print(text_processor.get_invoice_date())
-print("Supplier:")
-print(text_processor.get_supplier())
-print("Individual supplies:")
-for string in text_processor.get_individual_supplies_from_kiwi():
-    print(string)
+print(text_processor.get_receipt_info())
+#text_processor.get_receipt_info()
+print(img_text)
+# # print("Invoice supplier:")
+# # print(text_processor.get_supplier_from_invoice())
+# # print("ORG NR:")
+# # print(text_processor.get_organization_number_for_receipt())
+# print("Amount paid:")
+# print(text_processor.get_total_amount_paid())
+# print("Invoice date:")
+# print()
+# print(text_processor.get_invoice_date())
+# print()
+# # print("Supplier:")
+# # print(text_processor.get_supplier())
+# # print()
+# print("Total vat and amount:")
+# print(text_processor.get_total_vat_and_amount())

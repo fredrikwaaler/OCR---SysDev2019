@@ -4,36 +4,54 @@
 <h2>Min Konto</h2>
 <!--Info about the users name and email that we have-->
 <!--Structure: "Name:"    <actual name>  <Change button> -->
-<div class="box-display">
+<div class="box-display" id="user-account">
     <form method="POST" action="{{ url_for('change_name') }}">
-        <h3>Navn</h3>
+        <h3 class="first-field-title">Navn</h3>
         <p>{{ name }}</p>
         {{ form.new_name }}
         <input class="boxedButton" type="submit" Value="Endre">
     </form>
-</div>
 
-<div class="box-display">
+    <!-- Change email here -->
     <form method="POST" action="{{ url_for('change_email') }}">
         <h3>Email</h3>
         <p>{{ email }}</p>
         {{ form.new_email }}
         <input class="boxedButton" type="submit" Value="Endre">
     </form>
+
+<!--Change password here -->
+    <form method="POST" action="{{ url_for('change_password') }}">
+        <h3>Nytt passord</h3>
+        {{ form.new_password }}
+        <h3>Gjenta passord</h3>
+        {{ form.repeat_password }}
+        <input class="last-boxed-button" type="submit" Value="Endre">
+    </form>
 </div>
 
+<hr>
+
+<!-- Change/connect to fiken user here -->
 <div class="box-display">
-    <h3>Fikenbruker</h3>
-    <input class="stacked_button modal_button" id="boxedButtonPointer" type="submit" Value="Endre bruker">
-    {% if current_user.fiken_manager.has_valid_login() %}
-    <span class="active_info">{{ current_user.fiken_manager.get_fiken_login() }}</span>
-    <br>
-    <input class="stacked_button modal_button" type="submit" Value="Endre firma">
+    <h3 class="first-field-title">Fikenbruker</h3>
+    {% if not current_user.fiken_manager.has_valid_login() %}
+        <input class="stacked_button modal_button" type="submit" Value="Logg Inn" >
+        <span class="modal_button"></span>
+    {% else %}
+        <input class="stacked_button modal_button" type="submit" Value="Endre bruker">
+        <span class="active_info">{{ current_user.fiken_manager.get_fiken_login() }}</span>
+        <br>
+        <input class="stacked_button modal_button" type="submit" Value="Endre firma">
     {%  if current_user.fiken_manager.get_active_company_name() %}
-    <span class="active_info">{{ current_user.fiken_manager.get_active_company_name() }}</span>
+        <span class="active_info">{{ current_user.fiken_manager.get_active_company_name() }}</span>
     {% endif %}
+        <form action="{{ url_for('log_out_fiken') }}">
+            <input class="stacked_button" type="submit" Value="Logg ut">
+        </form>
     {% endif %}
 </div>
+
 <!-- Code for modal content for the change Fiken user functionality-->
 <div class="modal">
     <div class="modal-content">
@@ -79,21 +97,8 @@
         </div>
     </div>
 
-<!--Just a line to make sure the user understands the semantic change-->
-<div class="newline"></div>
-<!--Change password here-->
-<div class=box-display>
-    <form method="POST" action="{{ url_for('change_password') }}">
-        <h3>Nytt passord</h3>
-        {{ form.new_password }}
-        <h3>Gjenta passord</h3>
-        {{ form.repeat_password }}
-        <input class="boxedButton" type="submit" Value="Endre">
-    </form>
-</div>
-
-
-<div class="newline"></div>
+<!-- invisable box to help align content with box-display -->
+<div class ="box-invis">
 <!--Buttons to download userdata and deleting account-->
 <form method="POST" action="{{ url_for('get_user_data') }}">
     <input type="submit" Value="Last ned brukerdata" class="buttons" id="dlUserData">
@@ -105,8 +110,14 @@
             <form method="POST" action="{{ url_for('delete_account') }}">
                 <h2>Slett konto</h2>
                 <p>All brukerdata vil bli slettet</p>
+                <p>Vennligst bekreft passordet ditt før du kan slette kontoen.</p>
+                Passord: {{ confirm_password_form.password }}
                 <input class="boxedButton" id="warning" type="submit" Value="Slett konto">
             </form>
         </div>
     </div>
+
+
+
+</div>
 {% endblock container %}

@@ -1,13 +1,18 @@
 {
     "csrv_token": "jksakjnhdflafs",
-    "type_kjop": 1,
-    "fakturadato": "2019-12-31",
-    "fakturanummer": 234243,
-    "forfallsdato": "2019-12-31",
-    "tekst": "Tekst",
-    "kostnadskonto": 100,
-    "bruttobelop": 99999,
-    "mva": 1,
-    "nettobelop": 88888
+    "purchase_type": 1,
+    "supplier": "Kiwi",
+    "invoice_date": "2019-12-31",
+    "invoice_number": 234243,
+    "maturity_date": "2019-12-31",
+
+
+    "text": "Tekst",
+    "billing_account": 100,
+    "gross_amount": 99999,
+    "vat": 1,
+    "net_amount": 88888
+
+
   }
   

@@ -211,5 +211,9 @@ class FikenManager:
             raise ValueError("The slug must be set for the FikenManager before interacting with the api. "
                              "Use 'set_company_slug'")
 
+    @staticmethod
+    def is_valid_credentials(login, password):
+        response = get(url="https://fiken.no/api/v1/whoAmI", auth=(login, password))
+        return response.status_code == 200
 
 

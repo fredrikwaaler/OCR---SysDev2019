@@ -1,1 +1,1 @@
-{"csrf_token": "ImVhMmYwNjkzODk1MTFlYjUyNTlkNjVkMTQwNzY1Mjk3ZTZiY2Q3YzIi.XJoXnA.KNs4hAho6UEZHBhnP13VkwGoZPk", "supplier": "1", "invoice_date": "2019-12-31", "invoice_number": "234243", "maturity_date": "2019-12-31", "text": "Tekst", "billing_account": "100", "gross_amount": "99999", "vat": "1", "net_amount": "88888"}
+{"purchase_type": "1", "supplier": "0", "invoice_date": "", "invoice_number": "", "maturity_date": "", "text-7": "", "gross_amount-7": "", "net_amount-7": "", "account": "0"}

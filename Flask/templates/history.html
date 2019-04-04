@@ -1,23 +1,25 @@
-{% extends 'layout_post.html' %}
+{% extends 'layout_post_warning.html' %}
 {% block container %}
 <h2>Historikk</h2>
 <!--Salg, kjøp and Alle are check buttons-->
 {% if entry_view|length > 0 %}
+
+{# Keeps control over which radio-button should be checked when the user enters / is redirected to the site. #}
 <form name="filter_ledger" class="filter_buttons" method="post" action="">
     {%  if not checked %}
-    <input onclick="this.form.submit();" type="radio" name="type" value="all" checked="checked"> All
-    <input onclick="this.form.submit();" type="radio" name="type" value="purchases"> Purchases
-    <input onclick="this.form.submit();" type="radio" name="type" value="sales"> Sales
+    <input onclick="this.form.submit();" type="radio" name="type" value="all" checked="checked"> Alle
+    <input onclick="this.form.submit();" type="radio" name="type" value="purchases"> Kjøp
+    <input onclick="this.form.submit();" type="radio" name="type" value="sales"> Salg
 
     {%  elif checked == "purchases" %}
-    <input onclick="this.form.submit();" type="radio" name="type" value="all"> All
-    <input onclick="this.form.submit();" type="radio" name="type" value="purchases" checked="checked"> Purchases
-    <input onclick="this.form.submit();" type="radio" name="type" value="sales"> Sales
+    <input onclick="this.form.submit();" type="radio" name="type" value="all"> Alle
+    <input onclick="this.form.submit();" type="radio" name="type" value="purchases" checked="checked"> Kjøp
+    <input onclick="this.form.submit();" type="radio" name="type" value="sales"> Salg
 
     {% elif checked == "sales" %}
-    <input onclick="this.form.submit();" type="radio" name="type" value="all"> All
-    <input onclick="this.form.submit();" type="radio" name="type" value="purchases"> Purchases
-    <input onclick="this.form.submit();" type="radio" name="type" value="sales" checked="checked"> Sales
+    <input onclick="this.form.submit();" type="radio" name="type" value="all"> Alle
+    <input onclick="this.form.submit();" type="radio" name="type" value="purchases"> Kjøp
+    <input onclick="this.form.submit();" type="radio" name="type" value="sales" checked="checked"> Salg
     {% endif %}
 
 </form>
@@ -30,20 +32,17 @@
 
     </button>
     <div class="content">
-        {%  if entry["downloadUrl"] %}
-            <img src="{{ entry["downloadUrl"] }}" alt="entry_image" type="application/pdf">
-        {%  endif %}
 
         <div class="entry_info">
 
             <div class="entry_stats">
-            <p>ID: {{ entry["identifier"] }}</p>
+            <p>Fakturanr: {{ entry["identifier"] }}</p>
             {% if external["supplier"] %}
-                <p>Supplier: {{ external["supplier"]["name"] }}</p>
+                <p>Leverandør: {{ external["supplier"]["name"] }}</p>
             {% elif external["customer"] %}
-                <p>Customer: {{ external["customer"]["name"] }}</p>
+                <p>Kunde: {{ external["customer"]["name"] }}</p>
             {% endif %}
-            <p>Paid: {{ entry["paid"] }}</p>
+            <p>Betalt: {{ entry["paid"] }}</p>
             </div>
 
             <div class="entry_description">
@@ -51,15 +50,24 @@
             </div>
 
             <div class="entry_calc">
-                <p>
-
-                </p>
+                {%  if entry["downloadUrl"] %}
+                    <img src="{{ entry["downloadUrl"] }}" alt="entry_image" type="application/pdf">
+                {%  endif %}
             </div>
+
+            <hr>
         </div>
     </div>
 {% endfor %}
 {% else %}
-    <p class="no_history">No history. Add sales and purchases first.</p>
+    {% if not current_user.fiken_manager.has_valid_login() %}
+        <p class="no_history">Du må <a href="{{ url_for('profile') }}">logge inn</a> i fiken før du kan bruke denne siden.</p>
+    {% elif not current_user.fiken_manager.get_company_slug() %}
+        <p class="no_history">Du må <a href="{{ url_for('profile') }}">velge</a> et aktivt selskap fra fiken før du bruker denne siden.</p>
+    {% else %}
+        <p class="no_history">Ingen historikk. Legg til <a href="{{ url_for('purchase') }}">kjøp</a>
+        og <a href="{{ url_for('sale') }}">salg</a> først.</p>
+    {% endif %}
 {%  endif %}
 <div class="marginbox"></div>
 
@@ -80,6 +88,8 @@ for (i = 0; i < coll.length; i++) {
   });
 }
 </script>
+
+
 
 
 {% endblock container %}

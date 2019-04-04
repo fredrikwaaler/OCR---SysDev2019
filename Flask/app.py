@@ -1,6 +1,7 @@
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_fresh
 import os, datetime, json, re
-from flask import Flask, render_template, flash, request, redirect, url_for, session, g
+
+from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup
 from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
@@ -8,7 +9,9 @@ from werkzeug.utils import secure_filename
 from HistoryPresenter import HistoryPresenter
 from user import User
 from PasswordHandler import PasswordHandler
-from FormValidator import validate_new_name, validate_new_email, validate_new_password
+from FormValidator import validate_new_name, validate_new_email, validate_new_password, validate_new_fiken_user, validate_sign_up
+from mailer import Mailer
+import smtplib
 
 
 def create_login_manager():
@@ -41,6 +44,9 @@ nav.register_element('nav', navbar)
 
 nav.init_app(app)
 
+# Get setting for configuration
+app.config.from_object('settings')
+
 # Uploading files to server
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -50,6 +56,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 lm = create_login_manager()
 lm.init_app(app)
 lm.login_view = 'log_in'
+
 
 
 @app.route('/purchase', methods=['GET'])
@@ -104,6 +111,7 @@ def history():
 def profile():
     form = ProfileForm()
     fiken_modal_form = FikenModalForm()
+    confirm_password_form = ConfirmPasswordForm()
 
     # Retrieve user-specific data
     name = current_user.name
@@ -118,7 +126,8 @@ def profile():
             companies.append((cmps[i], i))
     else:
         companies = []
-    return render_template('profile.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form, name=name, email=email,
+    return render_template('profile.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form,
+                           confirm_password_form=confirm_password_form, name=name, email=email,
                            companies=companies, current_user=current_user)
 
 
@@ -148,33 +157,42 @@ def log_in():
 @app.route('/log_out')
 def log_out():
     logout_user()
-    return redirect('log_in')
+    return redirect(url_for('log_in'))
 
 
 @app.route('/sign_up', methods=['GET', 'POST'])
 @login_required
 def sign_up():
+    if not current_user.is_admin:
+        abort(401)
     form = SignUpForm()
-    if request.method == 'POST':
-        fault = False
-        if not is_filled_out(form):
-            flash("Alle felter må fylles ut")
-            fault = True
-        if not is_valid_email(form.email.data):
-            flash("E-post er ikke en gyldig addresse")
-            fault = True
-        if not is_valid_password(form.password.data):
-            flash("Passord er ugyldig (Minst 8 karakterer)")
-            if not form.password.data == form.repeat_password.data:
-                flash("Passord må være likt")
-            fault = True
+    if form.is_submitted():
+        name = form.data["name"]
+        email = form.data["email"]
+        admin = form.data["admin"]
+        validated, errors = validate_sign_up(name, email)
+        if validated:
+            new_password = PasswordHandler.generate_random_password()
+            hashed_new = PasswordHandler.generate_hashed_password(new_password)
+            try:
+                mailer = Mailer(app.config["MAIL_LOGIN"], app.config["MAIL_PASSWORD"])
+                mailer.open_server()
+                mailer.send_new_user(email, new_password)
+                mailer.close_server()
+                flash("Bruker suksessfullt registrert. Mail sendt til bruker med info.", "success")
 
-        if not fault:
-            # TODO - Create new user in database
-            session['email'] = 'test_value'
-            return redirect(url_for('log_in'))
+                # Create new user and store to DB
+                new_user = User(email, hashed_new, name, admin)
+                new_user.store_user()
+            except smtplib.SMTPException:
+                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+        else:
+            for error in errors:
+                flash(error)
 
-    return render_template('sign_up.html', title="Sign up", form=form)
+        return redirect(url_for('sign_up'))
+
+    return render_template('sign_up.html', title='Sign up', form=form)
 
 
 def is_filled_out(form):
@@ -217,6 +235,24 @@ def is_valid_password(password):
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     form = ForgotForm()
+    if form.validate_on_submit():
+        email = form.data["email"]
+        if User.user_exists(email):
+            user = User.get_user(email)
+            new_password = user.generate_new_password()
+
+            try:
+                mailer = Mailer(app.config["MAIL_LOGIN"], app.config["MAIL_PASSWORD"])
+                mailer.open_server()
+                mailer.send_password_reset(email, new_password)
+                mailer.close_server()
+            except smtplib.SMTPException:
+                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+        else:
+            flash("Obs: Finner ingen bruker med den angitte epsoten.")
+
+        return redirect(url_for('log_in'))
+
     return render_template('forgot_password.html', title="Glemt Passord", form=form)
 
 
@@ -292,8 +328,8 @@ def change_name():
     if validated:
         current_user.name = new_name
         current_user.store_user()
+        flash("Ditt navn er nå endret til {}.".format(new_name))
     else:
-        # TODO - Display flash in html
         for error in errors:
             flash(error)
     return redirect(url_for('profile'))
@@ -307,18 +343,32 @@ def change_email():
     if validated:
         current_user.change_email(new_email)
         login_user(current_user)
+        flash("Din epost er nå endret til {}.".format(new_email))
     else:
-        # TODO - Display flash in html
         for error in errors:
             flash(error)
     return redirect(url_for('profile'))
 
 
-
 @app.route('/change_fiken', methods=['POST'])
 @login_required
 def change_fiken():
-    return "NONFUNCTIONAL > Change Fiken"
+    login = request.form["email"]
+    password = request.form["password"]
+
+    validated, errors = validate_new_fiken_user(login, password)
+    if validated:
+        prev_logged_in = current_user.fiken_manager.has_valid_login()
+        current_user.fiken_manager.set_fiken_credentials(login, password)
+        current_user.store_user()
+        if not prev_logged_in:
+            flash("Logget inn på fiken som \"{}\"".format(login))
+        else:
+            flash("Endret fikenbruker til \"{}\"".format(login))
+    else:
+        for error in errors:
+            flash(error)
+    return redirect(url_for('profile'))
 
 
 @app.route('/password', methods=['POST'])
@@ -330,8 +380,8 @@ def change_password():
     if validated:
         current_user.change_password(new_pass)
         login_user(current_user)
+        flash("Passordet er nå endret.")
     else:
-        # TODO - Display flash in html
         for error in errors:
             flash(error)
     return redirect(url_for('profile'))
@@ -344,8 +394,19 @@ def set_active_company():
     if "company_keys" in request.form.keys():
         new_active_index = int(request.form["company_keys"])
         new_active = current_user.fiken_manager.get_company_info()[new_active_index][2]  # Nr 2 in tuple is slug
+        new_active_firm = current_user.fiken_manager.get_company_info()[new_active_index][0]
         current_user.fiken_manager.set_company_slug(new_active)
         current_user.store_user()
+        flash("{} satt som nytt aktivt selskap i fiken.".format(new_active_firm))
+    return redirect(url_for('profile'))
+
+
+@app.route('/log_out_fiken', methods=['GET'])
+@login_required
+def log_out_fiken():
+    current_user.fiken_manager.set_fiken_credentials(None, None)
+    current_user.store_user()
+    flash("Du er nå logget ut av fiken.")
     return redirect(url_for('profile'))
 
 
@@ -358,7 +419,13 @@ def get_user_data():
 @app.route('/delete_account', methods=['POST'])
 @login_required
 def delete_account():
-    return "NONFUNCTIONAL > Delete Account"
+    if PasswordHandler.compare_hash_with_text(current_user.password, request.form["password"]):
+        current_user.delete_user()
+        logout_user()
+        return redirect(url_for('log_in'))
+    else:
+        flash("Passordet stemmer ikke. Vennligst prøv på nytt.")
+        return redirect(url_for('profile'))
 
 
 @app.route('/create_contact', methods=['POST'])

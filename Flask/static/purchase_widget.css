@@ -1,0 +1,389 @@
+body {
+    font-family: 'Overpass', sans-serif;
+    margin: 10px 15px;
+}
+
+/*
+    ====================
+        Purchase Form
+    ====================
+ */
+
+.main-form {
+    margin: 0;
+    padding:0;
+    display: grid;
+    grid-template-columns: 1fr;
+
+}
+
+.form-part {
+    margin:10px 0;
+    padding: 10px 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid #e3e3e3;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+}
+
+.pf-group {
+    margin:0;
+    display:grid;
+}
+
+.pf-form-input, .pf-line-input, .sf-line-input {
+    margin:0;
+    padding: 10px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.file-upload {
+    margin: 0;
+}
+
+h4 {
+    margin:0;
+    padding:0;
+    font-size: 14px;
+}
+
+.total-amount {
+    float:right;
+    padding-bottom: 4px;
+}
+
+.pf-line {
+    margin:0;
+    padding: 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    background-image: linear-gradient(#f3f3f3, #f5f5f5);
+    border-top: 1px solid #ccc;
+}
+
+.pf-header-hidden, .sf-header-hidden {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.pf-lines-bottom, .sf-lines-bottom {
+    margin:0;
+    padding: 10px 0;
+    border-top: 1px solid #ccc;
+}
+
+.pf-lines-top {
+    display: none;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.pf-buttons {
+    padding: 10px 0;
+}
+
+.button-red {
+    margin:0;
+    padding:10px 0;
+    float: left;
+    width: 125px;
+    font-size: 14px;
+    color: #fff;
+    background-color: rgba(216, 8, 8, 0.9);
+    border: 1px solid red;
+    border-radius: 4px;
+}
+
+.button-green {
+    margin:0;
+    padding:10px 0;
+    float: right;
+    width: 125px;
+    font-size: 14px;
+    color: #fff;
+    background-color: rgba(12, 135, 1, 0.9);
+    border: 1px solid green;
+    border-radius: 4px;
+}
+
+
+#pf-paid h4, #pf-paid p {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+#pf-paid p {
+    font-size: 12px;
+}
+
+/* Needed to maintain line-height */
+#invoice_number-block {
+    max-height: 90px;
+}
+
+select, input[type="text"], input[type="number"], input[type="date"], textarea{
+    margin:0;
+    padding:4px 0;
+    width: 100%;
+    font-size: 14px;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+
+#pf-paid-content, #pf-payment-content {
+    margin: 0;
+    padding: 10px 15px;
+}
+
+
+
+
+#pf-payment {
+    display: none;
+}
+
+#purchase_type {
+    margin:0;
+    padding: 0;
+    height: 20px;
+}
+
+#purchase_type li{
+    left:0;
+    margin:0;
+    padding-right: 5px;
+    list-style-type: none;
+    float:left;
+}
+
+#supplier-button, .pf-button, .sf-button {
+    margin:0;
+    padding:4px 0;
+    width:100%;
+    font-size: 14px;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+.hidden {
+    display: none;
+}
+
+
+
+select:disabled, input[type="text"]:disabled, #supplier-button:disabled, input:disabled{
+    background-color: #eee;
+}
+
+/*
+    =================
+        Sale Form
+    =================
+
+ */
+
+.sf-upper {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.sf-form-input {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 10px 0;
+}
+
+#maturity-text {
+    margin:5px 0;
+    font-size: 14px;
+}
+#sale-type {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0;
+    padding: 0;
+}
+
+#sale-type li {
+    left: 0;
+    margin: 0;
+    padding: 5px 5px;
+    list-style-type: none;
+    font-size: 13px;
+}
+
+
+
+.sf-line {
+    margin:0;
+    padding:0;
+    display: grid;
+    grid-template-columns: 1fr;
+    background-image: linear-gradient(#f3f3f3, #f5f5f5);
+    border-top: 1px solid #ccc;
+}
+
+.sf-line-input {
+    padding: 10px 0;
+}
+
+.sf-line-split {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.line-split {
+    grid-template-columns: 1fr 2fr;
+    text-align: right;
+}
+
+.line-split h4 {
+    padding: 0 14px;
+    text-align: right;
+    line-height: 30px;
+}
+
+
+#line-text {
+    margin: 5px 0;
+}
+
+.sf-line-total {
+    margin: 0;
+    padding: 0;
+    text-align: right;
+}
+
+#sf-lines-top-big {
+    display: none;
+}
+
+textarea {
+    resize: none;
+}
+
+@media screen and (min-width: 480px) {
+    .pf-form-input {
+        grid-template-columns: 1fr 2fr;
+    }
+
+    .input-header {
+        padding:0 10px;
+        text-align: right;
+        line-height: 30px;
+    }
+
+    #purchase_type {
+        line-height: 30px;
+    }
+
+    #pf-payment-content {
+        width: 60%;
+    }
+
+    .sf-line-split {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #sale-type {
+        display: inline-block;
+    }
+
+    #sale-type li {
+        float:left;
+    }
+    @media screen and (min-width: 1200px) {
+        body {
+            margin: 0 auto;
+            width: 70%;
+        }
+        .pf-split {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .pf-line {
+            grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
+            grid-column-gap: 1em;
+        }
+
+        h4 {
+            font-size: 18px;
+        }
+        .pf-header-hidden, .sf-header-hidden {
+            display: none;
+        }
+
+        .pf-lines-top {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
+            grid-column-gap: 1em;
+        }
+
+        /*
+        Sale form
+         */
+
+        .sf-upper {
+            grid-template-columns: 1fr 1fr;
+            grid-column-gap: 3em;
+        }
+        .sf-form-input {
+            grid-template-columns: 1fr 2fr;
+        }
+        .sf-form-input h4, .sf-line-total {
+            padding:0 10px;
+            text-align: right;
+            line-height: 30px;
+        }
+
+        #sf-lines-top-small {
+            display: none;
+        }
+
+        #sf-lines-top-big {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 1fr 2fr;
+            grid-column-gap: 1em;
+        }
+
+        .sf-line{
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 1fr 2fr;
+            grid-column-gap: 1em;
+        }
+        .sf-line-input {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: min-content;
+        }
+
+        .sf-line-button {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .sf-reference-block {
+            display:grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr auto;
+        }
+
+        #sf-reference {
+            grid-template-rows: min-content;
+        }
+
+        #reference-fill {
+            min-height: 150px;
+        }
+    }
+}

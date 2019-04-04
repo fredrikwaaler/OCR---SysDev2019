@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Widget</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='purchase_widget.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+<!--
+<div class="pf-part" id="pf-upload">
+        <div class="file-upload">
+            <form method="POST" action="/upload_file" enctype=multipart/form-data>
+                <input type=file name=file>
+                <button class="browse-file">Bla gjennom ...</button>
+            </form>
+        </div>
+</div>
+-->
+<form class="main-form" id="purchase-form" method="post" action = "{{ url_for('send_purchase_form') }}">
+    <div class="form-part pf-split">
+        <div class="pf-group">
+            <div class="pf-form-input" id="purchase-block">
+                <h4 class="input-header">Type</h4>
+                <ul id="purchase_type">
+                    <li>
+                        <input id="purchase_type-0", name="purchase_type" type="radio" value="1" onclick="mode_supplier()" checked="checked">
+                        <label for="purchase_type-0">Kjøp fra leverandør</label>
+                    </li>
+                    <li>
+                        <input id="purchase_type-1", name="purchase_type" type="radio" value="2" onclick="mode_cash()">
+                        <label for="purchase_type-1">Kontantkjøp</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="pf-form-input" id="supplier-block">
+                <h4 class="input-header">Leverandør</h4>
+                {{ form.supplier }}
+                <div class="empty"></div>
+                <input class="modal_button" id="supplier-button" type="button" value="Opprett ny">
+            </div>
+            <div class="pf-form-input" id="invoice_date-block">
+                <h4 class="input-header">Fakturadato</h4>
+                {{ form.invoice_date }}
+            </div>
+        </div>
+        <div class="pf-group">
+            <div class="pf-form-input" id="invoice_number-block">
+                <p class="italic input-header">Valgfrie felter:</p>
+                <div class="empty"></div>
+                <h4 class="input-header">Fakturanummer</h4>
+                {{ form.invoice_number }}
+            </div>
+            <div class="pf-form-input" id="maturity_date-block">
+                <h4 class="input-header">Forfallsdato</h4>
+                {{ form.maturity_date }}
+            </div>
+            <div class="pf-form-input" id="maturity_date-block-filler">
+                <div class="empty"></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-part">
+        <div class="pf-lines-top">
+            <h4>Tekst</h4>
+            <h4>Kostnadskonto</h4>
+            <h4>Bruttobeløp</h4>
+            <h4>Mva</h4>
+            <h4>Nettobeløp</h4>
+        </div>
+        <div id="pf-lines">
+        </div>
+        <div class="pf-lines-bottom">
+            <h4 class="total-amount" id="pf-total">Totalbeløp: 0,00 + mva: 0,00 = 0,00</h4>
+            <input class="pf-button" type="button" Value="Del beløpet over flere kontoer" onclick="add_purchase_line()">
+        </div>
+    </div>
+    <div class="form-part" id="pf-paid">
+        <div id="pf-paid-content">
+            {{ form.paid }}
+            <h4>Betaling</h4>
+            <p>Kryss av dersom handelen er betalt</p>
+        </div>
+    </div>
+    <div class="form-part" id="pf-payment">
+        <div id="pf-payment-content">
+            <div class="pf-form-input">
+                <h4 class="input-header">Betalt fra</h4>
+                {{ form.account }}
+            </div>
+            <div class="pf-form-input">
+                <h4 class="input-header">Beløp</h4>
+                {{ form.amount(disabled=True) }}
+            </div>
+            <div class="pf-form-input">
+                <h4 class="input-header">Betalingsdato</h4>
+                <!-- Should date be included? -->
+            </div>
+        </div>
+    </div>
+    <div class="form-part">
+        <div class="pf-buttons">
+            <input class="button-red" type="button" value="Slett utkast" onclick="clear_purchase_form()">
+            <input class="button-green" type="submit" value="Registrer kjøp">
+        </div>
+    </div>
+</form>
+<script src="{{ url_for('static',filename='js/widget.js') }}"></script>
+</body>
+</html>

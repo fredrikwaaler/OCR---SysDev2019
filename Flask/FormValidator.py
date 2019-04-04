@@ -1,5 +1,6 @@
 import re
 from user import User
+from FikenManager import FikenManager
 
 
 def validate_new_name(new_name):
@@ -13,13 +14,13 @@ def validate_new_name(new_name):
     """
     errors = []
     if new_name.strip() == "":  # Check that name is not empty
-        errors.append("New name cannot be empty.")
+        errors.append("Obs: Det nye navnet kan ikke være tomt.")
 
     else:
         # Check that name only contain letters
         for name in new_name.split():
             if not name.isalpha():
-                errors.append("New name must be only letters")
+                errors.append("Obs: Det nye navnet kan kun inneholde bokstaver.")
                 break
 
     return len(errors) == 0, errors
@@ -35,12 +36,13 @@ def validate_new_email(new_email):
     :return: A tuple containing info of whether or not the form was validated and a list of any errors.
     """
     errors = []
-    # Check if the email is a valid email.
-    if not re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', new_email):
-        errors.append("Email is not valid.")
+    # Validate email
+    good_email, email_errors = validate_email(new_email)
+    if not good_email:
+        errors += email_errors
     # Check whether the email is already in use.
     elif User.Dm.get_user_info_by_email(new_email):
-        errors.append("Email is already in use.")
+        errors.append("Obs: Denne eposten er allerede i bruk, vennligst velg en annen.")
 
     return len(errors) == 0, errors
 
@@ -57,9 +59,61 @@ def validate_new_password(new_pass, repeat_new_pass):
     """
     errors = []
     if new_pass != repeat_new_pass:
-        errors.append("Passwords do not match.")
-    elif re.match('^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$', new_pass):
-        errors.append("Password should contain uppercase letter, lowercase letter, number, and be between 8"
-                      " and 20 characters.")
+        errors.append("Obs: Passordene samsvarer ikke.")
+
+    # Validate password
+    good_pass, pass_errors = validate_password(new_pass)
+    if not good_pass:
+        errors += pass_errors
 
     return len(errors) == 0, errors
+
+
+def validate_password(password):
+    errors = []
+    if not re.match('^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$', password):
+        errors.append( "Obs: Passordet må inneholde store bokstaver, små bokstaver og tall. Passordet må være mellom"
+                       " 8 og 20 tegn.")
+    return len(errors) == 0, errors
+
+
+def validate_email(email):
+    errors = []
+    if not re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
+        errors.append("Obs: Eposten er ikke gyldig.")
+    return len(errors) == 0, errors
+
+
+def validate_new_fiken_user(login, password):
+    errors = []
+    # Validate email
+    good_email, email_errors = validate_email(login)
+    # Validate password, no need, cant login unless password is correct.
+    # good_pass, pass_errors = validate_password(password)
+
+    if not FikenManager.is_valid_credentials(login, password):
+        errors.append("Obs: Eposten eller passordet du har angitt er ikke riktig. Prøv på nytt.")
+    elif not good_email:
+        errors += email_errors
+    # elif not good_pass:
+        # errors += pass_errors
+
+    return len(errors) == 0, errors
+
+
+def validate_sign_up(name, email):
+    errors = []
+    # Validate email
+    good_email, email_errors = validate_email(email)
+    if User.user_exists(email):
+        good_email = False
+        email_errors += ["Eposten er allerede i bruk."]
+    if not good_email:
+        errors += email_errors
+
+    good_name, name_errors = validate_new_name(name)
+    if not good_name:
+        errors += name_errors
+
+    return len(errors) == 0, errors
+

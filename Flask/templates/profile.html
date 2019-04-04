@@ -9,7 +9,7 @@
         <h3 class="first-field-title">Navn</h3>
         <p>{{ name }}</p>
         {{ form.new_name }}
-        <input class="boxedButton" type="submit" Value="Endre">
+        <input class="boxedButton popup-button" type="submit" Value="Endre">
     </form>
 
     <!-- Change email here -->
@@ -35,14 +35,20 @@
 <!-- Change/connect to fiken user here -->
 <div class="box-display" id="fiken-account">
     <h3 class="first-field-title">Fikenbruker</h3>
-    <input class="stacked_button modal_button" id="boxedButtonPointer" type="submit" Value="Endre bruker">
-    {% if current_user.fiken_manager.has_valid_login() %}
-    <span class="active_info">{{ current_user.fiken_manager.get_fiken_login() }}</span>
-    <br>
-    <input class="stacked_button modal_button" type="submit" Value="Endre firma">
+    {% if not current_user.fiken_manager.has_valid_login() %}
+        <input class="stacked_button modal_button" type="submit" Value="Logg Inn" >
+        <span class="modal_button"></span>
+    {% else %}
+        <input class="stacked_button modal_button" type="submit" Value="Endre bruker">
+        <span class="active_info">{{ current_user.fiken_manager.get_fiken_login() }}</span>
+        <br>
+        <input class="stacked_button modal_button" type="submit" Value="Endre firma">
     {%  if current_user.fiken_manager.get_active_company_name() %}
-    <span class="active_info">{{ current_user.fiken_manager.get_active_company_name() }}</span>
+        <span class="active_info">{{ current_user.fiken_manager.get_active_company_name() }}</span>
     {% endif %}
+        <form action="{{ url_for('log_out_fiken') }}">
+            <input class="stacked_button" type="submit" Value="Logg ut">
+        </form>
     {% endif %}
 </div>
 
@@ -51,12 +57,20 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <form method="POST" action="{{ url_for('change_fiken') }}">
+            {%  if current_user.fiken_manager.has_valid_login() %}
             <h2>Endre Fiken-bruker</h2>
+            {% else %}
+            <h2>Logg Inn</h2>
+            {% endif %}
             <h3>Email</h3>
             {{ fiken_modal_form.email }}
             <h3>Passord</h3>
             {{ fiken_modal_form.password }}
+            {% if current_user.fiken_manager.has_valid_login() %}
             <input class="boxedButton" type="submit" Value="Endre">
+            {% else %}
+            <input class="boxedButton" type="submit" Value="Logg Inn">
+            {% endif %}
         </form>
     </div>
 </div>
@@ -104,9 +118,28 @@
             <form method="POST" action="{{ url_for('delete_account') }}">
                 <h2>Slett konto</h2>
                 <p>All brukerdata vil bli slettet</p>
+                <p>Vennligst bekreft passordet ditt før du kan slette kontoen.</p>
+                Passord: {{ confirm_password_form.password }}
                 <input class="boxedButton" id="warning" type="submit" Value="Slett konto">
             </form>
         </div>
     </div>
 </div>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="popup">
+            <div class="popup-content">
+            <span class="popup-close">&times;</span>
+            <div class="popup-messages">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            <input class="boxedButton popup-close-btn" type="submit" value="OK">
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
+
 {% endblock container %}

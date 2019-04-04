@@ -17,7 +17,7 @@ body {
 
 }
 
-.pf-part, .sf-part {
+.form-part {
     margin:10px 0;
     padding: 10px 15px;
     display: grid;
@@ -180,7 +180,9 @@ select, input[type="text"], input[type="number"], input[type="date"], textarea{
     display: none;
 }
 
-select:disabled, input[type="text"]:disabled, #supplier-button:disabled{
+
+
+select:disabled, input[type="text"]:disabled, #supplier-button:disabled, input:disabled{
     background-color: #eee;
 }
 
@@ -194,10 +196,6 @@ select:disabled, input[type="text"]:disabled, #supplier-button:disabled{
 .sf-upper {
     display: grid;
     grid-template-columns: 1fr;
-}
-
-.sf-part {
-    padding: 10px 15px;
 }
 
 .sf-form-input {
@@ -271,6 +269,9 @@ select:disabled, input[type="text"]:disabled, #supplier-button:disabled{
     display: none;
 }
 
+textarea {
+    resize: none;
+}
 
 @media screen and (min-width: 480px) {
     .pf-form-input {
@@ -345,15 +346,7 @@ select:disabled, input[type="text"]:disabled, #supplier-button:disabled{
             text-align: right;
             line-height: 30px;
         }
-        .sf-upper {
-            grid-template-rows: min-content;
-        }
-        .sf-part {
-            grid-template-rows: min-content;
-        }
-        .sf-form-input {
-            grid-template-rows: min-content;
-        }
+
         #sf-lines-top-small {
             display: none;
         }
@@ -379,5 +372,18 @@ select:disabled, input[type="text"]:disabled, #supplier-button:disabled{
             grid-template-columns: 1fr 1fr;
         }
 
+        .sf-reference-block {
+            display:grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr auto;
+        }
+
+        #sf-reference {
+            grid-template-rows: min-content;
+        }
+
+        #reference-fill {
+            min-height: 150px;
+        }
     }
 }

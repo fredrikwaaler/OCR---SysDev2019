@@ -87,8 +87,6 @@ class CustomerForm(FlaskForm):
 
 
 class SignUpForm(FlaskForm):
-    first_name = StringField('First name')
-    last_name = StringField('Last name')
+    name = StringField('Name')
     email = StringField('Email')
-    password = PasswordField('Password')
-    repeat_password = PasswordField('Password')
+    admin = BooleanField('Admin')

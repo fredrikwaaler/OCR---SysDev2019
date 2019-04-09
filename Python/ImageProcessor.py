@@ -154,14 +154,28 @@ class TextProcessor:
         else:
             list = self._text_string.split("\n")
             index_of_invoice_number = list.index("Fakturanummer")
-            found = False
-            invoice_number = None
-            while not found:
-                test_for = list[index_of_invoice_number]
-                if int(test_for):
-                    found = True
-                else:
-                    index_of_invoice_number = index_of_invoice_number + 1
+            if index_of_invoice_number is None:
+                index_of_invoice_number = list.index("Faktura")
+            try:
+                list_plus_ten = list[index_of_invoice_number + 1: index_of_invoice_number + 10: 1]
+                print(list_plus_ten)
+                list_minus_ten = list[index_of_invoice_number - 10: index_of_invoice_number: 1]
+                print(list_minus_ten)
+            except IndexError:
+                list_plus_ten = list[index_of_invoice_number: len(list), 1]
+                list_minus_ten[list[0], index_of_invoice_number, 1]
+            for x in list_plus_ten:
+                try:
+                    if isinstance(int(x), int):
+                        invoice_number = int(x)
+                        if invoice_number is None:
+                            for y in list_minus_ten:
+                                if isinstance(int(y), int):
+                                    invoice_number = int(y)
+                                    break
+                        return invoice_number
+                except ValueError:
+                    pass
 
 
 
@@ -375,7 +389,7 @@ class TextProcessor:
 
 #Customer presentation
 vision_manager = VisionManager("key.json")
-img_text = vision_manager.get_text_detection_from_img("fakt3.jpg")
+img_text = vision_manager.get_text_detection_from_img("fakt2.jpg")
 text_processor = TextProcessor(img_text)
 #print(img_text)
 #print(text_processor.get_invoice_date())

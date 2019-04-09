@@ -94,12 +94,36 @@ class TextProcessor:
         """
 
         invoice_info = {"supplier": self.get_supplier_from_invoice(),
-                        "invoice_date": self(),
+                        "organization_number": self.get_org_nr_from_invoice(),
+                        "invoice_number": self.get_invoice_number(),
                         "maturity_date": self.get_invoice_date(),
                         "vat_and_gross_amount": self.get_total_vat_and_amount(),
-                        "organization_number": self.get_organization_number_for_receipt()
                         }
+
         return invoice_info
+
+    def get_org_nr_from_invoice(self):
+        if "proteinfabrikken" in self._text_string:
+            start = self._text_string.index("MVA-numme\n") + 10
+            end = self._text_string.index("Kvittering\n") - 4
+            match = self._text_string[start: end:1]
+            return match
+        if "org. nr" in self._text_string:
+            start = self._text_string.index("org. nr") + 7
+            match = self._text_string[start: start + 12:1]
+            return match
+        if "organisasjonsnummer" in self._text_string:
+            start = self._text_string.index("organisasjonsnummer\n") + 19
+            match = self._text_string[start: start + 12:1]
+            return match
+        if "Organisasjonsnr" in self._text_string:
+            start = self._text_string.index("Organisasjonsnr\n") + 15
+            match = self._text_string[start: start + 12:1]
+            return match
+        else:
+            return None
+
+
     def get_invoice_date(self):
         """
         gets invoice date from a text string made by the google vision api
@@ -158,9 +182,7 @@ class TextProcessor:
                 index_of_invoice_number = list.index("Faktura")
             try:
                 list_plus_ten = list[index_of_invoice_number + 1: index_of_invoice_number + 10: 1]
-                print(list_plus_ten)
                 list_minus_ten = list[index_of_invoice_number - 10: index_of_invoice_number: 1]
-                print(list_minus_ten)
             except IndexError:
                 list_plus_ten = list[index_of_invoice_number: len(list), 1]
                 list_minus_ten[list[0], index_of_invoice_number, 1]
@@ -176,8 +198,6 @@ class TextProcessor:
                         return invoice_number
                 except ValueError:
                     pass
-
-
 
 
     def get_total_amount_paid(self):
@@ -250,7 +270,6 @@ class TextProcessor:
                     amount1 = new_string[4]
                     amount2 = new_string[5]
                     paired_vat_and_amount = {vat[0]: amount1, vat[1]: amount2}
-                    print(paired_vat_and_amount)
                     #paired_vat_and_amount = {"15": self.get_total_amount_paid()}
                     return paired_vat_and_amount
                 except ValueError:
@@ -267,8 +286,6 @@ class TextProcessor:
             return vat_and_gross_amount
         else:
             return None
-
-
 
     def get_individual_supplies_from_kiwi(self):
         """
@@ -324,7 +341,7 @@ class TextProcessor:
         :return: a suggestion ofor the supplier on the invoice given.
         """
         current_supplier = None
-        for supplier in self._suppliers:
+        for supplier in self._invoice_suppliers:
             if supplier in self._text_string:
                 current_supplier = supplier
         return current_supplier
@@ -389,14 +406,15 @@ class TextProcessor:
 
 #Customer presentation
 vision_manager = VisionManager("key.json")
-img_text = vision_manager.get_text_detection_from_img("fakt2.jpg")
+img_text = vision_manager.get_text_detection_from_img("kvit3.jpg")
 text_processor = TextProcessor(img_text)
 #print(img_text)
+#print(text_processor.get_org_nr_from_invoice())
 #print(text_processor.get_invoice_date())
-print(text_processor.get_invoice_number())
+#print(text_processor.get_invoice_number())
 #print(text_processor.get_maturity_date_from_invoice())
 #print(text_processor.get_invoice_info())
-#text_processor.get_receipt_info()
+print(text_processor.get_receipt_info())
 # # print("Invoice supplier:")
 # # print(text_processor.get_supplier_from_invoice())
 # # print("ORG NR:")

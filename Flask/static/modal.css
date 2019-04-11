@@ -1,9 +1,6 @@
 /*
 CSS file that represents styling of modals.
 */
-h2{
-  width: 100%;
-}
 
 .modal, .popup {
   position: fixed; /* Stay in place */
@@ -33,8 +30,8 @@ h2{
 }
 
 .modal-content {
-  padding: 50px 20px 100px 20px;
-  width: 80%;
+  padding: 0;
+  width: 90%;
 }
 
 .popup-content {
@@ -54,6 +51,9 @@ h2{
 
 /* The Close Button */
 .close, .popup-close {
+  margin-top: 10px;
+  margin-right: 10px;
+
   color: #aaaaaa;
   float: right;
   font-size: 28px;
@@ -74,6 +74,42 @@ h2{
   cursor: pointer;
 }
 
+/*
+  TYPE SPECIFIC
+*/
+
+.new-contact, .new-account {
+  margin: 0 15px;
+  padding: 10px 0;
+}
+
+.new-contact-input, .new-account-input {
+    margin:0;
+    padding: 5px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+#customer-supplier {
+  margin:0;
+  padding:0;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+#customer-supplier li {
+  list-style-type: none;
+}
+
+#new-customer {
+  display: none;
+}
+
+#foreign {
+  display: none;
+}
+
+
 @media screen and (min-width: 480px) {
   .modal-content {
     width: 70%;
@@ -81,11 +117,24 @@ h2{
   @media screen and (min-width: 769px) {
     .modal-content {
       width: 60%;
+
     }
+    .new-contact-input {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .new-contact-input h4 {
+        padding:0 10px;
+        text-align: right;
+        line-height: 30px;
+    }
+
     @media screen and (min-width: 1280px) {
       .modal-content {
         width: 40%;
       }
+
+
     }
   }
 }

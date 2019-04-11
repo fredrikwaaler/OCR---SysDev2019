@@ -1,17 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sale Widget</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='purchase_widget.css') }}">
-    <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
-
-    <meta name="viewport" content="width=device-width">
-</head>
-<body>
-
-<form class="main-form" id="sale-form" method="post" action="{{ url_for('sale2') }}">
+<form class="main-form" id="sale-form" method="post" action="{{ url_for('send_sale_form') }}">
     <div class="sf-upper">
         <div class="form-part">
             <div class="sf-group">
@@ -102,7 +89,6 @@
     </div>
     </div>
 </form>
-
 <script>
 let mdblock = document.getElementById("maturity_date-block");
 let mdblock_filler = document.getElementById("maturity_date-block-filler");
@@ -616,6 +602,3 @@ function createHTML(type) {
 }
 
 </script>
-
-</body>
-</html>

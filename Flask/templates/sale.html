@@ -1,45 +1,9 @@
 {% extends 'layout_post_warning.html' %}
 {% block container %}
-<h2>Nytt Salg</h2>
-<form method="POST" action="{{ url_for('send_sale_form') }}">
-{{ form.csrf_token }}
-    <div class="box-display" id="part1Sales">
-        <h3 class="first-field-title">Type</h3>
-        {{ form.sale_type }}
-        <h3>Dato</h3>
-        {{ form.date }}
-        <h3>Dager til forfall</h3>
-        {{ form.days_to_maturity }}
-        <h3>Kommentar</h3>
-        {{ form.comment }}
-        <h3>Kontonummer</h3>
-        {{ form.account_number }}
+    <h2>Ny Faktura</h2>
+    <div id="sale-container">
+        {% include 'sale_widget.html' %}
     </div>
-
-    <div class="box-display" id="part2Sales">
-        <h3 class="first-field-title">Kontakt</h3>
-        {{ form.contact }}
-        <h3>Vår referanse</h3>
-        {{ form.our_reference }}
-        <h3>Deres referanse</h3>
-        {{ form.their_reference }}
-    </div>
-<hr>
-    <div class="box-display" id="part3Sales">
-        <h3 class="title">Varelinjer</h3>
-        <h3>Produkt</h3>
-        {{ form.product }}
-        <h3>Pris</h3>
-        {{ form.price }}
-        <h3>Antall</h3>
-        {{ form.amount }}
-        <h3>Rabatt</h3>
-        {{ form.discount }}
-        <h3>Mva</h3>
-        {{ form.vat }}
-    </div>
-
-    <input class="buttons" type="submit" Value="Opprett Faktura" id="sendInvoiceButton">
-
-</form>
+    {% include 'new_account_modal.html' %}
+    {% include 'create_customer_modal.html' %}
 {% endblock container %}

@@ -1,8 +1,9 @@
-var popup = document.getElementsByClassName("popup");
-var close = document.getElementsByClassName("popup-close");
-var close_btn = document.getElementsByClassName("popup-close-btn");
+let popup = document.getElementsByClassName("popup");
+let close = document.getElementsByClassName("popup-close");
+let close_btn = document.getElementsByClassName("popup-close-btn");
+let popup_btn = document.getElementsByClassName("popup-button");
 
-var body = document.querySelector('body');
+let docBody = document.querySelector('body');
 
 /*
 for (i = 0; i < length(btn); i++) {
@@ -16,11 +17,11 @@ for (i = 0; i < length(btn); i++) {
 
 close[0].onclick = function () {
     popup[0].style.display = "none";
-    body.style.overflow = "hidden";
+    docBody.style.overflow = "auto";
 };
 
 close_btn[0].onclick = function () {
     popup[0].style.display = "none";
-    body.style.overflow = "auto";
+    docBody.style.overflow = "auto";
 };
 

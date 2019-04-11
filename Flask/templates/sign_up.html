@@ -1,15 +1,26 @@
-{% extends 'layout_pre.html' %}
+{% extends 'layout_post.html' %}
 {% block container %}
-<h2>Registrer ny bruker</h2>
-<form method="POST" id="sign_up_form" action="{{ url_for('sign_up') }}">
-    <h3>Navn</h3>
-    {{ form.name }}
-    <h3>Email</h3>
-    {{ form.email }}
-    <h3>Admin</h3>
-    {{ form.admin }}
-    <!-- Flash messages -->
-    {% include 'flash.html' %}
-    <input type="submit" class="boxedButton" id="sign_up_button" Value="Registrer">
-</form>
+    <h2>Adminpanel</h2>
+    <form class="main-form" method="POST" id="register-user" action="{{ url_for('sign_up') }}">
+        <div class="form-part">
+            <h3>Registrer ny bruker</h3>
+            <div class="register-input">
+                <h4>Navn</h4>
+                {{ form.name }}
+            </div>
+            <div class="register-input">
+                <h4>Email</h4>
+                {{ form.email }}
+            </div>
+            <div class="register-input">
+                <h4>Admin</h4>
+                {{ form.admin }}
+            </div>
+            <!-- Flash messages -->
+            <div class="admin-flash">
+                {% include 'flash.html' %}
+            </div>
+            <input type="submit" class="form-button" id="sign_up_button" Value="Registrer">
+        </div>
+    </form>
 {% endblock container %}

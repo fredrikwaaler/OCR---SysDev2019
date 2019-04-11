@@ -11,7 +11,7 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
         <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='purchase_widget.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
         <meta name="viewport" content="width=device-width">
@@ -19,33 +19,30 @@
     <body>
 
         {{ nav.nav.render() }}
-
-
         <div class = wrapper>
-
-        {% if not current_user.fiken_manager.has_valid_login() %}
-        <div class="fiken_warning">
-            <p>
-                Obs: Du må logge inn med en fiken-bruker før du kan bruke denne siden.
-                Du kan logge inn <a href="{{ url_for('profile') }}">her.</a>
-            </p>
-        </div>
-        {% elif not current_user.fiken_manager.get_company_slug() %}
-        <div class="fiken_warning">
-            <p>
-                Obs: Du må velge hvilket firma som skal brukes fra fiken.
-                Du kan gjøre dette <a href="{{ url_for('profile') }}">her.</a>
-            </p>
-        </div>
-        {% endif %}
+            {% if not current_user.fiken_manager.has_valid_login() %}
+            <div class="fiken_warning">
+                <p>
+                    Obs: Du må logge inn med en fiken-bruker før du kan bruke denne siden.
+                    Du kan logge inn <a href="{{ url_for('profile') }}">her.</a>
+                </p>
+            </div>
+            {% elif not current_user.fiken_manager.get_company_slug() %}
+            <div class="fiken_warning">
+                <p>
+                    Obs: Du må velge hvilket firma som skal brukes fra fiken.
+                    Du kan gjøre dette <a href="{{ url_for('profile') }}">her.</a>
+                </p>
+            </div>
+            {% endif %}
             <div class=container>
                 {% block container %}
                 {% endblock %}
             </div>
             <footer>
-                <a href="#">Problemer?</a>
+                <a href="{{ url_for('contact') }}">Problemer?</a>
                 <a href="{{ url_for('log_out') }}">Logg ut</a>
-                <p>Copyright Group 8</p>
+                <p>&copy; 2019 fikto.no<p>
             </footer>
         </div>
     </body>

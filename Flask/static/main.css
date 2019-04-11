@@ -1,8 +1,6 @@
 html {
     height: 100%;
     background: #e2e2e2;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
 }
 
 body {
@@ -68,14 +66,13 @@ p {
 }
 
 /* h4 is used for side info */
+
 h4 {
     font-size: 0.9em;
     font-family: 'Overpass', sans-serif;
     font-weight: 400;
     margin: 0 0 0 10px;
     display: block;
-    width: 100%;
-    clear: both;
 }
 
 li {
@@ -92,6 +89,7 @@ form {
 }
 
 /* Styling for text fields */
+/* 0404
 select, input[type="text"], input[type="password"] {
     overflow: visible;
     display: block;
@@ -104,15 +102,17 @@ select, input[type="text"], input[type="password"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     width: 80%;
-}
+}*/
 
 /* Styling for highlighted text field */
+/* 0404
 select:focus, input[type="text"]:focus {
     border-color: #66afe9;
     box-shadow: 2px 1px #2d4e68;
-}
+}*/
 
 /* Styling for general purpose buttons */
+/* 0404
 input[type="submit"], input[type="button"] {
     color: rebeccapurple;
     background-color: #fff;
@@ -129,6 +129,7 @@ input[type="submit"], input[type="button"] {
     overflow: visible;
     text-transform: none;
 }
+*/
 
 /* Buttons that are inside a boxdisplay */
 input[type="submit"].boxedButton, #boxedButtonPointer{
@@ -164,12 +165,13 @@ input[type="checkbox"] {
 }
 
 /* just for radio buttons */
+/* 0404
 input[type="radio"] {
     position: relative;
     display: block;
     float: left;
     margin: 5px 0 0 0;
-}
+}*/
 
 input[type="file"] {
     margin: 0;
@@ -366,17 +368,20 @@ hr {
     overflow: auto;
 }
 
+/* 0404
 .imagebox {
     height: 100%;
-    width: 90%;
+    width: 100%;
     margin: 0 auto;
-}
+}*/
 
+/* 0404
 img {
     max-width: 590px;
     width:100%;
     height:auto;
 }
+*/
 /* ------ HISTORY PAGE ----- */
 .filter_buttons {
     position: static;
@@ -434,9 +439,10 @@ img {
     text-align: start;
 }
 
+/* 0404
 .active, .collapsible:hover {
     background-color: #777;
-}
+}*/
 
 .content {
     display: none;
@@ -449,6 +455,7 @@ img {
     border: 1px solid #ddd;
     border-top: none;
 }
+
 
 .content img {
     max-width: 300px;
@@ -638,6 +645,9 @@ img {
     width: auto;
     margin-bottom: 5%;
 }
+
+
+
     /* Styling for non-widescren (not phones)
     480px < width > 1200px */
 @media screen and (min-width: 480px) {
@@ -801,13 +811,15 @@ img {
             position: relative;
         }
 
+        /* 0404
         .img_class {
             margin: 0;
-        }
+        } */
 
+        /* 0404
         .imagebox {
             margin: 0 10%
-        }
+        }*/
 
         input[type="submit"].buttons {
             display: inline-block;
@@ -885,24 +897,24 @@ img {
                 max-width: 1113px;
                 clear: both;
             }
-
+            /* 0404
             .imagebox {
                 width: 100%;
                 margin: 0 2% 0 0;
-            }
+            }*/
 
+            /* 0404
             #img_id {
                 display: block;
                 float: right;
-                /* layout should when pic reached this size */
                 min-width: 540px;
                 max-width: 560px;
-            }
-
+            } */
+            /* 0404
             h4 {
                 display: block;
                 float: left;
-            }
+            }*/
 
             #prePaid {
                 display: block;

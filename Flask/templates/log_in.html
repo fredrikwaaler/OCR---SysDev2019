@@ -1,25 +1,16 @@
 {% extends 'layout_pre.html' %}
 {% block container %}
 <h2>Logg inn</h2>
-<form method="POST" id="logg_inn_form" action="">
-    {{ form.csrf_token }}
-    <h3>Brukernavn</h3>
-    {{ form.email }}
-    <h3>Passord</h3>
-    {{ form.password }}
-    <input type="submit" class="logg_inn" id="logg_inn" Value="Logg inn">
-    <a href={{ url_for('forgot_password') }}>Glemt passord?</a>
-
-    <!-- Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class=flash>
-        {% for category, message in messages %}
-          <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-    <!-- End of Flash -->
+<form class="pre-form" method="POST" action="">
+    <div class="form-part">
+        {{ form.csrf_token }}
+        <h3>Brukernavn</h3>
+        {{ form.email }}
+        <h3>Passord</h3>
+        {{ form.password }}
+        <input type="submit" class="form-button" id="logg_inn" Value="Logg inn">
+        <a href={{ url_for('forgot_password') }}>Glemt passord?</a>
+        {% include 'flash.html' %}
+    </div>
 </form>
 {% endblock container %}

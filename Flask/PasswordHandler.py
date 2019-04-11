@@ -36,7 +36,7 @@ class PasswordHandler:
         """
         Generates a random password of upper- and lowercase letters and digits.
         Password has random length from 6 to 9 (including boundaries).
-        @:return: Returns a random password.
+        :return: Returns a random password.
         """
         password = ""
         valid_chars = ascii_letters + digits

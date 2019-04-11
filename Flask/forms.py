@@ -77,13 +77,26 @@ class CustomerForm(FlaskForm):
     email = StringField('Epost')
     telephone = StringField('Telefonnummer')
     account_number = StringField('Kontonummer')
-    #CHECKBOXES
-    member_number = StringField('Medlemsnummer') #Stepper?
+    member_number = DecimalField('Medlemsnummer') #Stepper?
     country = StringField('Land')
     address1 = StringField('Adresse 1')
     address2 = StringField('Adresse 2')
     zip_code = StringField('Postnummer')
     postal_area = StringField('Poststed')
+    personal_language = SelectField('Språk', choices=[('0', ''), ('Norsk', 'Norsk'), ('Engelsk', 'Engelsk')])
+    personal_currency = SelectField('Valuta', choices=[('NOK', 'Norske kroner (NOK)'), ('EUR', 'Euro (EUR)'),
+                                              ('USD', 'Amerikanske dollar (USD'), ('GBP', 'Britiske Pund (GBP'),
+                                              ('SEK', 'Svenske kroner (SEK)'), ('DKK', 'Danske kroner (DKK)'),
+                                              ('CHF', 'Sveitsiske franc (CHF)')])
+    personal_discount = DecimalField('Rabatt')
+    personal_maturity_date = DecimalField('Dager til forfall')
+
+
+class AccountForm(FlaskForm):
+    account_name = StringField('Navn')
+    account_type = SelectField('Type', choices=[('Vanlig', 'Vanlig'), ('Uvanlig', 'Utenlandsk / betalingstjeneste')])
+    account_bank = SelectField('Bank', choices=[('0', ''), ('1', 'Stripe'), ('2', 'PayPal')])
+    account_number = StringField('Bankkontonummer')
 
 
 class SignUpForm(FlaskForm):

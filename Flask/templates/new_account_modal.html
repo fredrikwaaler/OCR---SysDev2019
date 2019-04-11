@@ -1,0 +1,30 @@
+<div class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form class="main-form new-account" method="POST">
+            <h3>Opprett ny bankkonto</h3>
+            <div class="new-account-input">
+                <h4>Navn</h4>
+                {{ account_modal_form.account_name }}
+            </div>
+            <div class="new-account-input">
+                <h4>Type</h4>
+                <select id="account_type" name="account_type" onchange="test2()">
+                    <option value="regular">Vanlig</option>
+                    <option value="irregular">Utenlandsk / betalingstjeneste</option>
+                </select>
+            </div>
+            <div class="new-account-input" id="foreign">
+                <h4>Bank/betalingstjeneste</h4>
+                {{ account_modal_form.account_bank }}
+            </div>
+            <div class="new-account-input">
+                <h4>Bankkontonummer</h4>
+                {{ account_modal_form.account_number }}
+            </div>
+            <div class="new-account-input">
+                <input class="modal-submit" type="submit" Value="Opprett bruker">
+            </div>
+        </form>
+    </div>
+</div>

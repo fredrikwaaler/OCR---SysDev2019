@@ -58,10 +58,9 @@ lm.init_app(app)
 lm.login_view = 'log_in'
 
 
-
 @app.route('/purchase', methods=['GET'])
 @login_required
-def purchase(image='dummy.png', pop=False):
+def purchase(image=None, pop=False):
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
     if pop:
@@ -71,15 +70,18 @@ def purchase(image='dummy.png', pop=False):
         form.text.data = pop['tekst']
         form.gross_amount.data = pop['bruttobelop']
         form.net_amount.data = pop['nettobelop']
-    return render_template('purchase.html', title="Kjoop", form=form, customer_modal_form=customer_modal_form, image=image,
-                       current_user=current_user)
+    return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
+                           image=image, current_user=current_user)
 
 
 @app.route('/sale', methods=['GET'])
 @login_required
 def sale():
     form = SaleForm()
-    return render_template('sale.html', title="Salg", form=form, current_user=current_user)
+    customer_modal_form = CustomerForm()
+    account_modal_form = AccountForm()
+    return render_template('sale.html', title="Salg", form=form, customer_modal_form=customer_modal_form,
+                           account_modal_form=account_modal_form, current_user=current_user)
 
 
 @app.route('/history', methods=['GET', 'POST'])
@@ -256,6 +258,11 @@ def forgot_password():
     return render_template('forgot_password.html', title="Glemt Passord", form=form)
 
 
+@app.route('/contact', methods=['GET'])
+def contact():
+    return render_template('contact.html', title="Hjelp")
+
+
 @app.route('/upload_file', methods=['POST'])
 @login_required
 def upload_file():
@@ -279,7 +286,7 @@ def upload_file():
             # Change filename here when adding own parsed data
             with open('test_population.json', 'r') as f:
                 parsed_data = json.load(f)
-            return purchase(image=filename, pop=parsed_data)
+            return purchase(image=filename, pop=None)
     return "EMPTY PAGE"
 
 
@@ -455,6 +462,20 @@ def string_to_datetime(input_string):
     date = datetime.datetime(int(split[0]), int(split[1]), int(split[2]))
     print(date)
     return date
+
+
+@app.route('/widget', methods=['GET'])
+@login_required
+def widget():
+    form = PurchaseForm()
+    return render_template("purchase_widget.html", form=form)
+
+
+@app.route('/widget2', methods=['GET'])
+@login_required
+def widget2():
+    form = SaleForm()
+    return render_template("sale_widget.html", form=form)
 
 
 if __name__ == '__main__':

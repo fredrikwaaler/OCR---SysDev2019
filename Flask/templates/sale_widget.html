@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sale Widget</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='purchase_widget.css') }}">
-    <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
-
-    <meta name="viewport" content="width=device-width">
-</head>
-<body>
-
 <form class="main-form" id="sale-form" method="post" action="{{ url_for('send_sale_form') }}">
     <div class="sf-upper">
         <div class="form-part">
@@ -91,6 +78,3 @@
     </div>
 </form>
 <script src="{{ url_for('static',filename='js/widget.js') }}"></script>
-
-</body>
-</html>

@@ -1,0 +1,100 @@
+<div class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form class="main-form new-contact" method="POST" action="{{ url_for('create_contact') }}">
+            <h3>Opprett ny kunde/leverandør</h3>
+            <div class="new-contact-input">
+                <h4>Navn</h4>
+                {{ customer_modal_form.name }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Org.nr</h4>
+                {{ customer_modal_form.org_nr }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Epost</h4>
+                {{ customer_modal_form.email }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Telefonnummer</h4>
+                {{ customer_modal_form.telephone }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Kontonummer</h4>
+                {{ customer_modal_form.account_number }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Kontonummer</h4>
+                {{ customer_modal_form.account_number }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Kunde/leverandør</h4>
+                <ul id="customer-supplier">
+                <li>
+                    <input id="customer-supplier-0", name="customer-supplier" type="radio" value="1" onclick="mode_new_customer()">
+                    <label for="customer-supplier-0">Kunde</label>
+                </li>
+                <li>
+                    <input id="customer-supplier-1", name="customer-supplier" type="radio" value="2" onclick="mode_new_supplier()" checked="checked">
+                    <label for="customer-supplier-1">Leverandør</label>
+                </li>
+            </ul>
+            </div>
+            <div class="new-contact-input">
+                <h4>Medlemsnr</h4>
+                {{ customer_modal_form.member_number }}
+            </div>
+            <div class="new-contact-input">
+                <div class="empty"></div>
+                <h3>Adresse</h3>
+            </div>
+            <div class="new-contact-input">
+                <h4>Land</h4>
+                {{ customer_modal_form.country }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Adresse 1</h4>
+                {{ customer_modal_form.address1 }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Adresse 2</h4>
+                {{ customer_modal_form.address2 }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Postnummer</h4>
+                {{ customer_modal_form.zip_code }}
+            </div>
+            <div class="new-contact-input">
+                <h4>Poststed</h4>
+                {{ customer_modal_form.postal_area }}
+            </div>
+            <div id="new-customer">
+                <div class="new-contact-input">
+                    <div class="empty"></div>
+                    <p>Faktura-innstillinger</p>
+                </div>
+                <div class="new-contact-input">
+                    <h4>Språk</h4>
+                    {{ customer_modal_form.personal_language }}
+                </div>
+                <div class="new-contact-input">
+                    <h4>Valuta</h4>
+                    {{ customer_modal_form.personal_currency }}
+                </div>
+                <div class="new-contact-input">
+                    <h4>Rabatt</h4>
+                    {{ customer_modal_form.personal_discount }}
+                </div>
+                <div class="new-contact-input">
+                    <h4>Dager til forfall</h4>
+                    {{ customer_modal_form.personal_maturity_date }}
+                </div>
+            </div>
+
+            <div class="new-contact-input">
+                <div class="empty"></div>
+                <input class="modal-submit" type="submit" Value="Opprett bruker">
+            </div>
+        </form>
+    </div>
+</div>

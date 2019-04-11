@@ -8,17 +8,23 @@
         {% else %}
             <title> OCR </title>
         {% endif %}
-    
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
         <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='purchase_widget.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}" />
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='flash.css') }}" }}>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='flash.css') }}">
+
         <meta name="viewport" content="width=device-width">
     </head>
     <body>
         <div class = container>
-            {% block container %} 
-            {% endblock %}
+            <div class="wrapper pre-wrapper">
+                {% block container %}
+                {% endblock %}
+            </div>
         </div>
     </body>
 </html>

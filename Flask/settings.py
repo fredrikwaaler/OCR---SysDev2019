@@ -8,3 +8,4 @@ DB_HOST = "localhost"
 DB_USER = "postgres"
 DB_PASSWORD = "Sebas10an99"
 DB_DATABASE = "sukkertoppen"
+

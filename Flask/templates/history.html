@@ -68,7 +68,9 @@
                                 {% elif entry["type"] == "Kjøp" %}
                                 <th><h4>Leverandør:</h4></th>
                                 {% endif %}
+                                {% if external["contact"] %}
                                 <td>{{ external["contact"]["name"] }}</td>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <th><h4>Betalt:</h4></th>

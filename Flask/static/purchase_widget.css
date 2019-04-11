@@ -140,10 +140,6 @@ h4 {
     font-size: 12px;
 }
 
-/* Needed to maintain line-height */
-#invoice_number-block. #maturity_date-block {
-    max-height: 30px;
-}
 
 select, input[type="text"], input[type="number"], input[type="date"], textarea{
     margin:0;
@@ -537,6 +533,15 @@ footer {
 
         .pre-form {
             width: 50%;
+        }
+
+        .pf-split-right {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: min-content;
+        }
+        #maturity_date {
+            max-height: 20px;
         }
 
     }

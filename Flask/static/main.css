@@ -350,6 +350,7 @@ hr {
 
 /* The title and field of a div
     TODO: not all fields are mentioned yet */
+/* 1104
 #text-block, #billing_account-block, #gross_amount-block, #vat-block, #net_amount-block {
     padding: 0;
     margin: 0 20px 0 0;
@@ -359,7 +360,7 @@ hr {
 
 #purchase-block, #supplier-block, #invoice_number-block, #maturity_date-block, #invoice_number-block h3{
     position: relative;
-}
+}*/
 
 
 .left, .right {
@@ -702,14 +703,14 @@ img {
     .left, .right {
         float: none;
     }
-
+    /* 1104
     #text-block, #billing_account-block, #gross_amount-block, #vat-block, #net_amount-block {
         padding: 0;
         margin: 0 20px 0 0;
         width: 90%;
         display: inline-block;
         position: relative;
-    }
+    }*/
 
     .img_class {
         margin: 0;
@@ -803,14 +804,14 @@ img {
         .left, .right {
             float: none;
         }
-
+        /* 1104
         #text-block, #billing_account-block, #gross_amount-block, #vat-block, #net_amount-block {
             padding: 0;
             margin: 0 20px 0 0;
             width: 90%;
             display: inline-block;
             position: relative;
-        }
+        }*/
 
         /* 0404
         .img_class {

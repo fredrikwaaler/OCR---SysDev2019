@@ -14,7 +14,6 @@ for (i = 0; i < length(btn); i++) {
 }*/
 
 
-
 close[0].onclick = function () {
     popup[0].style.display = "none";
     docBody.style.overflow = "auto";

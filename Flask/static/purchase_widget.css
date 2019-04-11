@@ -141,8 +141,8 @@ h4 {
 }
 
 /* Needed to maintain line-height */
-#invoice_number-block {
-    max-height: 90px;
+#invoice_number-block. #maturity_date-block {
+    max-height: 30px;
 }
 
 select, input[type="text"], input[type="number"], input[type="date"], textarea{
@@ -463,6 +463,10 @@ footer {
 
         #upload-file-part {
             grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+
+        #purchase-block {
+            min-height: 50px;
         }
 
         /*

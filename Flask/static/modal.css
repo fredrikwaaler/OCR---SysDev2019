@@ -111,8 +111,7 @@ CSS file that represents styling of modals.
 
 
 @media screen and (min-width: 480px) {
-  .modal-content,
-  .popup-content {
+  .modal-content {
     width: 70%;
   }
   @media screen and (min-width: 769px) {

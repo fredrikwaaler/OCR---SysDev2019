@@ -6,10 +6,11 @@ from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
-from HistoryPresenter import HistoryPresenter
+from HistoryDataFormatter import HistoryDataFormatter
 from user import User
 from PasswordHandler import PasswordHandler
 from FormValidator import validate_new_name, validate_new_email, validate_new_password, validate_new_fiken_user, validate_sign_up
+from SalesDataFormatter import SalesDataFormatter
 from mailer import Mailer
 import smtplib
 
@@ -84,10 +85,53 @@ def sale():
                            account_modal_form=account_modal_form, current_user=current_user)
 
 
+@app.route('/sale2', methods=['GET', 'POST'])
+def sale2():
+    form = SaleForm()
+    if request.method == 'POST':
+        # TODO - Validate form before sending to SalesDataFormatter
+        a = SalesDataFormatter.ready_data_for_invoice(request.form)
+        current_user.fiken_manager.post_data_to_fiken(a, "create_invoice")
+        # TODO - Give user-feedback on send-in
+        return redirect(url_for('sale2'))
+
+    else:
+        try:
+            # Retrieve all bank_accounts from fiken.
+            bank_accounts = current_user.fiken_manager.get_data_from_fiken(data_type="payment_accounts", links=True)
+            # Get the bank_accounts in a presentable format
+            bank_accounts = SalesDataFormatter.get_account_strings(bank_accounts)
+
+            # Retrieve all contacts from fiken
+            contacts = current_user.fiken_manager.get_data_from_fiken(data_type="contacts", links=True)
+            # Retrieve the customers in a presentable format.
+            customers = SalesDataFormatter.get_customer_strings(contacts)
+
+            # Retrieve all products from fiken
+            products = current_user.fiken_manager.get_data_from_fiken(data_type="products", links=True)
+            # Retrieve the products in a presentable format
+            products = SalesDataFormatter.get_product_strings(products)
+
+        # If we get a ValueError, it means that fiken-manager is not set properly to interact with fiken.
+        # Thus, we have no data to retrieve from fiken, and the lists should be empty.
+        except ValueError:
+            bank_accounts = []
+            customers = []
+            products = []
+        return render_template('sale_widget.html', title="Salg", form=form, products=products,
+                               bank_accounts=bank_accounts, customers=customers)
+
+
+@app.route('/purchase2', methods=['GET', 'POST'])
+def purchase2():
+    form = PurchaseForm()
+    return render_template('purchase_widget.html', title="Kjøp", form=form)
+
+
 @app.route('/history', methods=['GET', 'POST'])
 @login_required
 def history():
-    history_presenter = HistoryPresenter(current_user.fiken_manager)
+    history_presenter = HistoryDataFormatter(current_user.fiken_manager)
     try:
         sales = history_presenter.get_sales_for_view()
         purchases = history_presenter.get_purchases_for_view()
@@ -303,13 +347,12 @@ def send_purchase_form():
     return render_template("result.html", result = result)
 
 
-@app.route('/send_sale_form', methods=['POST'])
+@app.route('/send_sale_form', methods=['POST', 'GET'])
 @login_required
-def send_sale_form():
-    result = request.form
-    send_to_fiken(result, "Sale")
+def send_sale_form(form):
+    send_to_fiken(form, "Sale")
 
-    return render_template("result.html", result = result)
+    return render_template("result.html", result = form)
 
 
 @app.context_processor
@@ -369,9 +412,9 @@ def change_fiken():
         current_user.fiken_manager.set_fiken_credentials(login, password)
         current_user.store_user()
         if not prev_logged_in:
-            flash("Logget inn på fiken som \"{}\".".format(login))
+            flash("Logget inn på fiken som \"{}\"".format(login))
         else:
-            flash("Endret fikenbruker til \"{}\".".format(login))
+            flash("Endret fikenbruker til \"{}\"".format(login))
     else:
         for error in errors:
             flash(error)
@@ -412,6 +455,7 @@ def set_active_company():
 @login_required
 def log_out_fiken():
     current_user.fiken_manager.set_fiken_credentials(None, None)
+    current_user.fiken_manager.reset_slug()
     current_user.store_user()
     flash("Du er nå logget ut av fiken.")
     return redirect(url_for('profile'))

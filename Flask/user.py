@@ -3,6 +3,7 @@ from DatabaseManager import DatabaseManager
 from FikenManager import FikenManager
 from PasswordHandler import PasswordHandler
 import pickle
+import settings
 
 
 class User(UserMixin):
@@ -11,7 +12,7 @@ class User(UserMixin):
     """
 
     # The database shared by all users for storing/retrieving users
-    Dm = DatabaseManager(host="localhost", user="postgres", password="password", database="Sukkertoppen")
+    Dm = DatabaseManager(host=settings.DB_HOST, user=settings.DB_USER, password=settings.DB_PASSWORD, database=settings.DB_DATABASE)
 
     def __init__(self, email, password, name, admin=False):
         """

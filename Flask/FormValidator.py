@@ -117,3 +117,24 @@ def validate_sign_up(name, email):
 
     return len(errors) == 0, errors
 
+
+def validate_sales_form(form):
+    errors = []
+
+    # Validate that all line totals are positive
+    prices = form.getlines('price') + form.getlines('price_free')
+    quantities = form.getlines('quantity') + form.getlines('quantity_free')
+    for price in prices:
+        # JS ensures that only numerical values can be put in price fields. Safely typecast.
+        if not float(price) > 0:
+            errors.append("Obs: Totalbeløpet må være positivt.")
+
+    # No point for checking for errors in quantities if one is already found
+    if len(errors) == 0:
+        for quantity in quantities:
+            # JS ensures safe typecast.
+            if not float(quantity) > 0:
+                errors.append("Obs: Totalbeløpet må være positivt.")
+
+    return len(errors) == 0, errors
+

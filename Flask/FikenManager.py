@@ -72,10 +72,9 @@ class FikenManager:
             elif type(hal_object[key]) is dict:  # If value is another hal-object, extract it.
                 return_dict.update(self._hal_to_dict(hal_object[key]))
             # If not dict, check whether or not the value is a list
-            elif type(hal_object[key]) is not list:  # If not, safely map the value
+            else:
                 return_dict[key] = hal_object[key]
-            else:  # If so, get the hal object in the list, and extract that too
-                return_dict.update(self._hal_to_dict(hal_object[key][0]))
+
         return return_dict
 
     def get_data_from_fiken(self, data_type, links=False):
@@ -113,7 +112,7 @@ class FikenManager:
                 # If a key error, the response does not contains embedded, and we consider the response empty.
                 return []
 
-    def post_data_to_fiken(self, data_type, data):
+    def post_data_to_fiken(self, data, data_type):
         """
         Posts the specified data to fiken.
         The data-type need to be specified to instruct the FikenManager what data it is sending.
@@ -123,7 +122,7 @@ class FikenManager:
         :param data_type: What data is being sent to fiken.
         :param data: The data that is sent
         """
-        allowed_types = {"purchases": "purchases"}
+        allowed_types = {"purchases": "purchases", "create_invoice": "create-invoice-service"}
 
         if data_type not in allowed_types.keys():
             raise ValueError("{} is not a valid data type. Please use one of the following key-words: {}".format(
@@ -131,7 +130,7 @@ class FikenManager:
 
         self._check_slug()  # Check that the slug is set
 
-        url = "https://fiken.no/api/v1/companies/{}/{}".format(self._company_slug, data_type)
+        url = "https://fiken.no/api/v1/companies/{}/{}".format(self._company_slug, allowed_types[data_type])
         return self.make_fiken_post_request(url, data)
 
     def get_company_info(self):
@@ -161,6 +160,12 @@ class FikenManager:
             self._company_slug = slug
         else:
             raise ValueError("{} is not a valid slug. Please use get_company_info to see what is".format(slug))
+
+    def reset_slug(self):
+        """
+        Sets the slug to None. Used for teardown on logout.
+        """
+        self._company_slug = None
 
     def _is_valid_slug(self, slug):
         """
@@ -210,6 +215,23 @@ class FikenManager:
         if self._company_slug is None:
             raise ValueError("The slug must be set for the FikenManager before interacting with the api. "
                              "Use 'set_company_slug'")
+
+    def get_bank_account_url(self, account_nr):
+        """
+        Returns the url of the bank-account resource associated with the given account number.
+        :param account_nr: The account number of the associated account.
+        :return: The url of the bank-account resource associated with the given account number.
+        If none is found, or if the fiken manager is not set properly for interaction with fiken, None is returned.
+        """
+        try:
+            accounts = self.get_data_from_fiken("payment_accounts", links=True)
+            for account in accounts:
+                if account['bankAccountNumber'] == account_nr:
+                    return account['href']
+            return None
+        except ValueError:
+            return None
+
 
     @staticmethod
     def is_valid_credentials(login, password):

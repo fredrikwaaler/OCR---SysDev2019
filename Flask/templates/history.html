@@ -25,39 +25,109 @@
 </form>
 
 {% for entry, external in entry_view %}
+    {# TODO - Endre design på collapsible #}
     <button class="collapsible">
-        <span class="collapsible_text">{{ entry["description"] }}</span>
-        <span class="collapsible_text">{{ entry["date"] }}</span>
-        <span class="collapsible_text">{{ entry["type"] }} - {{ entry["identifier"] }} </span>
-
+        {% if entry["contact"] %}
+            {% if entry["type"] == "Kjøp" %}
+                <span class="collapsible_text">{{ entry["type"] }} hos {{ external["contact"]["name"] }}</span>
+                <span class="collapsible_text collapsible_date">{{ entry["date"] }}</span>
+            {% else %}
+                <span class="collapsible_text">{{ entry["kind"] }} til {{ external["contact"]["name"] }}</span>
+                <span class="collapsible_text collapsible_date">{{ entry["date"] }}</span>
+            {% endif %}
+        {% else %}
+        <span class="collapsible_text">{{ entry["kind"] }}</span>
+        <span class="collapsible_text collapsible_date">{{ entry["date"] }}</span>
+        {% endif %}
     </button>
     <div class="content">
 
-        <div class="entry_info">
+        <div class="entry_container">
 
-            <div class="entry_stats">
-            <p>Fakturanr: {{ entry["identifier"] }}</p>
-            {% if external["supplier"] %}
-                <p>Leverandør: {{ external["supplier"]["name"] }}</p>
-            {% elif external["customer"] %}
-                <p>Kunde: {{ external["customer"]["name"] }}</p>
-            {% endif %}
-            <p>Betalt: {{ entry["paid"] }}</p>
+            <div class="entry_data_container">
+                <div class="entry_info_container">
+
+                    <div class="entry_info1">
+                        <table class="entry_info_table">
+                            <tr>
+                                <td><h4>Type:</h4></td>
+                                <td>{{ entry["kind"] }}</td>
+                            </tr>
+                            <tr>
+                                <td><h4>Dato:</h4></td>
+                                <td>{{ entry["date"] }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="entry_info2">
+                        <table class="entry_info_table">
+                            <tr>
+                                {% if entry["type"] == "Salg" %}
+                                <th><h4>Kunde:</h4></th>
+                                {% elif entry["type"] == "Kjøp" %}
+                                <th><h4>Leverandør:</h4></th>
+                                {% endif %}
+                                <td>{{ external["contact"]["name"] }}</td>
+                            </tr>
+                            <tr>
+                                <td><h4>Betalt:</h4></td>
+                                <td>{{ entry["paid"] }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="entry_audit_container">
+                    <table class="entry_audit_table">
+                        <tr>
+                            <th><h4>Beskrivelse:</h4></th>
+                            <th><h4>Nettobeløp:</h4></th>
+                            <th><h4>Mva:</h4></th>
+                            <th><h4>Bruttobeløp:</h4></th>
+                            <th><h4>Konto:</h4></th>
+                        </tr>
+                        {% for product in entry['lines'] %}
+                        <tr>
+                            <td>{{ product['description'] }}</td>
+                            <td>{{ product['netPrice'] }}</td>
+                            <td>{{ product['vat'] }}</td>
+                            <td class="brutto">{{ product['grossPrice'] }}</td>
+                            <td>{{ product['account'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+
+                </div>
             </div>
 
-            <div class="entry_description">
-                <p>Description: {{ entry["description"] }}</p>
-            </div>
-
-            <div class="entry_calc">
-                {%  if entry["downloadUrl"] %}
-                    <img src="{{ entry["downloadUrl"] }}" alt="entry_image" type="application/pdf">
+            <div class="entry_pic">
+                {# TODO - Pic should be modal #}
+                {# TODO - Possible to display pdf #}
+                {%  if entry["https://fiken.no/api/v1/rel/attachments"] %}
+                    {% if entry["img"] %}
+                    <img class="entry_image" src="{{ entry["img"] }}" >
+                    <!-- Modal for the picture -->
+                    <div class="history_modal">
+                      <span class="history_modal_close">&times;</span>
+                      <img class="history_modal_img">
+                    </div>
+                    {% else %}
+                    <a href="{{ entry["pdf"] }}">Last ned bilag</a>
+                    {% endif %}
+                {% else %}
+                    {% if entry["type"] == "Kjøp" %}
+                    Det er ikke lagt til bilag på dette kjøpet
+                    {% else %}
+                    Det er ikke lagt til bilag på dette salget
+                    {% endif %}
                 {%  endif %}
             </div>
 
-            <hr>
         </div>
     </div>
+
 {% endfor %}
 {% else %}
     {% if not current_user.fiken_manager.has_valid_login() %}
@@ -71,12 +141,41 @@
 {%  endif %}
 <div class="marginbox"></div>
 
-
 <script>
-var coll = document.getElementsByClassName("collapsible");
-var i;
+/** Script for the modal for images. Borrowed from w3schools. **/
+// Get the modals
+let modals = document.getElementsByClassName('history_modal');
 
-for (i = 0; i < coll.length; i++) {
+// Get the image and insert it inside the modal
+let imgs = document.getElementsByClassName('entry_image');
+let modalImgs = document.getElementsByClassName("history_modal_img");
+
+// Get the spans used for closing
+let spans = document.getElementsByClassName('history_modal_close');
+
+// Get the body
+let body = document.querySelector('body');
+
+for (let i = 0; i < imgs.length; i++) {
+    if (imgs[i] != null) {
+        imgs[i].onclick = function () {
+            modals[i].style.display = "block";
+            modalImgs[i].src = this.src;
+            body.style.overflow = "hidden";
+        };
+    }
+    if (spans[i] != null) {
+        spans[i].onclick = function () {
+            modals[i].style.display = "none";
+            body.style.overflow = "auto";
+        };
+    }
+}
+
+/** Script for the collapsible boxes **/
+var coll = document.getElementsByClassName("collapsible");
+
+for (var i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function() {
     this.classList.toggle("active");
     var content = this.nextElementSibling;
@@ -88,8 +187,5 @@ for (i = 0; i < coll.length; i++) {
   });
 }
 </script>
-
-
-
 
 {% endblock container %}

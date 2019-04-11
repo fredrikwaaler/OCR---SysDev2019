@@ -11,13 +11,15 @@
 </head>
 <body>
 
-<form class="main-form" id="sale-form" method="post" action="{{ url_for('send_sale_form') }}">
+<form class="main-form" id="sale-form" method="post" action="{{ url_for('sale2') }}">
     <div class="sf-upper">
         <div class="form-part">
             <div class="sf-group">
                 <div class="sf-form-input" id="sale_type-block">
                     <h4>Type</h4>
-                    {{ form.sale_type }}
+                    <select disabled>
+                        <option selected>Faktura</option>
+                    </select>
                 </div>
                 <div class="sf-form-input" id="date-block">
                     <h4>Dato</h4>
@@ -25,9 +27,9 @@
                 </div>
                 <div class="sf-form-input" id="days_to_maturity-block">
                     <h4>Dager til forfall</h4>
-                    <input id="days_to_maturity" name="days_to_maturity" type="number" onchange="update_maturity_date()">
+                    <input id="days_to_maturity" name="days_to_maturity" required type="number" onchange="update_maturity_date()">
                     <div class="empty"></div>
-                    <p id="maturity-text">Forfallsdato: 1.1.2011</p>
+                    <p id="maturity-text">Forfallsdato: dd.mm.åå</p>
                 </div>
                 <div class="sf-form-input" id="comment-block">
                     <h4 id="comment">Kommentar</h4>
@@ -35,7 +37,12 @@
                 </div>
                 <div class="sf-form-input" id="account_number-block">
                     <h4>Kontonummer</h4>
-                    {{ form.account_number }}
+                    <select id="account_number" name="account" required>
+                        <option disabled selected value> Velg kontonummer </option>
+                        {% for account_string, account in bank_accounts %}
+                        <option value="{{ account["href"] }}">{{ account_string }}</option>
+                        {% endfor %}
+                    </select>
                     <div class="empty"></div>
                     <input class="modal_button sf-button" id="new-account-button" type="button" value="Opprett ny">
                 </div>
@@ -45,7 +52,12 @@
             <div class="form-part" id="sf-reference">
                 <div class="sf-form-input" id="contact-block">
                     <h4>Kontakt</h4>
-                    {{ form.contact }}
+                    <select id="contact" name="customer" required>
+                        <option disabled selected value> Velg kunde </option>
+                        {% for customer_string, customer in customers %}
+                            <option value="{{ customer["href"] }}">{{ customer_string }}</option>
+                        {% endfor %}
+                    </select>
                     <div class="empty"></div>
                     <input class="modal_button" id="supplier-button" type="button" value="Opprett ny">
                 </div>
@@ -90,7 +102,520 @@
     </div>
     </div>
 </form>
-<script src="{{ url_for('static',filename='js/widget.js') }}"></script>
+
+<script>
+let mdblock = document.getElementById("maturity_date-block");
+let mdblock_filler = document.getElementById("maturity_date-block-filler");
+let paid = document.getElementById("pf-paid");
+let payment = document.getElementById("pf-payment");
+let supplier = document.getElementById("supplier");
+let supplier_button = document.getElementById("supplier-button");
+let amount = document.getElementById("amount");
+
+let counter = 1; //Counter to represent amount of made lines
+
+init();
+
+function init() {
+    if (document.getElementById("purchase-form")) {
+        add_purchase_line();
+    }
+    if (document.getElementById("sale-form")) {
+        add_product_line();
+    }
+}
+
+
+
+
+// PURCHASE FORM
+// -- Mode Selection
+
+/**
+ * Changes the mode to supplier mode.
+ */
+function mode_supplier() {
+    mdblock.style.display = "grid";
+    paid.style.display = "grid";
+    payment.style.display = "none";
+    supplier.disabled = false;
+    supplier_button.disabled = false;
+}
+
+/**
+ * Changes the mode to cash mode.
+ */
+function mode_cash() {
+    mdblock.style.display = "none";
+    paid.style.display = "none";
+    payment.style.display = "grid";
+    supplier.disabled = true;
+    supplier_button.disabled = true;
+}
+
+
+// -- Line selection
+
+/**
+ * Adds a new line to purchase form.
+ */
+function add_purchase_line() {
+    let purchase_line = createHTML("purchase_line");
+    let parent = "pf-lines";
+    let element = "div";
+    let element_id = "pf-line-"+counter;
+    addElement(parent, "pf-line", element, element_id, purchase_line);
+}
+
+/**
+ * Removes a line in purchase form.
+ * @param id The id of line to be removed.
+ */
+function remove_purchase_line(id) {
+    let pf_lines = document.getElementById("pf-lines");
+    if (pf_lines.children.length > 1){
+        removeElement(id);
+    } else {
+        // TODO - Flash if only one element is left
+        console.log("Cant remove line");
+    }
+}
+
+/**
+ * Clears the purchase form for input and deletes lines.
+ */
+function clear_purchase_form() {
+    document.getElementById("purchase-form").reset();
+    for (let i = 1; i < counter; i++) {
+        let id = "pf-line-"+i;
+        remove_purchase_line(id);
+    }
+}
+
+let purchaseForm = document.getElementById("purchase-form");
+
+/**
+ * Changes the net value in a line.
+ * Used when gross amount is changed.
+ */
+function change_net(){
+    // TODO - Change value of gross field when net field is changed.
+    let gross_total = 0;
+    let net_total = 0;
+    for (let i = 1; i < counter; i++) {
+        let gross_id = "gross_amount-" + i;
+        let net_id = "net_amount-" + i;
+        let gross_pointer = document.getElementById(gross_id);
+        let net_pointer = document.getElementById(net_id);
+        if (gross_pointer != null){
+            let gross_amount = Number(gross_pointer.value);
+            let net_amount = gross_amount/(1.25);
+            net_pointer.value = net_amount;
+            gross_total += gross_amount;
+            net_total += net_amount;
+        }
+    }
+    let vat_total = gross_total-net_total;
+    change_total(gross_total, vat_total, net_total);
+}
+
+
+/**
+ * Changes the total field.
+ * @param gross_total The gross total.
+ * @param vat_total The vat total.
+ * @param net_total The net total.
+ */
+function change_total(gross_total, vat_total, net_total) {
+    let total = document.getElementById("pf-total");
+    let amount = document.getElementById("amount");
+    total.innerHTML = "Totalbeløp: " + net_total.toFixed(2) + " + mva: " +
+        vat_total.toFixed(2) +" = " +  gross_total.toFixed(2);
+    amount.value = gross_total;
+}
+
+
+// SALE FORM
+
+function update_maturity_date() {
+    let days = document.getElementById("days_to_maturity").value;
+    let time = new Date();
+    time.setDate(time.getDate()+Number(days));
+    let day = time.getDate();
+    let month = time.getMonth() + 1;
+    let year = time.getFullYear();
+    document.getElementById("maturity-text").innerHTML = "Forfallsdato: " + day +"." + month + "." + year;
+}
+
+// -- Line selection
+/**
+ * Adds a new product line to sale form.
+ */
+function add_product_line() {
+    let id = "sf-line-" + counter;
+    let product_line = createHTML("product_line");
+    addElement("sf-lines", "sf-line", "div", id, product_line);
+    update_sale_lines();
+}
+
+/**
+ * Adds a new freetext line to sale form.
+ */
+function add_freetext_line() {
+    let id = "sf-line-" + counter;
+    let freetext_line = createHTML("freetext_line");
+    addElement("sf-lines", "sf-line", "div", id, freetext_line);
+    update_sale_lines();
+}
+
+
+/**
+ * Removes a line in purchase form.
+ * @param id The id of line to be removed.
+ */
+function remove_sale_line(id) {
+    let sf_lines = document.getElementById("sf-lines");
+    if (sf_lines.children.length > 1){
+        removeElement(id);
+    } else {
+        // TODO - Flash if only one element is left
+        console.log("Cant remove line");
+    }
+    update_sale_lines();
+}
+
+/**
+ * Clears the purchase form for input and deletes lines.
+ */
+function clear_sale_form() {
+    document.getElementById("sale-form").reset();
+    for (let i = 1; i < counter; i++) {
+        let id = "sf-line-"+i;
+        remove_sale_line(id);
+    }
+    update_sale_lines();
+}
+
+function update_sale_lines() {
+    change_sale_line_total();
+    change_sale_total();
+}
+
+function change_sale_line_total() {
+    // TODO - Calculate vat
+    for (let i = 1; i < counter; i++){
+        let price_pointer = document.getElementById("price-"+i);
+        let discount_pointer = document.getElementById("discount-"+i);
+        let amount_pointer = document.getElementById("amount-"+i);
+        if (price_pointer != null) {
+            let price = price_pointer.value;
+            let discount = discount_pointer.value;
+            let amount = amount_pointer.value;
+            let total = amount*price;
+            if (discount > 0) {total = total*(1-(discount/100))}
+            document.getElementById("sf-line-total-"+i).innerHTML = total.toFixed(2);
+        }
+    }
+}
+
+function change_sale_total() {
+    // TODO - Add vat calculation
+    let total = document.getElementById("sf-total");
+    let gross_amount = 0;
+    let net_amount = 0;
+    let vat_amount = 0;
+    for (let i = 1; i < counter; i++){
+        let total_pointer = document.getElementById("sf-line-total-"+i);
+        if (total_pointer != null) {
+            gross_amount += Number(total_pointer.innerHTML)
+        }
+    }
+    total.innerHTML = gross_amount.toFixed(2) + " " + "(0.00 inkl. mva)"
+}
+
+/**
+ * Validates that the discount-field with the given counter is set to strictly numerical and between 0 and 100.
+ * If it is not, the value is set to 0 or 100, depending on whats closest to the actual input.
+ */
+function check_discount(counter) {
+    let discount = document.getElementById("discount-"+counter);
+    if (discount.value < 0) {
+        discount.value = 0;
+    }
+    else if (discount.value > 100) {
+        discount.value = 100;
+    }
+    else if  (!(/[-+]?[0-9].?[0-9]/.test(String(discount.value)))) {
+        discount.value = 0;
+    }
+}
+
+/**
+ * Validates that the amount-field with the given counter is set to strictly numerical.
+ * If it is not, the value is set to 0.
+ */
+function check_amount(counter) {
+    let amount = document.getElementById('amount-'+counter);
+    if  (!(/[-+]?[0-9].?[0-9]/.test(String(amount.value)))) {
+        amount.value = 0;
+    }
+}
+
+/**
+ * Validates that the price-field with the given counter is set to strictly numerical.
+ * If it is not, the value is set to 0.
+ */
+function check_price(counter) {
+    let price = document.getElementById('price-'+counter);
+    if (!(/[-+]?[0-9].?[0-9]/.test(String(price.value)))) {
+        price.value = 0;
+    }
+}
+
+function updateMva(counter) {
+    let products = document.getElementById("product-" + counter);
+    var selectedProd = products.options[products.selectedIndex].value;
+    let mvaType = selectedProd.split(',')[1].trim();
+    let mva = "NaN";
+    if (mvaType == 'HIGH') {
+        mva = '25%';
+    }
+    else if (mvaType == 'NONE' || mvaType == 'EXEMPT_REVERSE' || mvaType == "OUTSIDE" || mvaType == "EXEMPT_IMPORT_EXPORT" || mvaType == "EXEMPT") {
+        mva = '0%';
+    }
+    else if (mvaType == 'LOW') {
+        mva = '12%';
+    }
+    else if (mvaType == 'RAW_FISH') {
+        mva = '11.11%';
+    }
+    else if (mvaType == 'MEDIUM') {
+        mva = '15%';
+    }
+
+    // Update the value in the form
+    let mvaBox = document.getElementById("sale_vat-" + counter);
+    removeOptions(mvaBox);
+    mvaBox.options[0] = new Option(mva);
+    mvaBox.selectedIndex = 0;
+}
+
+/**
+ * Updates the values of the mva drop-down for free-text with the given counter based on chosen product-type.
+ */
+function updateMvaFree(counter) {
+    let radios = document.getElementsByName("sale_type_free-"+counter);
+    let sel = document.getElementById("sale_vat-"+counter);
+
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            // Remove prev options before populating
+            removeOptions(sel);
+            if (radios[i].value == '1' || radios[i].value == '2') {
+                // Populate for videresalg
+                sel.options[sel.options.length] = new Option('25% (Vanlige salg til Norge med 25% mva.)', 3);
+                sel.options[sel.options.length] = new Option('15% (Vanlige salg til Norge med 15% mva. Næringsmidler etc.)', 31);
+                sel.options[sel.options.length] = new Option('11,11% (Råfisk. Kun dersom firmaets primære salsgsobjekt)', 32);
+                sel.options[sel.options.length] = new Option('Fritatt (Salg som er fritatt for avgift)', 5 );
+                sel.options[sel.options.length] = new Option('Utførsel (Varer som er fritatt for mva. ved eksport)', 52);
+                sel.options[sel.options.length] = new Option('Utenfor (Salg til Norge som ligger utenfor merverdiavgiftsloven)', 6);
+            }
+            else if (radios[i].value == '3') {
+                sel.options[sel.options.length] = new Option('25% (Vanlige salg til Norge med 25% mva.)', 3);
+                sel.options[sel.options.length] = new Option('12% (Vanlige salg til Norge med 12% mva. Oftest transport.)', 31);
+                sel.options[sel.options.length] = new Option('Fritatt (Salg som er fritatt for avgift)', 5 );
+                sel.options[sel.options.length] = new Option('Utførsel (Varer som er fritatt for mva. ved eksport)', 52);
+                sel.options[sel.options.length] = new Option('Utenfor (Salg til Norge som ligger utenfor merverdiavgiftsloven)', 6);
+            }
+            else if (radios[i].value == '4') {
+                // TODO - Fill choices for "annet"
+            }
+        }
+    }
+}
+
+/**
+ * Takes a selectbox object and removes all its options.
+*/
+function removeOptions(select) {
+    let length = select.options.length;
+    for(let i = 0; i < length; i++)
+    {
+        select.remove(0);
+    }
+}
+
+
+
+
+
+// GENERAL
+
+/**
+ * Adds an element to the document.
+ * @param parentId The id of parent element.
+ * @param elementClass The class of the new element.
+ * @param elementTag The tag of the new element.
+ * @param elementId The id of the new element.
+ * @param html The html to be filled in new element.
+ */
+function addElement(parentId, elementClass, elementTag, elementId, html) {
+    // Adds an element to the document
+    let p = document.getElementById(parentId);
+    let newElement = document.createElement(elementTag);
+    newElement.setAttribute('class', elementClass);
+    newElement.setAttribute('id', elementId);
+    newElement.innerHTML = html;
+    p.appendChild(newElement);
+    counter++;
+}
+
+/**
+ * Removes an element in document.
+ * @param elementId The id of element to be removed.
+ */
+function removeElement(elementId) {
+    let element = document.getElementById(elementId);
+    if (element != null) {
+        element.parentNode.removeChild(element);
+    }
+}
+
+/**
+ * Creates HTML for document
+ * @param type The HTML type
+ * @returns {string} The HTML for specific type.
+ */
+function createHTML(type) {
+    if (type === "purchase_line") {
+        return `
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden"> Tekst</h4>
+                <input id="text-${counter}" name="text-${counter}" type="text">
+            </div>
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden">Kostnadskonto</h4>
+                <select id="billing_account-${counter}" name="billing_account-${counter}"></select>
+            </div>
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden">Bruttobeløp</h4>
+                <input id="gross_amount-${counter}" name="gross_amount-${counter}" type="number" onchange="change_net()">
+            </div>
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden">Mva</h4>
+                <select id="vat-${counter}" name="vat-${counter}"></select>
+            </div>
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden">Nettobeløp</h4>
+                <input id="net_amount-${counter}" name="net_amount-${counter}" type="number" disabled>
+            </div>
+            <div class="pf-line-input">
+                <input class="pf-button" id="pf-button-${counter}" type="button" value="Slett linje" onclick="remove_purchase_line(this.parentNode.parentNode.id)">
+            </div>
+            `;
+    }
+    else if (type === "product_line") {
+        return `
+            <div class="description-column">
+                <div class="sf-line-input">
+                    <select id="product-${counter}" name="product" onchange="updateMva(${counter});" required>
+                        <option disabled selected value>Velg produkt</option>
+                        {% for product_string, product in products %}
+                        <option value="{{ product['href'] }}, {{ product["vatType"] }}">{{ product_string }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="sf-line-input">
+                    <h4 class="sf-header-hidden">Kommentar</h4>
+                    <input id="sale_comment-${counter}" name="description" type="text" placeholder="Kommentar (ikke påkrevd)">
+                </div>
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Pris</h4>
+                <input id="price-${counter}" name="price" type="number" value="0.00" onchange="update_sale_lines(); check_price(${counter});">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Rabatt</h4>
+                <input id="discount-${counter}" min="0" max="100" name="discount" type="number" value="0" onchange="update_sale_lines(); check_discount(${counter})">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Antall</h4>
+                <input id="amount-${counter}" name="quantity" type="number" value="1" onchange="update_sale_lines(); check_amount(${counter});">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Mva</h4>
+                <select id="sale_vat-${counter}" name="sale_vat" onchange="update_sale_lines()" disabled>
+                </select>
+            </div>
+            <div class="sf-line-input sf-line-button">
+                <p class="sf-line-total" id="sf-line-total-${counter}" name="total">0.00</p>
+                <input class="sf-button" id="sf-button-${counter}" name="total" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
+            </div>
+            `;
+    }
+    else if (type === "freetext_line") {
+        return `
+            <div class="description-column">
+                <div class="sf-line-input">
+                    <h4 class="sf-header-hidden">Tekst</h4>
+                    <input id="description" name="description_free" type="text" placeholder="Beskrivelse" required>
+                </div>
+                <ul class="sf-line-input" id="sale-type">
+                    <li>
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" type="radio" value="1" checked>
+                        <label for="sale_type-0">Vare (for videresalg)</label>
+                    </li>
+                    <li>
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" type="radio" value="2">
+                        <label for="sale_type-1">Vare (egenprodusert)</label>
+                    </li>
+                    <li>
+                        <input  onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" type="radio" value="3">
+                        <label for="sale_type-2">Tjeneste</label>
+                    </li>
+                    <li>
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" type="radio" value="4">
+                        <label for="sale_type-3">Annet</label>
+                    </li>
+                </ul>
+                <div class="sf-line-input">
+                    <h4 class="sf-header-hidden">Kommentar</h4>
+                    <input id="sale_comment-${counter}" name="comment_free" placeholder="Kommentar (ikke påkrevd)" type="text">
+                </div>
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Pris</h4>
+                <input id="price-${counter}" name="price_free" type="number" value="0.00" onchange="update_sale_lines(); check_price(${counter});">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Rabatt</h4>
+                <input id="discount-${counter}" name="discount_free" min="0" max="100" type="number" value="0" onchange="update_sale_lines(); check_discount(${counter});">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Antall</h4>
+                <input id="amount-${counter}" name="quantity_free" type="number" value="1" onchange="update_sale_lines(); check_amount(${counter});">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Mva</h4>
+                <select id="sale_vat-${counter}" name="sale_free_saft" onchange="update_sale_lines()">
+                    {# Populate for videresalg, default #}
+                    <option value=3>25% (Vanlige salg til Norge med 25% mva.)</option>
+                    <option value=31>15% (Vanlige salg til Norge med 15% mva. Næringsmidler etc.)</option>
+                    <option value=32>11,11% (Råfisk. Kun dersom firmaets primære salsgsobjekt)</option>
+                    <option value=5>Fritatt (Salg som er fritatt for avgift)</option>
+                    <option value=52>Utførsel (Varer som er fritatt for mva. ved eksport)</option>
+                    <option value=6>Utenfor (Salg til Norge som ligger utenfor merverdiavgiftsloven)</option>
+                </select>
+            </div>
+            <div class="sf-line-input sf-line-button">
+                <p class="sf-line-total" id="sf-line-total-${counter}">0.00</p>
+                <input class="sf-button" id="sf-button-${counter}" name="total_free" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
+            </div>
+            `;
+    }
+}
+
+</script>
 
 </body>
 </html>

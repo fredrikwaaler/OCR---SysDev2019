@@ -341,7 +341,8 @@ img {
 /* ------ HISTORY PAGE ----- */
 .filter_buttons {
     position: static;
-    margin-bottom: 2%;
+    margin: 0 10% 2%;
+    font-size: 130%;
 }
 
 .filter_buttons input[type="radio"] {
@@ -360,16 +361,18 @@ img {
 
 .collapsible {
     display: block;
-    background-color: #333;
-    color: white;
+    background-color: #f5f5f5;
+    color: black;
+    border-radius: 3px;
+    border: 1px solid #ddd;
     cursor: pointer;
     padding: 18px;
-    width: 100%;
-    border: none;
+    width: 80%;
     text-align: left;
     outline: none;
-    font-size: 15px;
     overflow: hidden;
+    margin: 0.5% auto 0;
+    font-size: 115%;
 }
 
 .collapsible:after {
@@ -378,12 +381,14 @@ img {
 }
 
 .collapsible_text {
-    float: left;
-    width: 33%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    text-align: center;
+}
+
+.collapsible_date {
+    float: right;
+    margin-right: 7.5%;
 }
 
 .collapsible_text:first-child {
@@ -396,9 +401,14 @@ img {
 
 .content {
     display: none;
-    background-color: #f1f1f1;
-    padding: 3%;
+    background-color: #fff;
     overflow: auto;
+    width: 80%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 3% 1%;
+    border: 1px solid #ddd;
+    border-top: none;
 }
 
 .content img {
@@ -406,48 +416,127 @@ img {
     width: 100%;
 }
 
-.entry_info {
-    width: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 3fr 4fr 3fr;
-}
 
-.entry_info p {
-    display: block;
-    margin-top: 0;
-    font-size: 1.2vm;
-    vertical-align: top;
-}
-
-.entry_info p:last-child {
-    margin-bottom: 0;
-}
-
-.entry_stats {
-    width: 100%;
-    display: inline-block;
-    float: left;
-}
-
-.entry_stats p {
-    padding: 0 1%;
-}
-
-.entry_description {
-    width: 100%;
-    display: inline-block;
-    top: 0;
-    float: left;
-    box-sizing: border-box;
-    padding: 0 1%;
-}
 
 .no_history {
     font-size: 200%;
     padding: 5%;
     text-align: center;
+}
+
+
+/* ------ HISTORY 2 ----- */
+.entry_container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+.entry_info_container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding-bottom: 1%;
+    border-bottom: 1px solid #d1d1d1;
+}
+
+.entry_info_table h4,
+.entry_audit_table h4 {
+    float: none;
+    font-size: inherit;
+    font-weight: bold;
+    padding-right: 5%;
+}
+
+.entry_audit_table {
+    width: 70%;
+}
+
+.entry_audit_table tr td:first-child {
+    width: 35%;
+}
+
+.entry_audit_table td {
+    padding-right: 5%;
+    vertical-align: text-top;
+}
+
+.entry_audit_table th {
+    text-align: left;
+}
+
+.entry_audit_table .brutto {
+    text-align: right;
+}
+
+.entry_audit_table tr td:last-child {
+    padding-right: 0;
+}
+
+.entry_audit_container {
+    padding: 2% 0 1% 0;
+}
+
+
+.entry_pic {
+    padding: 1%;
+    align-content: center;
+    text-align: center;
+}
+
+.entry_pic img {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    max-width: 70%;
+    display: block;
+    margin: auto;
+}
+
+/* Image modal code borrowed from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal_img */
+.history_modal_img {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+/* The Close Button */
+.history_modal_close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.history_modal_close:hover,
+.history_modal_close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.history_modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+.entry_pic img:hover {
+    opacity: 0.7;
+}
+
+.history_modal_img:hover {
+    opacity: 1 !important;
 }
 
 .modal_switch {

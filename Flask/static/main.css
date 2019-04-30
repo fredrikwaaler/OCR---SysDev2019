@@ -324,10 +324,9 @@ footer {
 }
 
 hr {
-    border-top: 1px solid #eeeeee;
-    margin: 10px 2%; 
-    width: 94%;
-    min-width: 290px;
+    border-top: 1px solid #ccc;;
+    margin: 10px auto;
+    width: 100%;
 }
 
 /* a invisable box to align content with box-display */
@@ -694,12 +693,6 @@ img {
         max-width: 840px;
     }
 
-    hr {
-        margin: 20px 40px;
-        width: 90%;
-        max-width: 860px;
-    }
-
     .left, .right {
         float: none;
     }
@@ -738,9 +731,6 @@ img {
         margin: 0 20px 0 0;
     }
 
-    h2 {
-        width: 20%;
-    }
 
     #prePaid {
         margin-right: 40%;
@@ -795,11 +785,6 @@ img {
             max-width: 840px;
         }
 
-        hr {
-            margin: 20px 40px;
-            width: 90%;
-            max-width: 860px;
-        }
 
         .left, .right {
             float: none;
@@ -831,10 +816,6 @@ img {
         #mvaBlock {
             padding: 6px 0;
             margin: 0 20px 0 0;
-        }
-
-        h2 {
-            width: 20%;
         }
 
         #part3Sales {
@@ -885,20 +866,14 @@ img {
                 max-width: 580px;
                 clear: none;
             }
-
+            /*
             #user-account, #fiken-account {
                 width: 85%;
                 max-width: 1100px;
                 margin: 20px 40px;
-            }
+            }*/
 
-            hr {
-                margin: 40px 40px 20px 40px;
-                margin: 20px 40px;
-                width: 87%;
-                max-width: 1113px;
-                clear: both;
-            }
+
             /* 0404
             .imagebox {
                 width: 100%;

@@ -69,8 +69,6 @@ class DatabaseManager:
             except ProgrammingError:
                 traceback.print_exc()
 
-
-
         else:
             raise ValueError("{} not belonging to any user. Cannot update values.".format(pk_email))
 

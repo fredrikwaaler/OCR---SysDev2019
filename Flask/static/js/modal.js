@@ -3,6 +3,8 @@ let modal_button = document.getElementsByClassName('modal_button');
 let span = document.getElementsByClassName('close');
 let body = document.querySelector('body');
 
+console.log(modal_button.length);
+
 for (let btn = 0; btn < modal_button.length ; btn++) {
     if (modal_button[btn] != null) {
         modal_button[btn].onclick = function () {

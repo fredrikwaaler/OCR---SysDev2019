@@ -4,72 +4,125 @@
 <h2>Min Konto</h2>
 <!--Info about the users name and email that we have-->
 <!--Structure: "Name:"    <actual name>  <Change button> -->
-<div class="box-display" id="user-account">
-    <form method="POST" action="{{ url_for('change_name') }}">
-        <h3 class="first-field-title">Navn</h3>
-        <p>{{ name }}</p>
-        {{ form.new_name }}
-        <input class="boxedButton popup-button" type="submit" Value="Endre">
-    </form>
+    <div id="profile-container">
+        <div class="form-part" id="user-account">
+            <div class="profile-section">
+                <h3 class="profile-title">Navn</h3>
+                <p class="profile-p">{{ name }}</p>
+                <input class="modal_button form-button" type="submit" Value="Endre">
+            </div>
+            <hr>
+            <!-- Change email here -->
+            <div class="profile-section">
+                <h3 class="profile-title">Email</h3>
+                <p class="profile-p">{{ email }}</p>
+                <input class="modal_button form-button" type="submit" Value="Endre">
+            </div>
+            <hr>
+        <!--Change password here -->
+            <div class="profile-section">
+                <h3 class="profile-title">Passord</h3>
+                <div class="empty"></div>
+                <input class="modal_button form-button" type="submit" Value="Endre">
+            </div>
+        </div>
+        <!-- Change/connect to fiken user here -->
+        <div class="form-part" id="fiken-account">
+            <h3 class="first-field-title">Fiken-instillinger</h3>
+            <hr>
+            {% if not current_user.fiken_manager.has_valid_login() %}
+                <input class="stacked_button modal_button" type="submit" Value="Logg Inn" >
+                <span class="modal_button"></span>
+            {% else %}
+                <div class="profile-section">
+                    <h3 class="profile-title">Bruker</h3>
+                    <p class="profile-p">{{ current_user.fiken_manager.get_fiken_login() }}</p>
+                    <input class="form-button modal_button" type="submit" Value="Endre">
+                </div>
+                <hr>
+                <div class="profile-section">
+                    <h3 class="profile-title">Firma</h3>
+                    {%  if current_user.fiken_manager.get_active_company_name() %}
+                        <p class="profile-p active_info">{{ current_user.fiken_manager.get_active_company_name() }}</p>
+                    {% else %}
+                        <div class="empty"></div>
+                    {% endif %}
+                    <input class="form-button modal_button" type="submit" Value="Endre">
+                </div>
+                <hr>
+                <form action="{{ url_for('log_out_fiken') }}">
+                    <input class="form-button" type="submit" Value="Logg ut av fiken">
+                </form>
+            {% endif %}
+        </div>
 
-    <!-- Change email here -->
-    <form method="POST" action="{{ url_for('change_email') }}">
-        <h3>Email</h3>
-        <p>{{ email }}</p>
-        {{ form.new_email }}
-        <input class="boxedButton" type="submit" Value="Endre">
-    </form>
+        <div class="form-part">
+            <h3>Personvern</h3>
+            <hr>
+            <form method="POST" action="{{ url_for('get_user_data') }}">
+                <input type="submit" Value="Last ned brukerdata" class="form-button">
+            </form>
+            <hr>
+            <input class ="form-button modal_button" type="submit" id="warning" Value="Slett konto">
+        </div>
+    </div>
 
-<!--Change password here -->
-    <form method="POST" action="{{ url_for('change_password') }}">
-        <h3>Nytt passord</h3>
-        {{ form.new_password }}
-        <h3>Gjenta passord</h3>
-        {{ form.repeat_password }}
-        <input class="last-boxed-button" type="submit" Value="Endre">
-    </form>
-</div>
-
-<hr>
-
-<!-- Change/connect to fiken user here -->
-<div class="box-display" id="fiken-account">
-    <h3 class="first-field-title">Fikenbruker</h3>
-    {% if not current_user.fiken_manager.has_valid_login() %}
-        <input class="stacked_button modal_button" type="submit" Value="Logg Inn" >
-        <span class="modal_button"></span>
-    {% else %}
-        <input class="stacked_button modal_button" type="submit" Value="Endre bruker">
-        <span class="active_info">{{ current_user.fiken_manager.get_fiken_login() }}</span>
-        <br>
-        <input class="stacked_button modal_button" type="submit" Value="Endre firma">
-    {%  if current_user.fiken_manager.get_active_company_name() %}
-        <span class="active_info">{{ current_user.fiken_manager.get_active_company_name() }}</span>
-    {% endif %}
-        <form action="{{ url_for('log_out_fiken') }}">
-            <input class="stacked_button" type="submit" Value="Logg ut">
-        </form>
-    {% endif %}
-</div>
-
+    <!-- Modal for changing name -->
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form class="profile-modal-form" method="POST" action="{{ url_for('change_name') }}">
+                <h3>Endre navn</h3>
+                <h4>Nytt navn:</h4>
+                {{ form.new_name }}
+                <input class="form-button" type="submit" value="Endre">
+            </form>
+        </div>
+    </div>
+    <!-- Modal for changing email -->
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form class="profile-modal-form"  method="POST" action="{{ url_for('change_email') }}">
+                <h3>Endre Email</h3>
+                <h4>Ny Email</h4>
+                {{ form.new_email }}
+                <input class="form-button" type="submit" value="Endre">
+            </form>
+        </div>
+    </div>
+    <!-- Modal for changing password -->
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form class="profile-modal-form" method="POST" action="{{ url_for('change_password') }}">
+                <h3>Endre passord</h3>
+                <h4>Nytt passord</h4>
+                {{ form.new_password }}
+                <h4>Gjenta passord</h4>
+                {{ form.repeat_password }}
+                <input class="form-button" type="submit" value="Endre">
+            </form>
+        </div>
+    </div>
 <!-- Code for modal content for the change Fiken user functionality-->
 <div class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <form method="POST" action="{{ url_for('change_fiken') }}">
+        <form class="profile-modal-form" method="POST" action="{{ url_for('change_fiken') }}">
             {%  if current_user.fiken_manager.has_valid_login() %}
-            <h2>Endre Fiken-bruker</h2>
+            <h3>Endre Fiken-bruker</h3>
             {% else %}
-            <h2>Logg Inn</h2>
+            <h3>Logg Inn</h3>
             {% endif %}
-            <h3>Email</h3>
+            <h4>Email</h4>
             {{ fiken_modal_form.email }}
-            <h3>Passord</h3>
+            <h4>Passord</h4>
             {{ fiken_modal_form.password }}
             {% if current_user.fiken_manager.has_valid_login() %}
-            <input class="boxedButton" type="submit" Value="Endre">
+            <input class="form-button" type="submit" Value="Endre">
             {% else %}
-            <input class="boxedButton" type="submit" Value="Logg Inn">
+            <input class="form-button" type="submit" Value="Logg Inn">
             {% endif %}
         </form>
     </div>
@@ -79,9 +132,9 @@
 <!-- Code for modal to change associated fiken company -->
     <div class="modal">
         <div class="modal-content">
-            <span class="close">x</span>
-            <form action="{{ url_for('set_active_company') }}" method="post">
-                <h2> Endre firma </h2>
+            <span class="close">&times;</span>
+            <form class="profile-modal-form" action="{{ url_for('set_active_company') }}" method="post">
+                <h3> Endre firma </h3>
                     <table class="company_table">
                         {% for company_info, company_key in companies %}
                             <tr>
@@ -100,7 +153,7 @@
                             </tr>
                         {% endfor %}
                     </table>
-                <input class="boxedButton" type="submit" Value="Velg">
+                <input class="form-button" type="submit" Value="Velg">
             </form>
         </div>
     </div>
@@ -108,10 +161,7 @@
 <!-- invisable box to help align content with box-display -->
 <div class ="box-invis">
 <!--Buttons to download userdata and deleting account-->
-<form method="POST" action="{{ url_for('get_user_data') }}">
-    <input type="submit" Value="Last ned brukerdata" class="buttons" id="dlUserData">
-</form>
-    <input class ="modal_button" type="submit" id="warning" Value="Slett konto">
+
 <div class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -136,7 +186,7 @@
                     <p>{{ message }}</p>
                 {% endfor %}
             </div>
-            <input class="boxedButton popup-close-btn" type="submit" value="OK">
+            <input class="form-button popup-close-btn" type="submit" value="OK">
             </div>
         </div>
     {% endif %}

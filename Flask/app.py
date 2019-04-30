@@ -128,6 +128,13 @@ def purchase2():
     return render_template('purchase_widget.html', title="Kjøp", form=form)
 
 
+@app.route('/vision', methods=['GET'])
+def vision():
+    vision_manager = VisionManager("key.json")
+    img_text = vision_manager.get_text_detection_from_img("fakt1.jpg")
+    text_processor = TextProcessor(img_text)
+
+
 @app.route('/history', methods=['GET', 'POST'])
 @login_required
 def history():
@@ -206,9 +213,9 @@ def log_out():
     return redirect(url_for('log_in'))
 
 
-@app.route('/sign_up', methods=['GET', 'POST'])
+@app.route('/admin', methods=['GET', 'POST'])
 @login_required
-def sign_up():
+def admin():
     if not current_user.is_admin:
         abort(401)
     form = SignUpForm()
@@ -236,9 +243,9 @@ def sign_up():
             for error in errors:
                 flash(error)
 
-        return redirect(url_for('sign_up'))
+        return redirect(url_for('admin'))
 
-    return render_template('sign_up.html', title='Sign up', form=form)
+    return render_template('admin.html', title='Admin', form=form)
 
 
 def is_filled_out(form):
@@ -324,9 +331,6 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # TODO - Send send image for parsing
-
-            # TODO - Retrieve parsed json data
             # Change filename here when adding own parsed data
             with open('test_population.json', 'r') as f:
                 parsed_data = json.load(f)
@@ -506,20 +510,6 @@ def string_to_datetime(input_string):
     date = datetime.datetime(int(split[0]), int(split[1]), int(split[2]))
     print(date)
     return date
-
-
-@app.route('/widget', methods=['GET'])
-@login_required
-def widget():
-    form = PurchaseForm()
-    return render_template("purchase_widget.html", form=form)
-
-
-@app.route('/widget2', methods=['GET'])
-@login_required
-def widget2():
-    form = SaleForm()
-    return render_template("sale_widget.html", form=form)
 
 
 if __name__ == '__main__':

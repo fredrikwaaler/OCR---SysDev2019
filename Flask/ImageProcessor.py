@@ -384,9 +384,3 @@ class TextProcessor:
             except ValueError:
                 print("ValueError occurred...")
 
-
-#Presentation
-vision_manager = VisionManager("key.json")
-img_text = vision_manager.get_text_detection_from_img("fakt1.jpg")
-text_processor = TextProcessor(img_text)
-#print(img_text)

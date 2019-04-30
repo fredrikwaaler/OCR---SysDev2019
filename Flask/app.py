@@ -12,6 +12,7 @@ from FormValidator import validate_new_name, validate_new_email, validate_new_pa
 from SalesDataFormatter import SalesDataFormatter
 from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
+from ImageProcessor import VisionManager, TextProcessor
 import smtplib
 
 
@@ -58,6 +59,9 @@ lm = create_login_manager()
 lm.init_app(app)
 lm.login_view = 'log_in'
 
+# Initialize image processor
+vision_manager = VisionManager('key.json')
+
 
 @app.route('/purchase', methods=['GET', 'POST'])
 @login_required
@@ -98,6 +102,26 @@ def purchase(image=None):
 
         return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
                                image=image, current_user=current_user, suppliers=suppliers, accounts=accounts)
+
+
+@app.route('/purchase2', methods=['GET', 'POST'])
+@login_required
+def purchase2(image=None, pop=False):
+    form = PurchaseForm()
+    customer_modal_form = CustomerForm()
+    print(pop)
+    try:
+        if pop:
+            if 'invoice_number' in pop:
+                form.invoice_number.data = pop['invoice_number']
+            if 'invoice_date' in pop:
+                form.invoice_date.data = pop['invoice_date']
+            if 'maturity_date' in pop:
+                form.maturity_date.data = pop['maturity_date']
+    except KeyError:
+        print("KeyError")
+    return render_template('purchase.html', title="Kjøp2", form=form, customer_modal_form=customer_modal_form,
+                           image=image)
 
 
 @app.route('/sale', methods=['GET', 'POST'])
@@ -211,9 +235,11 @@ def log_in():
             if PasswordHandler.compare_hash_with_text(user.password, password):
                 login_user(user)
                 # In case the company set has active has been deleted in fiken since last time (very unlikely)
-                slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
-                if current_user.fiken_manager.get_company_slug() not in slugs:
-                    current_user.fiken_manager.reset_slug()
+                if current_user.fiken_manager.has_valid_login():
+                    slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
+                    if current_user.fiken_manager.get_company_slug() not in slugs:
+                        current_user.fiken_manager.reset_slug()
+                # Store the user
                 current_user.store_user()
                 next_page = request.args.get("next", url_for('purchase'))
                 return redirect(next_page)
@@ -311,11 +337,32 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # Change filename here when adding own parsed data
-            with open('test_population.json', 'r') as f:
-                parsed_data = json.load(f)
-            return purchase(image=filename, pop=None)
+            # Get image data from image processor
+            pop = get_image_data('static/uploads/'+filename)
+            # Return purchase page with parsed data
+            return purchase2(image=filename, pop=pop)
     return "EMPTY PAGE"
+
+
+def get_image_data(filename):
+    """
+    Gets image data from image processor. Checks first if data can be fetched as a receipt,
+    before checking if data can be fetched as an invoice.
+    :param filename: The file to get the data from
+    :return: Data form image processor.
+    """
+    img_text = vision_manager.get_text_detection_from_img(filename)
+    text_processor = TextProcessor(img_text)
+    try:
+        return text_processor.get_receipt_info()
+    except:
+        print("This is not a receipt")
+        try:
+            return text_processor.get_invoice_info()
+        except:
+            print("This is not an invoice")
+    flash("Vi kan dessverre ikke hente data fra det opplastede bildet.")
+    return None
 
 
 def allowed_file(filename):

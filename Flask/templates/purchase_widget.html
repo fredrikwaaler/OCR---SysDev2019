@@ -21,16 +21,16 @@
     </form>
     <form class="main-form" id="purchase-form" method="post" action = "{{ url_for('purchase') }}">
         <div class="form-part pf-split">
-            <div class="pf-group">
+            <div class="pf-split-left">
                 <div class="pf-form-input" id="purchase-block">
                     <h4 class="input-header">Type</h4>
                     <ul id="purchase_type">
                         <li>
-                            <input id="purchase_type-0", name="purchase_type" type="radio" value="1" onclick="mode_supplier()" checked="checked">
+                            <input id="purchase_type-0" name="purchase_type" type="radio" value="1" onclick="mode_supplier()" checked="checked">
                             <label for="purchase_type-0">Kjøp fra leverandør</label>
                         </li>
                         <li>
-                            <input id="purchase_type-1", name="purchase_type" type="radio" value="2" onclick="mode_cash()">
+                            <input id="purchase_type-1" name="purchase_type" type="radio" value="2" onclick="mode_cash()">
                             <label for="purchase_type-1">Kontantkjøp</label>
                         </li>
                     </ul>
@@ -51,7 +51,7 @@
                     {{ form.invoice_date }}
                 </div>
             </div>
-            <div class="pf-group">
+            <div class="pf-split-right">
                 <div class="pf-form-input" id="invoice_number-block">
                     <p class="italic input-header">Valgfrie felter:</p>
                     <div class="empty"></div>
@@ -61,9 +61,6 @@
                 <div class="pf-form-input" id="maturity_date-block">
                     <h4 class="input-header">Forfallsdato</h4>
                     {{ form.maturity_date }}
-                </div>
-                <div class="pf-form-input" id="maturity_date-block-filler">
-                    <div class="empty"></div>
                 </div>
             </div>
         </div>

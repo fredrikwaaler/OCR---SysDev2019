@@ -9,8 +9,8 @@ if (popup.length > 0) {
 
 if (!isEmpty(close)) {
     close[0].onclick = function () {
-        popup[0].style.display = "none";
-        document.body.style.overflow = "auto";
+    popup[0].style.display = "none";
+    document.body.style.overflow = "auto";
     }
 }
 
@@ -28,4 +28,3 @@ function isEmpty(obj) {
     }
     return true;
 }
-

@@ -1,6 +1,5 @@
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_fresh
 import os, datetime, json, re
-
 from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup
 from forms import *
 from flask_nav import Nav
@@ -149,12 +148,6 @@ def sale():
                                account_modal_form=account_modal_form)
 
 
-@app.route('/purchase2', methods=['GET', 'POST'])
-def purchase2():
-    form = PurchaseForm()
-    return render_template('purchase_widget.html', title="Kjøp", form=form)
-
-
 @app.route('/history', methods=['GET', 'POST'])
 @login_required
 def history():
@@ -237,9 +230,9 @@ def log_out():
     return redirect(url_for('log_in'))
 
 
-@app.route('/sign_up', methods=['GET', 'POST'])
+@app.route('/admin', methods=['GET', 'POST'])
 @login_required
-def sign_up():
+def admin():
     if not current_user.is_admin:
         abort(401)
     form = SignUpForm()
@@ -267,46 +260,9 @@ def sign_up():
             for error in errors:
                 flash(error)
 
-        return redirect(url_for('sign_up'))
+        return redirect(url_for('admin'))
 
-    return render_template('sign_up.html', title='Sign up', form=form)
-
-
-def is_filled_out(form):
-    """
-    Checks if a form is completely filled out.
-    :param form: The form to be checked
-    :return: True if form is filled out, False if something is missing
-    """
-    for entry in form:
-        if entry.data == '':
-            if not entry.name == 'csrf_token':
-                return False
-    return True
-
-
-def is_valid_email(email):
-    """
-    Checks if an email string is a valid email.
-    :param email: The email to be checked
-    :return: True if email is valid, False if email is invalid.
-    """
-    if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
-        return True
-    else:
-        return False
-
-
-def is_valid_password(password):
-    """
-    Checks if password is a valid password
-    :param password: The password to be checked
-    :return: True if password is valid, False if password is invalid.
-    """
-    if re.match('^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$', password):
-        return True
-    else:
-        return False
+    return render_template('admin.html', title='Admin', form=form)
 
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -355,9 +311,6 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # TODO - Send send image for parsing
-
-            # TODO - Retrieve parsed json data
             # Change filename here when adding own parsed data
             with open('test_population.json', 'r') as f:
                 parsed_data = json.load(f)
@@ -563,20 +516,6 @@ def string_to_datetime(input_string):
     date = datetime.datetime(int(split[0]), int(split[1]), int(split[2]))
     print(date)
     return date
-
-
-@app.route('/widget', methods=['GET'])
-@login_required
-def widget():
-    form = PurchaseForm()
-    return render_template("purchase_widget.html", form=form)
-
-
-@app.route('/widget2', methods=['GET'])
-@login_required
-def widget2():
-    form = SaleForm()
-    return render_template("sale_widget.html", form=form)
 
 
 if __name__ == '__main__':

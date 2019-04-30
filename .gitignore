@@ -1,3 +1,4 @@
+
 .vscode/*
 Flask/-vscode/*
 Flask/__pycache__/*
@@ -9,3 +10,5 @@ Flask/test_sale.json
 
 .idea/*
 Flask/.idea/*
+# ignore pyCharm related files
+.idea/*

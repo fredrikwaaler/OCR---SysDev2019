@@ -1,4 +1,4 @@
-<form class="main-form" id="sale-form" method="post" action="{{ url_for('send_sale_form') }}">
+<form class="main-form" id="sale-form" method="post" action="{{ url_for('sale') }}">
     <div class="sf-upper">
         <div class="form-part">
             <div class="sf-group">
@@ -10,7 +10,7 @@
                 </div>
                 <div class="sf-form-input" id="date-block">
                     <h4>Dato</h4>
-                    {{ form.date }}
+                    {{ form.date(**{"onchange":"update_maturity_date();"}) }}
                 </div>
                 <div class="sf-form-input" id="days_to_maturity-block">
                     <h4>Dager til forfall</h4>
@@ -225,7 +225,8 @@ function change_total(gross_total, vat_total, net_total) {
 
 function update_maturity_date() {
     let days = document.getElementById("days_to_maturity").value;
-    let time = new Date();
+    let send_date = document.getElementById('date').value;
+    let time = new Date(send_date);
     time.setDate(time.getDate()+Number(days));
     let day = time.getDate();
     let month = time.getMonth() + 1;
@@ -316,7 +317,34 @@ function change_sale_total() {
             gross_amount += Number(total_pointer.innerHTML)
         }
     }
-    total.innerHTML = gross_amount.toFixed(2) + " " + "(0.00 inkl. mva)"
+    let total_mva = get_total_mva();
+    total.innerHTML = gross_amount.toFixed(2) + " " + "(" + total_mva.toFixed(2) + " inkl. mva)"
+}
+
+function get_total_mva() {
+    let sale_vats = document.getElementsByName('sale_vat');
+    let prices = document.getElementsByName('total');
+    let prices_free = document.getElementsByName('total_free');
+    let sale_vats_free = document.getElementsByName('sale_vat_free');
+
+
+    let mva_total = 0;
+    for (let i = 0; i < prices.length; i++) {
+        let mva = parseFloat(sale_vats[i].options[sale_vats[i].options.selectedIndex].value);
+        let mvaPercentage = mva / 100;
+        let price = parseFloat(prices[i].textContent);
+        mva_total += mvaPercentage * price;
+    }
+    for (let i = 0; i < prices_free.length; i++) {
+        let mva_text = sale_vats_free[i].options[sale_vats_free[i].options.selectedIndex].text;
+        let mva = parseFloat(mva_text.split('(')[0].trim());
+        let mva_percentage = mva / 100;
+        let price = parseFloat(prices_free[i].textContent);
+        mva_total += mva_percentage * price;
+    }
+
+    return mva_total;
+
 }
 
 /**
@@ -327,12 +355,19 @@ function check_discount(counter) {
     let discount = document.getElementById("discount-"+counter);
     if (discount.value < 0) {
         discount.value = 0;
+        update_sale_lines()
     }
     else if (discount.value > 100) {
         discount.value = 100;
+        update_sale_lines()
     }
-    else if  (!(/[-+]?[0-9].?[0-9]/.test(String(discount.value)))) {
+    else if  (!(/^(\d{0,2}(\.\d{1,2})?|100(\.00?)?)$ /.test(String(discount.value)))) {
         discount.value = 0;
+        update_sale_lines()
+    }
+    else if (discount.value.startsWith('-')) {
+        discount.value = 0;
+        update_sale_lines()
     }
 }
 
@@ -342,8 +377,13 @@ function check_discount(counter) {
  */
 function check_amount(counter) {
     let amount = document.getElementById('amount-'+counter);
-    if  (!(/[-+]?[0-9].?[0-9]/.test(String(amount.value)))) {
+    if  (!(/^[0-9]{1,6}$/.test(String(amount.value)))) {
         amount.value = 0;
+        update_sale_lines()
+    }
+    else if (amount.value.startsWith('-') || amount.value.startsWith('+')) {
+        amount.value = 0;
+        update_sale_lines()
     }
 }
 
@@ -353,14 +393,28 @@ function check_amount(counter) {
  */
 function check_price(counter) {
     let price = document.getElementById('price-'+counter);
-    if (!(/[-+]?[0-9].?[0-9]/.test(String(price.value)))) {
+    if (!(/[+]?[0-9].?[0-9]/.test(String(price.value)))) {
         price.value = 0;
+        update_sale_lines()
     }
+    else if (price.value.startsWith('-') || price.value.startsWith('-')) {
+        price.value = 0;
+        update_sale_lines()
+    }
+}
+
+function updateSinglePrice(counter) {
+    let products = document.getElementById("product-"+counter);
+    let prod = products.options[products.selectedIndex].text;
+    let price = prod.split('(')[1].split(',')[0].split(':')[1].split(')')[0].trim();
+    let price_field = document.getElementById('price-'+counter);
+    price_field.value = price;
+    update_sale_lines();
 }
 
 function updateMva(counter) {
     let products = document.getElementById("product-" + counter);
-    var selectedProd = products.options[products.selectedIndex].value;
+    let selectedProd = products.options[products.selectedIndex].value;
     let mvaType = selectedProd.split(',')[1].trim();
     let mva = "NaN";
     if (mvaType == 'HIGH') {
@@ -434,7 +488,6 @@ function removeOptions(select) {
 
 
 
-
 // GENERAL
 
 /**
@@ -504,7 +557,7 @@ function createHTML(type) {
         return `
             <div class="description-column">
                 <div class="sf-line-input">
-                    <select id="product-${counter}" name="product" onchange="updateMva(${counter});" required>
+                    <select id="product-${counter}" name="product" onchange="updateMva(${counter}); updateSinglePrice(${counter}); update_sale_lines();" required>
                         <option disabled selected value>Velg produkt</option>
                         {% for product_string, product in products %}
                         <option value="{{ product['href'] }}, {{ product["vatType"] }}">{{ product_string }}</option>
@@ -535,7 +588,7 @@ function createHTML(type) {
             </div>
             <div class="sf-line-input sf-line-button">
                 <p class="sf-line-total" id="sf-line-total-${counter}" name="total">0.00</p>
-                <input class="sf-button" id="sf-button-${counter}" name="total" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
+                <input class="sf-button" id="sf-button-${counter}" name="delete_line" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
             </div>
             `;
     }
@@ -548,19 +601,19 @@ function createHTML(type) {
                 </div>
                 <ul class="sf-line-input" id="sale-type">
                     <li>
-                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" type="radio" value="1" checked>
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="1" checked>
                         <label for="sale_type-0">Vare (for videresalg)</label>
                     </li>
                     <li>
-                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" type="radio" value="2">
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="2">
                         <label for="sale_type-1">Vare (egenprodusert)</label>
                     </li>
                     <li>
-                        <input  onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" type="radio" value="3">
+                        <input  onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="3">
                         <label for="sale_type-2">Tjeneste</label>
                     </li>
                     <li>
-                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" type="radio" value="4">
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="4">
                         <label for="sale_type-3">Annet</label>
                     </li>
                 </ul>
@@ -583,7 +636,7 @@ function createHTML(type) {
             </div>
             <div class="sf-line-input line-split">
                 <h4 class="sf-header-hidden">Mva</h4>
-                <select id="sale_vat-${counter}" name="sale_free_saft" onchange="update_sale_lines()">
+                <select id="sale_vat-${counter}" name="sale_vat_free" onchange="update_sale_lines()">
                     {# Populate for videresalg, default #}
                     <option value=3>25% (Vanlige salg til Norge med 25% mva.)</option>
                     <option value=31>15% (Vanlige salg til Norge med 15% mva. Næringsmidler etc.)</option>
@@ -594,8 +647,8 @@ function createHTML(type) {
                 </select>
             </div>
             <div class="sf-line-input sf-line-button">
-                <p class="sf-line-total" id="sf-line-total-${counter}">0.00</p>
-                <input class="sf-button" id="sf-button-${counter}" name="total_free" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
+                <p class="sf-line-total" name="total_free" id="sf-line-total-${counter}">0.00</p>
+                <input class="sf-button" id="sf-button-${counter}" name="delete_free" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
             </div>
             `;
     }

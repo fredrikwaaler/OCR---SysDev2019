@@ -137,8 +137,14 @@
     {% elif not current_user.fiken_manager.get_company_slug() %}
         <p class="no_history">Du må <a href="{{ url_for('profile') }}">velge</a> et aktivt selskap fra fiken før du bruker denne siden.</p>
     {% else %}
-        <p class="no_history">Ingen historikk. Legg til <a href="{{ url_for('purchase') }}">kjøp</a>
-        og <a href="{{ url_for('sale') }}">salg</a> først.</p>
+        {% if not checked or checked == "all" %}
+            <p class="no_history">Ingen historikk. Legg til <a href="{{ url_for('purchase') }}">kjøp</a>
+            og <a href="{{ url_for('sale') }}">salg</a> først.</p>
+        {% elif checked == "purchases" %}
+            <p class="no_history">Ingen historikk. Legg til <a href="{{ url_for('purchase') }}">kjøp</a> først.</p>
+        {% else %}
+            <p class="no_history">Ingen historikk. Legg til <a href="{{ url_for('purchase') }}"salg></a> først.</p>
+        {% endif %}
     {% endif %}
 {%  endif %}
 <div class="marginbox"></div>
@@ -188,6 +194,8 @@ for (var i = 0; i < coll.length; i++) {
     }
   });
 }
+
+
 </script>
 
 {% endblock container %}

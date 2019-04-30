@@ -1,27 +1,31 @@
 let popup = document.getElementsByClassName("popup");
 let close = document.getElementsByClassName("popup-close");
 let close_btn = document.getElementsByClassName("popup-close-btn");
-let popup_btn = document.getElementsByClassName("popup-button");
 
-let docBody = document.querySelector('body');
+// If there is a popup, noscroll for body
+if (popup.length > 0) {
+    document.body.style.overflow = "hidden";
+}
 
-/*
-for (i = 0; i < length(btn); i++) {
-    btn[i].onclick = function () {
-        popup[0].style.display = "block";
-        body.style.overflow = "hidden";
+if (!isEmpty(close)) {
+    close[0].onclick = function () {
+        popup[0].style.display = "none";
+        document.body.style.overflow = "auto";
     }
-}*/
+}
 
-
-
-close[0].onclick = function () {
+if (!isEmpty(close_btn)) {
+    close_btn[0].onclick = function () {
     popup[0].style.display = "none";
-    docBody.style.overflow = "auto";
-};
+    document.body.style.overflow = "auto";
+    };
+}
 
-close_btn[0].onclick = function () {
-    popup[0].style.display = "none";
-    docBody.style.overflow = "auto";
-};
+function isEmpty(obj) {
+    for(let key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
 

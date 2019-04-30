@@ -1,8 +1,9 @@
 <div class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <form class="main-form new-contact" method="POST" action="{{ url_for('create_contact') }}">
+        <form class="main-form new-contact" method="POST" action="{{ url_for('create_customer') }}">
             <h3>Opprett ny kunde/leverandør</h3>
+
             <div class="new-contact-input">
                 <h4>Navn</h4>
                 {{ customer_modal_form.name }}
@@ -18,27 +19,6 @@
             <div class="new-contact-input">
                 <h4>Telefonnummer</h4>
                 {{ customer_modal_form.telephone }}
-            </div>
-            <div class="new-contact-input">
-                <h4>Kontonummer</h4>
-                {{ customer_modal_form.account_number }}
-            </div>
-            <div class="new-contact-input">
-                <h4>Kontonummer</h4>
-                {{ customer_modal_form.account_number }}
-            </div>
-            <div class="new-contact-input">
-                <h4>Kunde/leverandør</h4>
-                <ul id="customer-supplier">
-                <li>
-                    <input id="customer-supplier-0", name="customer-supplier" type="radio" value="1" onclick="mode_new_customer()">
-                    <label for="customer-supplier-0">Kunde</label>
-                </li>
-                <li>
-                    <input id="customer-supplier-1", name="customer-supplier" type="radio" value="2" onclick="mode_new_supplier()" checked="checked">
-                    <label for="customer-supplier-1">Leverandør</label>
-                </li>
-            </ul>
             </div>
             <div class="new-contact-input">
                 <h4>Medlemsnr</h4>
@@ -68,28 +48,32 @@
                 <h4>Poststed</h4>
                 {{ customer_modal_form.postal_area }}
             </div>
-            <div id="new-customer">
-                <div class="new-contact-input">
-                    <div class="empty"></div>
-                    <p>Faktura-innstillinger</p>
-                </div>
-                <div class="new-contact-input">
-                    <h4>Språk</h4>
-                    {{ customer_modal_form.personal_language }}
-                </div>
-                <div class="new-contact-input">
-                    <h4>Valuta</h4>
-                    {{ customer_modal_form.personal_currency }}
-                </div>
-                <div class="new-contact-input">
-                    <h4>Rabatt</h4>
-                    {{ customer_modal_form.personal_discount }}
-                </div>
-                <div class="new-contact-input">
-                    <h4>Dager til forfall</h4>
-                    {{ customer_modal_form.personal_maturity_date }}
-                </div>
+
+            <div class="new-contact-input">
+                <div class="empty"></div>
+                <h3>Faktura-instillinger:</h3>
             </div>
+            <div class="new-contact-input">
+                <h4>Språk</h4>
+                <select name="language">
+                    <option value="NORWEGIAN" selected>Norsk</option>
+                    <option value="ENGLISH">Engelsk</option>
+                </select>
+            </div>
+
+            <div class="new-contact-input">
+                <h4>Valuta</h4>
+                <select name="currency">
+                    <option selected>NOK</option>
+                    <option>EUR</option>
+                    <option>USD</option>
+                    <option>GBP</option>
+                    <option>SEK</option>
+                    <option>DKK</option>
+                    <option>CHF</option>
+                </select>
+            </div>
+
 
             <div class="new-contact-input">
                 <div class="empty"></div>

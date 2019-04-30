@@ -122,7 +122,7 @@ class FikenManager:
         :param data_type: What data is being sent to fiken.
         :param data: The data that is sent
         """
-        allowed_types = {"purchases": "purchases", "create_invoice": "create-invoice-service"}
+        allowed_types = {"purchases": "purchases", "create_invoice": "create-invoice-service", "contacts": "contacts"}
 
         if data_type not in allowed_types.keys():
             raise ValueError("{} is not a valid data type. Please use one of the following key-words: {}".format(

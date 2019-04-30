@@ -9,8 +9,9 @@ from werkzeug.utils import secure_filename
 from HistoryDataFormatter import HistoryDataFormatter
 from user import User
 from PasswordHandler import PasswordHandler
-from FormValidator import validate_new_name, validate_new_email, validate_new_password, validate_new_fiken_user, validate_sign_up
+from FormValidator import validate_new_name, validate_new_email, validate_new_password, validate_new_fiken_user, validate_sign_up, validate_sales_form, validate_purchase_form
 from SalesDataFormatter import SalesDataFormatter
+from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
 import smtplib
 
@@ -59,41 +60,66 @@ lm.init_app(app)
 lm.login_view = 'log_in'
 
 
-@app.route('/purchase', methods=['GET'])
+@app.route('/purchase', methods=['GET', 'POST'])
 @login_required
-def purchase(image=None, pop=False):
+def purchase(image=None):
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
-    if pop:
-        form.invoice_date.data =  string_to_datetime(pop['fakturadato'])
-        form.maturity_date.data = string_to_datetime(pop['forfallsdato'])
-        form.invoice_number.data = pop['fakturanummer']
-        form.text.data = pop['tekst']
-        form.gross_amount.data = pop['bruttobelop']
-        form.net_amount.data = pop['nettobelop']
-    return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
-                           image=image, current_user=current_user)
+    if request.method == "POST":
+        validated, errors = validate_purchase_form(request.form)
+        if validated:
+            purchase_data = PurchaseDataFormatter.ready_data_for_purchase(request.form)
+            post = current_user.fiken_manager.post_data_to_fiken(purchase_data, "purchase")
+            if post.status_code == 201:
+                flash("Kjøp registrert.")
+            else:
+                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+        else:
+            flash(errors[0])
+
+        return redirect(url_for('purchase'))
+
+    else:
+        try:
+            # Retrieve all contacts from fiken
+            contacts = current_user.fiken_manager.get_data_from_fiken(data_type="contacts", links=True)
+            # Get the suppliers in a presentable format
+            suppliers = PurchaseDataFormatter.get_supplier_strings(contacts)
+
+            # Retrieve all accounts from fiken
+            accounts = current_user.fiken_manager.get_data_from_fiken(data_type="expense_accounts", links=True)
+            # Get the accounts in a presentable format
+            accounts = PurchaseDataFormatter.get_account_strings(accounts)
+
+        # If we get a ValueError, it means that fiken-manager is not set properly to interact with fiken.
+        # Thus, we have no data to retrieve from fiken, and the lists should be empty.
+        except ValueError:
+            suppliers = []
+            accounts = []
+
+        return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
+                               image=image, current_user=current_user, suppliers=suppliers, accounts=accounts)
 
 
-@app.route('/sale', methods=['GET'])
+@app.route('/sale', methods=['GET', 'POST'])
 @login_required
 def sale():
     form = SaleForm()
     customer_modal_form = CustomerForm()
     account_modal_form = AccountForm()
-    return render_template('sale.html', title="Salg", form=form, customer_modal_form=customer_modal_form,
-                           account_modal_form=account_modal_form, current_user=current_user)
-
-
-@app.route('/sale2', methods=['GET', 'POST'])
-def sale2():
-    form = SaleForm()
     if request.method == 'POST':
-        # TODO - Validate form before sending to SalesDataFormatter
-        a = SalesDataFormatter.ready_data_for_invoice(request.form)
-        current_user.fiken_manager.post_data_to_fiken(a, "create_invoice")
-        # TODO - Give user-feedback on send-in
-        return redirect(url_for('sale2'))
+        validated, errors = validate_sales_form(request.form)
+        if validated:
+            sales_data = SalesDataFormatter.ready_data_for_invoice(request.form)
+            post = current_user.fiken_manager.post_data_to_fiken(sales_data, "create_invoice")
+            if post.status_code == 201:
+                flash("Salg registrert.")
+            else:
+                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+        else:
+            flash(errors[0])
+
+        return redirect(url_for('sale'))
 
     else:
         try:
@@ -118,8 +144,9 @@ def sale2():
             bank_accounts = []
             customers = []
             products = []
-        return render_template('sale_widget.html', title="Salg", form=form, products=products,
-                               bank_accounts=bank_accounts, customers=customers)
+        return render_template('sale.html', title="Salg", form=form, products=products,
+                               bank_accounts=bank_accounts, customers=customers, customer_modal_form=customer_modal_form,
+                               account_modal_form=account_modal_form)
 
 
 @app.route('/purchase2', methods=['GET', 'POST'])
@@ -190,13 +217,17 @@ def log_in():
             password = form.data["password"]
             if PasswordHandler.compare_hash_with_text(user.password, password):
                 login_user(user)
+                # In case the company set has active has been deleted in fiken since last time (very unlikely)
+                slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
+                if current_user.fiken_manager.get_company_slug() not in slugs:
+                    current_user.fiken_manager.reset_slug()
                 current_user.store_user()
                 next_page = request.args.get("next", url_for('purchase'))
                 return redirect(next_page)
             else:
-                flash("Invalid credentials, try again.")
+                flash("Brukernavnet eller passordet er feil. Prøv igjen.")
         else:
-            flash("Invalid credentials, try again.")
+            flash("Brukernavnet eller passordet er feil. Prøv igjen.")
     return render_template('log_in.html', title="Logg inn", form=form)
 
 
@@ -225,7 +256,7 @@ def sign_up():
                 mailer.open_server()
                 mailer.send_new_user(email, new_password)
                 mailer.close_server()
-                flash("Bruker suksessfullt registrert. Mail sendt til bruker med info.", "success")
+                flash("Bruker registrert. Mail sendt til bruker med info.", "success")
 
                 # Create new user and store to DB
                 new_user = User(email, hashed_new, name, admin)
@@ -345,14 +376,6 @@ def send_purchase_form():
     result = request.form
     send_to_fiken(result, "Purchase")
     return render_template("result.html", result = result)
-
-
-@app.route('/send_sale_form', methods=['POST', 'GET'])
-@login_required
-def send_sale_form(form):
-    send_to_fiken(form, "Sale")
-
-    return render_template("result.html", result = form)
 
 
 @app.context_processor
@@ -479,10 +502,44 @@ def delete_account():
         return redirect(url_for('profile'))
 
 
-@app.route('/create_contact', methods=['POST'])
+@app.route('/create_customer', methods=['POST'])
 @login_required
-def create_contact():
-    return "NONFUNCTIONAL > Create Contact"
+def create_customer():
+    new_contact_info = request.form
+
+    # if (validate_new_contact(new_contact_info)):
+    # Create JSON-HAL for sending to fiken
+    contact = {"name": new_contact_info["name"]}
+    if not new_contact_info["org_nr"].strip() == '':
+        contact["organizationIdentifier"] = new_contact_info["org_nr"]
+    if not new_contact_info["email"].strip() == '':
+        contact["email"] = new_contact_info["email"]
+    if not new_contact_info["telephone"].strip() == '':
+        contact["phone"] = new_contact_info["telephone"]
+    if not new_contact_info["member_number"].strip() == '':
+        contact["memberNumber"] = new_contact_info["member_number"]
+    if not new_contact_info["country"].strip() == '':
+        contact["address.country"] = new_contact_info["country"]
+    if not new_contact_info["address1"].strip() == '':
+        contact["address1"] = new_contact_info["address1"]
+    if not new_contact_info["address2"].strip() == '':
+        contact["address2"] = new_contact_info["address2"]
+    if not new_contact_info["zip_code"].strip() == '':
+        contact["postalCode"] = new_contact_info["zip_code"]
+    if not new_contact_info["postal_area"].strip() == '':
+        contact["postalPlace"] = new_contact_info["postal_area"]
+    contact["language"] = new_contact_info["language"]
+    contact["currency"] = new_contact_info["currency"]
+    contact["customer"] = True
+
+    # Send data to fiken to create new contact
+    post = current_user.fiken_manager.post_data_to_fiken(contact, "contacts")
+    if post.status_code is not 201:
+        flash("Kunne ikke oprette kunde. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+    else:
+        flash("Ny kunde opprettet.")
+
+    return redirect(url_for('sale'))
 
 
 def send_to_fiken(data, type):

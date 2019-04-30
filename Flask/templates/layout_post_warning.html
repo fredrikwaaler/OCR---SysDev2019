@@ -49,5 +49,23 @@
 
 
     <script src="{{ url_for('static',filename='js/modal.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/popup.js') }}"></script>
+
+    <script>
+
+        {%  if not current_user.fiken_manager.has_valid_login() or not current_user.fiken_manager.get_company_slug() %}
+            let val = true;
+        {% else %}
+            let val = false;
+        {% endif %}
+        let buttons = document.getElementsByTagName("input");
+        for (let i = 0; i < buttons.length; i++) {
+            if (buttons[i].type == "submit" || buttons[i].type == "button") {
+                buttons[i].disabled = val;
+            }
+        }
+
+
+    </script>
 
 </html>

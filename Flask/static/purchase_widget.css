@@ -112,7 +112,7 @@ h4 {
     width: 125px;
     font-size: 14px;
     color: #fff;
-    background-color: rgba(216, 8, 8, 0.9);
+    background-color: rgba(216, 8, 8, 0.9) !important;
     border: 1px solid red;
     border-radius: 4px;
 }
@@ -124,7 +124,7 @@ h4 {
     width: 125px;
     font-size: 14px;
     color: #fff;
-    background-color: rgba(12, 135, 1, 0.9);
+    background-color: rgba(12, 135, 1, 0.9) !important;
     border: 1px solid green;
     border-radius: 4px;
 }

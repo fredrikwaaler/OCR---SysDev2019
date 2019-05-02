@@ -110,6 +110,7 @@ def purchase2(image=None, pop=False):
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
     print(pop)
+    ocr_line_data = None
     try:
         if pop:
             if 'invoice_number' in pop:
@@ -118,10 +119,12 @@ def purchase2(image=None, pop=False):
                 form.invoice_date.data = pop['invoice_date']
             if 'maturity_date' in pop:
                 form.maturity_date.data = pop['maturity_date']
+            if 'vat_and_gross_amount' in pop:
+                ocr_line_data = pop['vat_and_gross_amount']
     except KeyError:
         print("KeyError")
     return render_template('purchase.html', title="Kjøp2", form=form, customer_modal_form=customer_modal_form,
-                           image=image)
+                           image=image, ocr_line_data=ocr_line_data)
 
 
 @app.route('/sale', methods=['GET', 'POST'])
@@ -341,6 +344,9 @@ def upload_file():
             pop = get_image_data('static/uploads/'+filename)
             # Return purchase page with parsed data
             return purchase2(image=filename, pop=pop)
+        else:
+            flash("Unsupported media")
+            return purchase2()
     return "EMPTY PAGE"
 
 

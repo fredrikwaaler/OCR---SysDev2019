@@ -204,7 +204,7 @@ class TextProcessor:
             start = self._text_string.index("NOK\n") + 4
             end = self._text_string.index("GODKJENT\n") - 1
             match = self._text_string[start: end:1]
-            return match
+            return match.replace(",", ".")
         except ValueError:
             print("ValueError occurred")
 
@@ -268,7 +268,7 @@ class TextProcessor:
                     new_string = new_string.split('\n')
                     amount1 = new_string[4]
                     amount2 = new_string[5]
-                    paired_vat_and_amount = {vat[0]: amount1, vat[1]: amount2}
+                    paired_vat_and_amount = {vat[0]: amount1.replace(",", "."), vat[1]: amount2.replace(",", ".")}
                     return paired_vat_and_amount
                 except ValueError:
                     print("ValueError occurred")
@@ -277,7 +277,7 @@ class TextProcessor:
             end = self._text_string.index("GODKJENT\n") - 1
             match = self._text_string[start: end:1]
             amount1 = match
-            paired_vat_and_amount = {"25": amount1}
+            paired_vat_and_amount = {"25": amount1.replace(",", ".")}
             return paired_vat_and_amount
         if "BlomstesGarden" in self._text_string:
             vat_and_gross_amount = {"25": self.get_total_amount_paid()}

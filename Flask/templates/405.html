@@ -1,0 +1,12 @@
+<!-- error code: 405 - method not allowed  -->
+{% if logged_in %}
+    {% extends 'layout_post.html' %}
+{% else %}
+    {% extends 'layout_pre.html' %}
+{% endif %}
+{% block container %}
+<div>
+    <h1>method not allowed (error code: 405)</h1>
+    <p>The request was received and recognized, but the server rejected it</p>
+</div>
+{% endblock container %}

@@ -6,6 +6,6 @@ MAIL_PASSWORD = "Sebas10an99"
 # TODO - CHANGE TO ACTUAL DATABASE
 DB_HOST = "localhost"
 DB_USER = "postgres"
-DB_PASSWORD = "password"
+DB_PASSWORD = "97981044"
 DB_DATABASE = "Sukkertoppen"
 

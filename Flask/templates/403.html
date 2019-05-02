@@ -1,0 +1,12 @@
+<!-- error code: 403 - forbidden page -->
+{% if logged_in %}
+    {% extends 'layout_post.html' %}
+{% else %}
+    {% extends 'layout_pre.html' %}
+{% endif %}
+{% block container %}
+<div>
+    <h1>Forbidden page (Error code: 403)</h1>
+    <p>You to not have access to this file or page</p>
+</div>
+{% endblock container %}

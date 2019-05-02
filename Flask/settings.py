@@ -7,5 +7,5 @@ MAIL_PASSWORD = "Sebas10an99"
 DB_HOST = "localhost"
 DB_USER = "postgres"
 DB_PASSWORD = "97981044"
-DB_DATABASE = "sukkertoppen"
+DB_DATABASE = "Sukkertoppen"
 

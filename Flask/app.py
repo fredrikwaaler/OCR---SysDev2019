@@ -62,6 +62,8 @@ lm.login_view = 'log_in'
 @app.route('/purchase', methods=['GET', 'POST'])
 @login_required
 def purchase(image=None):
+    # TODO - implement the 404 page
+    #abort(404)
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
     if request.method == "POST":
@@ -211,9 +213,10 @@ def log_in():
             if PasswordHandler.compare_hash_with_text(user.password, password):
                 login_user(user)
                 # In case the company set has active has been deleted in fiken since last time (very unlikely)
-                slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
-                if current_user.fiken_manager.get_company_slug() not in slugs:
-                    current_user.fiken_manager.reset_slug()
+                if current_user.fiken_manager.has_valid_login():
+                    slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
+                    if current_user.fiken_manager.get_company_slug() not in slugs:
+                        current_user.fiken_manager.reset_slug()
                 current_user.store_user()
                 next_page = request.args.get("next", url_for('purchase'))
                 return redirect(next_page)
@@ -236,6 +239,7 @@ def admin():
     if not current_user.is_admin:
         abort(401)
     form = SignUpForm()
+    abort(401)
     if form.is_submitted():
         name = form.data["name"]
         email = form.data["email"]
@@ -541,10 +545,10 @@ def is_logged_in():
 
 # TODO - view all pages, see that they look ok and behave
 # TODO - make sure every page is necessary 
-# forbidden page, ex: accessing admin site, admin
-@app.errorhandler(403)
+# unauthorized error page, ex: accessing admin site, admin
+@app.errorhandler(401)
 def page_forbidden(e):
-    return render_template('403.html', title="403 forbidden page", logged_in=is_logged_in()), 403
+    return render_template('401.html', title="401 forbidden page", logged_in=is_logged_in()), 401
 
 
 # page not found, used when accessing nonsense, eg. /pasta
@@ -598,9 +602,9 @@ def gateway_timeout(e):
 
 # This is just temp routing to make error pages easily accessable for debugging
 # TODO - remove the temp routing when error pages have been properly integraed
-@app.route('/403', methods=['GET'])
+@app.route('/401', methods=['GET'])
 def page_forbidden_page():
-    return render_template('403.html', title="400 forbidden page"), 403
+    return render_template('401.html', title="401 unauth error)"), 401
 
 
 @app.route('/404', methods=['GET'])

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, BooleanField, RadioField, DecimalField, TextAreaField
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, InputRequired
 
 
 class LoginForm(FlaskForm):
@@ -33,7 +33,7 @@ class PurchaseForm(FlaskForm):
 
 class SaleForm(FlaskForm):
     sale_type = SelectField('Type', choices=[('0', ''), ('1', 'Faktura')])
-    date = DateField('Dato')
+    date = DateField('Dato', validators=[DataRequired(), InputRequired()])
     days_to_maturity = StringField("Dager til forfalll")
     comment = TextAreaField('Kommentar')
     account_number = SelectField('Kontonummer', choices=[('1', 'Demokonto')])
@@ -72,7 +72,7 @@ class ConfirmPasswordForm(FlaskForm):
 
 
 class CustomerForm(FlaskForm):
-    name = StringField('Navn')
+    name = StringField('Navn', validators=[InputRequired(), DataRequired()])
     org_nr = StringField('Org.nr')
     email = StringField('Epost')
     telephone = StringField('Telefonnummer')
@@ -83,13 +83,6 @@ class CustomerForm(FlaskForm):
     address2 = StringField('Adresse 2')
     zip_code = StringField('Postnummer')
     postal_area = StringField('Poststed')
-    personal_language = SelectField('Språk', choices=[('0', ''), ('Norsk', 'Norsk'), ('Engelsk', 'Engelsk')])
-    personal_currency = SelectField('Valuta', choices=[('NOK', 'Norske kroner (NOK)'), ('EUR', 'Euro (EUR)'),
-                                              ('USD', 'Amerikanske dollar (USD'), ('GBP', 'Britiske Pund (GBP'),
-                                              ('SEK', 'Svenske kroner (SEK)'), ('DKK', 'Danske kroner (DKK)'),
-                                              ('CHF', 'Sveitsiske franc (CHF)')])
-    personal_discount = DecimalField('Rabatt')
-    personal_maturity_date = DecimalField('Dager til forfall')
 
 
 class AccountForm(FlaskForm):

@@ -1,4 +1,3 @@
-import json
 import datetime
 
 
@@ -22,7 +21,7 @@ class SalesDataFormatter:
         :param contacts: The list of contacts to extract customers from.
         :return: Returns presentable strings for each customer in a tuple of the form: "customer_name (adr, postalPlace)"
         Adr and postalPlace are skipped if non-existent for the customer.
-        Each tuple also contains all info about the customer, just in case.
+        Each tuple also contains all info about the customer, just in case, at index 1.
         """
         customer_strings = []
         customers = []
@@ -33,8 +32,9 @@ class SalesDataFormatter:
 
         for customer in customers:
             customer_string = customer["name"]
-            if "address1" in customer.keys() and "postalPlace" in customer.keys():
-                customer_string += " ({}, {})".format(customer["address1"], customer["postalPlace"])
+            if "address" in customer.keys():
+                if "address1" in customer["address"].keys() and "postalPlace" in customer["address"].keys():
+                    customer_string += " ({}, {})".format(customer["address"]["address1"], customer["address"]["postalPlace"])
             customer_strings.append(customer_string)
 
         return_list = []

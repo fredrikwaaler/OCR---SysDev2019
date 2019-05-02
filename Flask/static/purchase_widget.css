@@ -112,7 +112,7 @@ h4 {
     width: 125px;
     font-size: 14px;
     color: #fff;
-    background-color: rgba(216, 8, 8, 0.9);
+    background-color: rgba(216, 8, 8, 0.9) !important;
     border: 1px solid red;
     border-radius: 4px;
 }
@@ -124,7 +124,7 @@ h4 {
     width: 125px;
     font-size: 14px;
     color: #fff;
-    background-color: rgba(12, 135, 1, 0.9);
+    background-color: rgba(12, 135, 1, 0.9) !important;
     border: 1px solid green;
     border-radius: 4px;
 }
@@ -140,12 +140,8 @@ h4 {
     font-size: 12px;
 }
 
-/* Needed to maintain line-height */
-#invoice_number-block. #maturity_date-block {
-    max-height: 30px;
-}
 
-select, input[type="text"], input[type="number"], input[type="date"], textarea{
+select, input[type="text"], input[type="number"], input[type="date"], textarea, input[type="password"]{
     margin:0;
     padding:4px 0;
     width: 100%;
@@ -184,7 +180,7 @@ select, input[type="text"], input[type="number"], input[type="date"], textarea{
     float:left;
 }
 
-#supplier-button, .pf-button, .sf-button, #upload-file-button, .modal-submit, .form-button {
+#supplier-button, .pf-button, .sf-button, #upload-file-button, .modal-submit, .form-button, .company_table {
     margin:0;
     padding:4px 0;
     width:100%;
@@ -364,13 +360,55 @@ html {
     grid-template-columns: 1fr;
 }
 
-
-
-
 footer {
     display: grid;
     grid-template-columns: 1fr;
 }
+
+/*
+Profile
+ */
+#profile-container {
+    margin: 0;
+    padding: 0 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.profile-section {
+    margin: 0;
+    padding: 10px 0;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: 30px;
+    width: 100%;
+}
+
+.profile-title {
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    line-height: 30px;
+}
+
+.profile-p {
+    margin:0;
+    padding:0;
+    padding-left: 5px;
+    font-size: 12px;
+    line-height: 30px;
+}
+
+
+.profile-modal-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 0.5em;
+    margin: 0 auto;
+    padding: 30px 10px;
+    width: 90%;
+}
+
 
 
 @media screen and (min-width: 480px) {
@@ -408,6 +446,11 @@ footer {
         margin: 0 auto;
         width: 80%;
     }
+
+    #purchase-container, #sale-container, #profile-container {
+        padding: 0 40px;
+    }
+
     @media screen and (min-width: 1200px) {
         #purchase-container {
             grid-template-columns: 1fr 1fr;
@@ -538,6 +581,26 @@ footer {
         .pre-form {
             width: 50%;
         }
+
+        .pf-split-right {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: min-content;
+        }
+        #maturity_date {
+            max-height: 20px;
+        }
+
+        #profile-container {
+            margin: 0 auto;
+            width: 50%;
+        }
+
+        .profile-title, .profile-p {
+            font-size: 16px;
+        }
+
+
 
     }
 }

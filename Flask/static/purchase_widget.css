@@ -34,6 +34,14 @@ Image
     text-align: center;
 }
 
+.pp-line {
+    margin: 2%;
+    border-bottom: 1px solid #ccc;
+}
+.pp-line:first-child {
+    border-top: 1px solid #ccc;
+}
+
 #uploaded-image {
     max-width: 100%;
 }
@@ -426,7 +434,7 @@ Profile
         line-height: 30px;
     }
 
-    #pf-payment-content {
+    .pf-payment-content {
         width: 60%;
     }
 

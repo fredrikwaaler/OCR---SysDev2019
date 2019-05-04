@@ -82,7 +82,6 @@ class FikenManager:
         Used to retrieve data of the specific type from fiken using the api. Data is always returned as list of
         dictionaries, where each dict describes a specific entity (ex. an account, a product, a customer etc..)
         :param data_type: The data to retrieve from fiken.
-        Legal values is: purchases, contacts, expense_accounts, payment_accounts, companies
         :param links: Whether or not the returned data should include links.
         :return: A list of dictionaries. Each dict describes an object of the set data-type.
         If there are no data of the given type, return None.
@@ -111,6 +110,19 @@ class FikenManager:
             except KeyError:
                 # If a key error, the response does not contains embedded, and we consider the response empty.
                 return []
+
+    def get_raw_data_from_fiken(self, endpoint):
+        """
+        Used to retrieve data of the specific type from fiken using the api.
+        Data is returned exactly as it is returned from the api.
+        :param endpoint: The url-endpoint to use against the api.
+        A request is thus done to "https://fiken.no/api/v1/companies/company_slug/endpoint
+        :return: A dictionary with the data exactly as it is returned from fiken-api.
+        """
+        self._check_slug()
+        response = self.make_fiken_get_request("https://fiken.no/api/v1/companies/{}/{}".format(
+            self._company_slug, endpoint))
+        return response
 
     def post_data_to_fiken(self, data, data_type):
         """
@@ -200,12 +212,22 @@ class FikenManager:
     def make_fiken_post_request(self, url, post_json):
         """
         Performs a HTTP(S) post request to the provided url with a json-object as data.
-        Returns the json-object returned from fiken.
+        Returns the response returned from fiken.
         :param url: The url to post to
         :param post_json: The json-object to post
         :return: The response returned from fiken upon post.
         """
         return post(url=url, auth=(self._fiken_login, self._fiken_pass), json=post_json)
+
+    def make_fiken_post_request_files(self, url, files):
+        """
+        Performs a HTTP(S) post request to the provided url with the given files.
+        Returns the response returned from fiken.
+        :param url: The url to post to
+        :param files: The files to post to
+        :return: The response returned from fiken upon post.
+        """
+        return post(url=url, auth=(self._fiken_login, self._fiken_pass), files=files)
 
     def _check_slug(self):
         """

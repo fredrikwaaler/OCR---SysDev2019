@@ -19,7 +19,7 @@
             <input id="upload-file-button" type=submit value=Upload>
         </div>
     </form>
-    <form class="main-form" id="purchase-form" method="post" action = "{{ url_for('purchase') }}">
+    <form class="main-form" id="purchase-form" method="post" action = "{{ url_for('register_purchase') }}">
         <div class="form-part pf-split">
             <div class="pf-split-left">
                 <div class="pf-form-input" id="purchase-block">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="pf-form-input" id="invoice_date-block">
                     <h4 class="input-header">Fakturadato</h4>
-                    {{ form.invoice_date }}
+                    {{ form.invoice_date(**{"onchange":"restrict_maturity_date(); change_cash_payment_date();"}) }}
                 </div>
             </div>
             <div class="pf-split-right">
@@ -94,25 +94,18 @@
         </div>
         <div class="form-part" id="pf-paid">
             <div id="pf-paid-content">
-                {{ form.paid }}
+                <input type="checkbox" id="paid" onclick="mode_supplier(); handle_paid_change(this);">
                 <h4>Betaling</h4>
                 <p>Kryss av dersom handelen er betalt</p>
             </div>
         </div>
         <div class="form-part" id="pf-payment">
-            <div id="pf-payment-content">
-                <div class="pf-form-input">
-                    <h4 class="input-header">Betalt fra</h4>
-                    {{ form.account }}
-                </div>
-                <div class="pf-form-input">
-                    <h4 class="input-header">Beløp</h4>
-                    {{ form.amount(disabled=True) }}
-                </div>
-                <div class="pf-form-input">
-                    <h4 class="input-header">Betalingsdato</h4>
-                    <!-- Should date be included? -->
-                </div>
+            <div id="pf-payments">
+
+            </div>
+            <div>
+                <h4 class="total-amount" id="remainder">Restbeløp: 0.00 - 0.00 = 0.00</h4>
+                <input class="pf-button" id="split-payment" type="button" value="Del betalingen over flere kontoer" onclick="add_payment_line();">
             </div>
         </div>
         <div class="form-part">
@@ -127,14 +120,17 @@
 <script>
 let mdblock = document.getElementById("maturity_date-block");
 let mdblock_filler = document.getElementById("maturity_date-block-filler");
-let paid = document.getElementById("pf-paid");
+let paid_section = document.getElementById("pf-paid");
+let paid = document.getElementById('paid');
 let payment = document.getElementById("pf-payment");
+let split_payment_btn = document.getElementById('split-payment');
 let supplier = document.getElementById("supplier");
 let supplier_button = document.getElementById("supplier-button");
 let amount = document.getElementById("amount");
 
 let counter = 1; //Counter to represent amount of made lines
 
+restrict_dates();
 init();
 
 function init() {
@@ -146,6 +142,31 @@ function init() {
     }
 }
 
+/**
+ * Restrict the choice of dates on the page to only dates this year.
+ */
+function restrict_dates() {
+    let invoice_date = document.getElementById('invoice_date');
+    let maturity_date = document.getElementById('maturity_date');
+    let today = new Date();
+    let this_year = today.getFullYear();
+    let min_date = this_year+'-01-01';
+    let max_date = this_year+'-12-31';
+    invoice_date.setAttribute("min", min_date);
+    invoice_date.setAttribute("max", max_date);
+    maturity_date.setAttribute("min", min_date);
+    maturity_date.setAttribute("max",max_date);
+}
+
+/**
+ * Restricts the choice of maturity-date on the page,
+ * so that it must be higher or equal to invoice-date.
+ */
+function restrict_maturity_date() {
+   let invoice_date = document.getElementById('invoice_date').value;
+   let maturity_date = document.getElementById('maturity_date');
+   maturity_date.setAttribute("min", invoice_date);
+}
 
 // PURCHASE FORM
 // -- Mode Selection
@@ -155,8 +176,11 @@ function init() {
  */
 function mode_supplier() {
     mdblock.style.display = "grid";
-    paid.style.display = "grid";
+    paid_section.style.display = "grid";
+    clear_payment_lines();
+    update_payment();
     payment.style.display = "none";
+    split_payment_btn.style.display = "initial";
     supplier.disabled = false;
     supplier_button.disabled = false;
 }
@@ -166,7 +190,15 @@ function mode_supplier() {
  */
 function mode_cash() {
     mdblock.style.display = "none";
-    paid.style.display = "none";
+    paid_section.style.display = "none";
+    split_payment_btn.style.display = "none";
+    clear_payment_lines();
+    add_cash_payment_line();
+    update_payment();
+    change_cash_payment_date();
+    // Set paid-button to false, so it is
+    // not stored on switch-back to mode_supplier
+    paid.checked = false;
     payment.style.display = "grid";
     supplier.disabled = true;
     supplier_button.disabled = true;
@@ -184,6 +216,68 @@ function add_purchase_line() {
     let element = "div";
     let element_id = "pf-line-"+counter;
     addElement(parent, "pf-line", element, element_id, purchase_line);
+}
+
+/**
+ * Adds a payment-line to purchase payment form.
+ */
+function add_payment_line() {
+    let id = "pp-line-" + counter;
+    let payment_line = createHTML("payment-line");
+    addElement("pf-payments", 'pp-line', 'div', id, payment_line);
+}
+
+function add_cash_payment_line() {
+    let id = "pp-line-" + counter;
+    let payment_line = createHTML('payment-line-cash');
+    addElement("pf-payments", 'pp-line', 'div', id, payment_line);
+}
+
+function handle_paid_change(checkbox) {
+    if (checkbox.checked == true) {
+        payment.style.display = "grid";
+        add_payment_line();
+    }
+    else {
+        // Clear the payment-lines
+        for (let i = 1; i <= counter; i ++) {
+            remove_payment_line(i, true);
+        }
+    }
+}
+
+/**
+ * Changes the date that marks the "cash-payment" to the invoice date.
+ * If the invoice date is not set, the date field for cash-payment is left empty.
+ */
+function change_cash_payment_date() {
+    let cash_payment_date_field = document.getElementById('cash_payment_date');
+    let invoice_date = document.getElementById('invoice_date').value;
+    if (invoice_date) {
+        cash_payment_date_field.innerHTML = invoice_date;
+    }
+    else {
+        cash_payment_date_field.innerHTML = "";
+    }
+}
+
+
+function remove_payment_line(counter, clear) {
+    if (clear) {
+        removeElement('pp-line-' + counter);
+    }
+    else {
+        let payment_lines = document.getElementById('pf-payments');
+        if(payment_lines.children.length > 1) {
+            removeElement('pp-line-' + counter);
+        }
+    }
+}
+
+function clear_payment_lines() {
+    for (let i = 1; i <= counter; i++) {
+        remove_payment_line(i, true);
+    }
 }
 
 /**
@@ -228,16 +322,40 @@ function change_net(){
         let net_pointer = document.getElementById(net_id);
         if (gross_pointer != null){
             let gross_amount = Number(gross_pointer.value);
-            let net_amount = gross_amount/(1.25);
-            net_pointer.value = net_amount;
+            let net_amount = gross_amount/(1 + get_active_purchase_mva(i)).toFixed(2);
+            net_pointer.value = net_amount.toFixed(2);
             gross_total += gross_amount;
             net_total += net_amount;
         }
     }
     let vat_total = gross_total-net_total;
     change_total(gross_total, vat_total, net_total);
+    update_payment();
 }
 
+/**
+ * Returns the actual mva (in percentage) of the line with given counter for purchases.
+* */
+function get_active_purchase_mva(counter) {
+    let mvaOp = document.getElementById('vat-'+counter);
+    let mvaVal = mvaOp.options[mvaOp.selectedIndex].value;
+    if (mvaVal == 1) {
+        return 0.25;
+    }
+    else if (mvaVal == 11) {
+        return 0.15;
+    }
+    else if (mvaVal == 12) {
+        return 0.1111;
+    }
+    else if (mvaVal == 13) {
+        return 0.12;
+    }
+    else if (mvaVal == 0) {
+        return 0;
+    }
+
+}
 
 /**
  * Changes the total field.
@@ -250,7 +368,30 @@ function change_total(gross_total, vat_total, net_total) {
     let amount = document.getElementById("amount");
     total.innerHTML = "Totalbeløp: " + net_total.toFixed(2) + " + mva: " +
         vat_total.toFixed(2) +" = " +  gross_total.toFixed(2);
-    amount.value = gross_total;
+}
+
+function update_payment() {
+    let total = parseFloat(document.getElementById('pf-total').textContent.split('=')[1].trim());
+    let payments = document.getElementsByName('payment-amount');
+    let remainder_text = document.getElementById('remainder');
+    let total_paid = 0;
+    for (let i = 0; i < payments.length; i ++) {
+        total_paid += parseFloat(payments[i].value);
+    }
+    if (!total_paid) {
+        total_paid = 0;
+    }
+    let remainder = total - total_paid;
+    remainder_text.innerHTML = "Restbeløp: " + total.toFixed(2) + " - " + total_paid.toFixed(2) + " = " + remainder.toFixed(2);
+    set_cash_payment_sum();
+}
+
+function set_cash_payment_sum() {
+    let total = parseFloat(document.getElementById('pf-total').textContent.split('=')[1].trim());
+    let payment_field = document.getElementById('payment-amount-cash');
+    if (payment_field != null) {
+        payment_field.value = parseFloat(total).toFixed(2);
+    }
 }
 
 
@@ -301,6 +442,30 @@ function remove_sale_line(id) {
         console.log("Cant remove line");
     }
     update_sale_lines();
+}
+
+/**
+ * Validates that the gross-field with the given counter is set to strictly numerical.
+ * If it is not, the value is set to 0.
+ */
+function check_gross(counter) {
+    let price = document.getElementById('gross_amount-'+counter);
+    if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(price.value))) || price.value.startsWith('-')) {
+        price.value = 0;
+        change_net();
+    }
+}
+
+/**
+ * Validates that the payment-field with the given counter is set to strictly numerical.
+ * If it is not, the value is set to 0.
+ */
+function check_payment(counter) {
+    let payment = document.getElementById('payment-amount-'+counter);
+    if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(payment.value))) || payment.value.startsWith('-')) {
+        payment.value = 0;
+        change_net();
+    }
 }
 
 /**
@@ -396,7 +561,7 @@ function createHTML(type) {
         return `
             <div class="pf-line-input">
                 <h4 class="pf-header-hidden"> Tekst</h4>
-                <input id="text-${counter}" name="description" type="text">
+                <input id="text-${counter}" name="description" type="text" required>
             </div>
             <div class="pf-line-input">
                 <h4 class="pf-header-hidden">Kostnadskonto</h4>
@@ -409,11 +574,11 @@ function createHTML(type) {
             </div>
             <div class="pf-line-input">
                 <h4 class="pf-header-hidden">Bruttobeløp</h4>
-                <input id="gross_amount-${counter}" name="gross_amount" type="number" onchange="change_net()">
+                <input id="gross_amount-${counter}" name="gross_amount" type="text" onchange="change_net(); check_gross(${counter});" required>
             </div>
             <div class="pf-line-input">
                 <h4 class="pf-header-hidden">Mva</h4>
-                <select id="vat-${counter}" name="vat">
+                <select id="vat-${counter}" name="vat" onchange="change_net();">
                     <option value=1>25%</option>
                     <option value=11>15%</option>
                     <option value=12>11,11%</option>
@@ -514,6 +679,71 @@ function createHTML(type) {
                 <input class="sf-button" id="sf-button-${counter}" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
             </div>
             `;
+    }
+    else if (type === "payment-line") {
+        return `
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Betalt fra</h4>
+                    <select id="payment-account-${counter}" name="payment-account" required>
+                        <option disabled selected value>Velg</option>
+                        <optgroup label="Bankkonto">
+                            {% for account_string, account in payment_accounts %}
+                            <option value="{{ account["number"] }}">{{ account_string }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        <optgroup label="Kontanter">
+                            <option value="1901">Kontanter NOK</option>
+                        </optgroup>
+                        <optgroup label="Annet">
+                            <option value="7740">Øreavrunding</option>
+                        </optgroup>
+                        <optgroup label="Utlegg av eier">
+                            <option value="2915">Av foretakets eier</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Beløp</h4>
+                    <input id="payment-amount-${counter}" value="0" min="1" name="payment-amount" type="number" onchange="check_payment(${counter}); update_payment();" required>
+                </div>
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Betalingsdato</h4>
+                    <input id="payment-date-${counter}" name="payment-date" type="date" required>
+                </div>
+                <div class="pf-line-input">
+                    <input class="pf-button" value="Slett linje" id="payment-remove-${counter}" name="payment_remove" type="button" onclick="remove_payment_line(${counter}); update_payment();">
+                </div>`
+    }
+    else if (type === "payment-line-cash") {
+        return `
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Betalt fra</h4>
+                    <select id="payment-account-${counter}" name="payment-account" required>
+                        <option disabled selected value>Velg</option>
+                        <optgroup label="Bankkonto">
+                            {% for account_string, account in payment_accounts %}
+                            <option value="{{ account["number"] }}">{{ account_string }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        <optgroup label="Kontanter">
+                            <option value="1901">Kontanter NOK</option>
+                        </optgroup>
+                        <optgroup label="Annet">
+                            <option value="7740">Øreavrunding</option>
+                        </optgroup>
+                        <optgroup label="Utlegg av eier">
+                            <option value="2915">Av foretakets eier</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Beløp</h4>
+                    <input disabled id="payment-amount-cash" name="payment-amount" type="number" onchange="update_payment();" required>
+                </div>
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Betalingsdato</h4>
+                    <p class="date-display" id="cash_payment_date"></p>
+                </div>`
     }
 }
 </script>

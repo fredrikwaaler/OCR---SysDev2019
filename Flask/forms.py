@@ -15,15 +15,12 @@ class ForgotForm(FlaskForm):
 
 class PurchaseForm(FlaskForm):
     purchase_type = RadioField('Label', choices=[('0', ''), ('1','Kjøp fra leverandør'),('2','Kontantkjøp')])
-    supplier = SelectField('Leverandør', choices=[('0', ''), ('1', 'Meny'), ('2', 'Kiwi')])
-    invoice_date = DateField('Faktura')
+    invoice_date = DateField('Faktura', validators=[DataRequired(), InputRequired()])
     maturity_date = DateField('Forfall')
     invoice_number = StringField('Fakturanummer')
 
     text = StringField('Tekst')
-    billing_account = SelectField('Kostnadskonto', choices=[('0', ''), ("100", "Matkonto"), ("101", "Utstyrskonto")])
     gross_amount = DecimalField('Bruttobeløp')
-    vat = SelectField("Mva", choices=[('0', ''), ('1', '25%'), ('2', '12%')])
     net_amount = DecimalField("Nettobeløp")
 
     paid = BooleanField('Betalt')

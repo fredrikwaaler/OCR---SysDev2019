@@ -14,7 +14,7 @@
                 </div>
                 <div class="sf-form-input" id="days_to_maturity-block">
                     <h4>Dager til forfall</h4>
-                    <input id="days_to_maturity" name="days_to_maturity" required type="number" onchange="update_maturity_date()">
+                    <input id="days_to_maturity" name="days_to_maturity" min="0" required type="number" onchange="check_days_to_maturity(); update_maturity_date();">
                     <div class="empty"></div>
                     <p id="maturity-text">Forfallsdato: dd.mm.åå</p>
                 </div>
@@ -100,6 +100,7 @@ let amount = document.getElementById("amount");
 
 let counter = 1; //Counter to represent amount of made lines
 
+restrict_dates();
 init();
 
 function init() {
@@ -109,6 +110,19 @@ function init() {
     if (document.getElementById("sale-form")) {
         add_product_line();
     }
+}
+
+/**
+ * Restrict the choice of dates on the page to only dates this year.
+ */
+function restrict_dates() {
+    let date = document.getElementById('date');
+    let today = new Date();
+    let this_year = today.getFullYear();
+    let min_date = this_year+'-01-01';
+    let max_date = this_year+'-12-31';
+    date.setAttribute("min", min_date);
+    date.setAttribute("max", max_date);
 }
 
 // PURCHASE FORM
@@ -252,6 +266,14 @@ function add_freetext_line() {
     update_sale_lines();
 }
 
+function check_days_to_maturity() {
+    let days_to_maturity = document.getElementById('days_to_maturity');
+    if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(days_to_maturity.value)))
+        || days_to_maturity.value.startsWith('-')) {
+        days_to_maturity.value = 0;
+    }
+}
+
 
 /**
  * Removes a line in purchase form.
@@ -390,11 +412,7 @@ function check_amount(counter) {
  */
 function check_price(counter) {
     let price = document.getElementById('price-'+counter);
-    if (!(/[+]?[0-9].?[0-9]/.test(String(price.value)))) {
-        price.value = 0;
-        update_sale_lines()
-    }
-    else if (price.value.startsWith('-') || price.value.startsWith('-')) {
+    if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(price.value))) || price.value.startsWith('-')) {
         price.value = 0;
         update_sale_lines()
     }

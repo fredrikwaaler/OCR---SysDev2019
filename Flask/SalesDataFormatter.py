@@ -96,6 +96,13 @@ class SalesDataFormatter:
 
     @staticmethod
     def ready_data_for_invoice(data):
+        """
+        Readies invoice-data for send-in to fiken.
+        Takes a form from the web-pages 'sale (invoice)' page and constructs a JSON-HAL
+        object ready for send-in as specified in the fiken API.
+        :param data: Pre-validated form from 'sale (invoice)' page.
+        :return: Returns the JSON-HAL object based on form-data. Ready for send-in to fiken.
+        """
         return_data = {}
         # Add issue date
         return_data["issueDate"] = data["date"]

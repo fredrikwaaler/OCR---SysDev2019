@@ -13,6 +13,7 @@ from SalesDataFormatter import SalesDataFormatter
 from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
 import smtplib
+import requests
 
 
 def create_login_manager():
@@ -65,18 +66,7 @@ def purchase(image=None):
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
     if request.method == "POST":
-        validated, errors = validate_purchase_form(request.form)
-        if validated:
-            purchase_data = PurchaseDataFormatter.ready_data_for_purchase(request.form)
-            post = current_user.fiken_manager.post_data_to_fiken(purchase_data, "purchase")
-            if post.status_code == 201:
-                flash("Kjøp registrert.")
-            else:
-                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
-        else:
-            flash(errors[0])
-
-        return redirect(url_for('purchase'))
+        return "NONFUNC"
 
     else:
         try:
@@ -90,14 +80,64 @@ def purchase(image=None):
             # Get the accounts in a presentable format
             accounts = PurchaseDataFormatter.get_account_strings(accounts)
 
+            # Retrieve all payment-accounts from fiken
+            payment_accounts = current_user.fiken_manager.get_data_from_fiken(data_type="payment_accounts", links=True)
+            # Get the accounts in a presentable format
+            payment_accounts = SalesDataFormatter.get_account_strings(payment_accounts)
+
         # If we get a ValueError, it means that fiken-manager is not set properly to interact with fiken.
         # Thus, we have no data to retrieve from fiken, and the lists should be empty.
         except ValueError:
             suppliers = []
             accounts = []
+            payment_accounts = []
 
         return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
-                               image=image, current_user=current_user, suppliers=suppliers, accounts=accounts)
+                               image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
+                               contact_type="leverandør", payment_accounts=payment_accounts)
+
+
+@app.route('/register_purchase', methods=['GET', 'POST'])
+@login_required
+def register_purchase():
+    validated, errors = validate_purchase_form(request.form)
+    if validated:
+        purchase_data = PurchaseDataFormatter.ready_data_for_purchase(request.form)
+        post = current_user.fiken_manager.post_data_to_fiken(purchase_data, "purchases")
+
+        if post.status_code == 201:
+            # Get the purchase-info from fiken for later reference
+            # The purchase in question is at index 0, since it is the most recent
+            purchase = current_user.get_raw_data_from_fiken("purchases")["_embedded"][
+                "https://fiken.no/api/v1/rel/purchases"][0]
+            # If it is a supplier-purchase, register any payments
+            if request.form["purchase_type"] == '1':
+                # The purchase in question is at 0 index, since it is the most recent
+                payment_post_url = purchase["_links"]["https://fiken.no/api/v1/rel/payments"]["href"]
+                payments = PurchaseDataFormatter.ready_payments(request.form)
+                # Post the payments
+                for payment in payments:
+                    current_user.fiken_manager.make_fiken_post_request(payment_post_url, payment)
+
+            # Post any attachments
+            if 'file' in request.form.keys():
+                # Ready file for send-in to fiken
+                file = PurchaseDataFormatter.ready_attachment(request.form['file'])
+                # Retrieve the link for registering attachments to the purchase
+                attachment_post_url = purchase["_links"]["https://fiken.no/api/v1/rel/attachments"]
+                # Post the attachment
+                current_user.fiken_manager.make_fiken_post_request_files(attachment_post_url, file)
+
+            flash("Kjøp registrert.")
+        # Interpret this as some kind of error with VAT.
+        elif post.status_code == 400 and "vat" in post.text.lower():
+            flash("VAT-type ikke kompatibel med utgiftskonto. Prøv på nytt.")
+        else:
+            flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+    else:
+        flash(errors[0])
+
+    return redirect(url_for('purchase'))
 
 
 @app.route('/sale', methods=['GET', 'POST'])
@@ -145,7 +185,7 @@ def sale():
             products = []
         return render_template('sale.html', title="Salg", form=form, products=products,
                                bank_accounts=bank_accounts, customers=customers, customer_modal_form=customer_modal_form,
-                               account_modal_form=account_modal_form)
+                               account_modal_form=account_modal_form, contact_type="kunde")
 
 
 @app.route('/history', methods=['GET', 'POST'])
@@ -211,9 +251,11 @@ def log_in():
             if PasswordHandler.compare_hash_with_text(user.password, password):
                 login_user(user)
                 # In case the company set has active has been deleted in fiken since last time (very unlikely)
-                slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
-                if current_user.fiken_manager.get_company_slug() not in slugs:
-                    current_user.fiken_manager.reset_slug()
+                if current_user.fiken_manager.has_valid_login():
+                    slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
+                    if current_user.fiken_manager.get_company_slug() not in slugs:
+                        current_user.fiken_manager.reset_slug()
+                # Store the user
                 current_user.store_user()
                 next_page = request.args.get("next", url_for('purchase'))
                 return redirect(next_page)
@@ -311,9 +353,6 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # Change filename here when adding own parsed data
-            with open('test_population.json', 'r') as f:
-                parsed_data = json.load(f)
             return purchase(image=filename, pop=None)
     return "EMPTY PAGE"
 
@@ -455,12 +494,11 @@ def delete_account():
         return redirect(url_for('profile'))
 
 
-@app.route('/create_customer', methods=['POST'])
+@app.route('/create_contact/<contact_type>', methods=['POST'])
 @login_required
-def create_customer():
+def create_contact(contact_type):
     new_contact_info = request.form
 
-    # if (validate_new_contact(new_contact_info)):
     # Create JSON-HAL for sending to fiken
     contact = {"name": new_contact_info["name"]}
     if not new_contact_info["org_nr"].strip() == '':
@@ -481,6 +519,7 @@ def create_customer():
         contact["postalCode"] = new_contact_info["zip_code"]
     if not new_contact_info["postal_area"].strip() == '':
         contact["postalPlace"] = new_contact_info["postal_area"]
+    contact[contact_type] = True
     contact["language"] = new_contact_info["language"]
     contact["currency"] = new_contact_info["currency"]
     contact["customer"] = True
@@ -492,7 +531,12 @@ def create_customer():
     else:
         flash("Ny kunde opprettet.")
 
-    return redirect(url_for('sale'))
+    # Customers are created on sales-page
+    if contact_type == "customer":
+        return redirect(url_for('sale'))
+    # Suppliers are created on purchase-page
+    if contact_type == "supplier":
+        return redirect(url_for('purchase'))
 
 
 def send_to_fiken(data, type):

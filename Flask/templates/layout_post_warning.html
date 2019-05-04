@@ -53,6 +53,7 @@
 
     <script>
 
+        /* Deactivate buttons if not logged in with fiken */
         {%  if not current_user.fiken_manager.has_valid_login() or not current_user.fiken_manager.get_company_slug() %}
             let val = true;
         {% else %}
@@ -62,6 +63,12 @@
         for (let i = 0; i < buttons.length; i++) {
             if (buttons[i].type == "submit" || buttons[i].type == "button") {
                 buttons[i].disabled = val;
+                if (val) {
+                    buttons[i].classList.add('disabled_button');
+                }
+                else {
+                    buttons[i].classList.remove('disabled_button');
+                }
             }
         }
 

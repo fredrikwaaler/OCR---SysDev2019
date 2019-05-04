@@ -1,0 +1,12 @@
+<!-- error code: 503 - Service unavailable -->
+{% if logged_in %}
+    {% extends 'layout_post.html' %}
+{% else %}
+    {% extends 'layout_pre.html' %}
+{% endif %}
+{% block container %}
+<div>
+    <h1>Service unavailable (error code: 503)</h1>
+    <p>The server cannot handle the request (because it is overloaded or down for maintenance).</p>
+</div>
+{% endblock container %}

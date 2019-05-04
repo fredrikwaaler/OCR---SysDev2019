@@ -12,6 +12,7 @@ from FormValidator import validate_new_name, validate_new_email, validate_new_pa
 from SalesDataFormatter import SalesDataFormatter
 from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
+from ImageProcessor import VisionManager, TextProcessor
 import smtplib
 import requests
 
@@ -58,6 +59,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 lm = create_login_manager()
 lm.init_app(app)
 lm.login_view = 'log_in'
+
+# Initialize image processor
+vision_manager = VisionManager('key.json')
 
 
 @app.route('/purchase', methods=['GET', 'POST'])
@@ -138,6 +142,32 @@ def register_purchase():
         flash(errors[0])
 
     return redirect(url_for('purchase'))
+
+
+@app.route('/purchase2', methods=['GET', 'POST'])
+@login_required
+def purchase2(image=None, pop=False):
+    form = PurchaseForm()
+    customer_modal_form = CustomerForm()
+    print(pop)
+    ocr_line_data = None
+    ocr_supplier = None
+    try:
+        if pop:
+            if 'invoice_number' in pop:
+                form.invoice_number.data = pop['invoice_number']
+            if 'invoice_date' in pop:
+                form.invoice_date.data = pop['invoice_date']
+            if 'maturity_date' in pop:
+                form.maturity_date.data = pop['maturity_date']
+            if 'vat_and_gross_amount' in pop:
+                ocr_line_data = pop['vat_and_gross_amount']
+            if 'organization_number' in pop:
+                ocr_supplier = pop['organization_number']
+    except KeyError:
+        print("KeyError")
+    return render_template('purchase.html', title="Kjøp2", form=form, customer_modal_form=customer_modal_form,
+                           image=image, ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
 
 
 @app.route('/sale', methods=['GET', 'POST'])
@@ -278,6 +308,7 @@ def admin():
     if not current_user.is_admin:
         abort(401)
     form = SignUpForm()
+    abort(401)
     if form.is_submitted():
         name = form.data["name"]
         email = form.data["email"]
@@ -353,8 +384,35 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return purchase(image=filename, pop=None)
+            # Get image data from image processor
+            pop = get_image_data('static/uploads/'+filename)
+            # Return purchase page with parsed data
+            return purchase2(image=filename, pop=pop)
+        else:
+            flash("Unsupported media")
+            return purchase2()
     return "EMPTY PAGE"
+
+
+def get_image_data(filename):
+    """
+    Gets image data from image processor. Checks first if data can be fetched as a receipt,
+    before checking if data can be fetched as an invoice.
+    :param filename: The file to get the data from
+    :return: Data form image processor.
+    """
+    img_text = vision_manager.get_text_detection_from_img(filename)
+    text_processor = TextProcessor(img_text)
+    try:
+        return text_processor.get_receipt_info()
+    except:
+        print("This is not a receipt")
+        try:
+            return text_processor.get_invoice_info()
+        except:
+            print("This is not an invoice")
+    flash("Vi kan dessverre ikke hente data fra det opplastede bildet.")
+    return None
 
 
 def allowed_file(filename):
@@ -539,6 +597,15 @@ def create_contact(contact_type):
         return redirect(url_for('purchase'))
 
 
+@app.route('/loader')
+def loader():
+    return render_template('loader.html')
+
+
+def temporary_loader():
+    return render_template(url_for('loader'))
+
+
 def send_to_fiken(data, type):
     if type == "Purchase":
         # TODO - Make HAL json of data and send to Fiken API
@@ -560,6 +627,122 @@ def string_to_datetime(input_string):
     date = datetime.datetime(int(split[0]), int(split[1]), int(split[2]))
     print(date)
     return date
+
+
+@app.route('/widget', methods=['GET'])
+@login_required
+def widget():
+    form = PurchaseForm()
+    return render_template("purchase_widget.html", form=form)
+
+
+@app.route('/widget2', methods=['GET'])
+@login_required
+def widget2():
+    form = SaleForm()
+    return render_template("sale_widget.html", form=form)
+
+
+# checks if the user is logged in
+def is_logged_in():
+    logged_in = False
+    if current_user.is_authenticated:
+        logged_in = True
+    return logged_in
+
+
+# TODO - view all pages, see that they look ok and behave
+# TODO - make sure every page is necessary 
+# unauthorized error page, ex: accessing admin site, admin
+@app.errorhandler(401)
+def page_forbidden(e):
+    return render_template('401.html', title="401 forbidden page", logged_in=is_logged_in()), 401
+
+
+# page not found, used when accessing nonsense, eg. /pasta
+#@app.app_errorhandler(404)
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html', title="404 not found", logged_in=is_logged_in()), 404
+
+
+# method not allowed, ex: when accessing upload_files
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return render_template('405.html', title="405 method not allowed", logged_in=is_logged_in()), 405
+
+
+# file no longer exists, ex: accessing a file that used to exist
+# used when ???
+# TODO - remove errir code 410
+@app.errorhandler(410)
+def page_gone(e):
+    return render_template('410.html', title="410 not found", logged_in=is_logged_in()), 410
+
+
+# 415 - unsupported media type, ex: user send a svg image.
+# TODO - PORT IT AS A FLASH
+@app.errorhandler(415)
+def unsupported_media_type(e):
+    return render_template('415.html', title="415 unsupported media type", logged_in=is_logged_in()), 415
+
+
+# internal server error, ex: server is up, but not working right
+# used when azure fucks up
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html', title="500 internal server error", logged_in=is_logged_in()), 500
+
+
+# Web server isn't available, ex: our server is down
+# used when azure fucks up
+@app.errorhandler(503)
+def service_unavailable(e):
+    return render_template('503.html', title="503 service unavailable", logged_in=is_logged_in()), 503
+
+
+# Server failed to communicate with secondary server, ex: fiken or vision fails
+# used when vision or fiken fucks up
+@app.errorhandler(504)
+def gateway_timeout(e):
+    return render_template('504.html', title="504 gateway timeout", logged_in=is_logged_in()), 504
+
+
+# This is just temp routing to make error pages easily accessable for debugging
+# TODO - remove the temp routing when error pages have been properly integraed
+@app.route('/401', methods=['GET'])
+def page_forbidden_page():
+    return render_template('401.html', title="401 unauth error)"), 401
+
+
+@app.route('/404', methods=['GET'])
+def page_not_found_page():
+    return render_template('404.html', title="404 page not found"), 404
+
+
+@app.route('/405', methods=['GET'])
+def method_not_allowed_page():
+    return render_template('405.html', title="405 method not allowed"), 405
+
+
+@app.route('/415', methods=['GET'])
+def unsupported_media_type_page():
+    return render_template('415.html', title="415 media type not supported"), 415
+
+
+@app.route('/500', methods=['GET'])
+def internal_server_error_page():
+    return render_template('500.html', title="500 internal server error"), 500
+
+
+@app.route('/503', methods=['GET'])
+def service_unavailable_page():
+    return render_template('503.html', title="503 service unavailable"), 503
+
+
+@app.route('/504', methods=['GET'])
+def gateway_timeout_page():
+    return render_template('504.html', title="504 gateway timeout"), 504
 
 
 if __name__ == '__main__':

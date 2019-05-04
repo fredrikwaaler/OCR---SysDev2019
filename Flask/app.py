@@ -14,7 +14,6 @@ from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
 from ImageProcessor import VisionManager, TextProcessor
 import smtplib
-import requests
 
 
 def create_login_manager():
@@ -231,15 +230,34 @@ def history():
 
     # If the method is get, we just retrieved the page with default value "all".
     if request.method == 'GET':
-        return render_template('history.html', title="Historikk", entry_view=sales + purchases, current_user=current_user)
+        entries = sales + purchases
+        entries.sort(key=_get_entry_date)
+        entries.reverse()
+        return render_template('history.html', title="Historikk", entry_view=entries, current_user=current_user)
     else:
         data_type = request.form["type"]
         if data_type == "all":
             return redirect(url_for('historikk'))
         elif data_type == "purchases":
-            return render_template('history.html', title="Historikk", entry_view=purchases, checked="purchases", current_user=current_user)
+            entries = purchases
+            entries.sort(key=_get_entry_date)
+            entries.reverse()
+            return render_template('history.html', title="Historikk", entry_view=entries, checked="purchases", current_user=current_user)
         elif data_type == "sales":
-            return render_template('history.html', title="Historikk", entry_view=sales, checked="sales", current_user=current_user)
+            entries = sales
+            entries.sort(key=_get_entry_date)
+            entries.reverse()
+            return render_template('history.html', title="Historikk", entry_view=entries, checked="sales", current_user=current_user)
+
+
+def _get_entry_date(entry):
+    """
+    Returns the date of a ledger-entry from fiken.
+    Used for sorting entries by date.
+    :param entry: The entry
+    :return: The date of the entry
+    """
+    return entry[0]["date"]
 
 
 @app.route('/profile', methods=['GET'])
@@ -370,28 +388,26 @@ def contact():
 @app.route('/upload_file', methods=['POST'])
 @login_required
 def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # Get image data from image processor
-            pop = get_image_data('static/uploads/'+filename)
-            # Return purchase page with parsed data
-            return purchase2(image=filename, pop=pop)
-        else:
-            flash("Unsupported media")
-            return purchase2()
-    return "EMPTY PAGE"
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    # if user does not select file, browser also
+    # submit an empty part without filename
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Get image data from image processor
+        pop = get_image_data('static/uploads/'+filename)
+        # Return purchase page with parsed data
+        return purchase2(image=filename, pop=pop)
+    else:
+        flash("Unsupported media")
+        return purchase2()
 
 
 def get_image_data(filename):

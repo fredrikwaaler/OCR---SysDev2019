@@ -109,7 +109,7 @@ def purchase(image=None, pop=None):
             suppliers = []
             accounts = []
             payment_accounts = []
-
+ 
         return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
                                image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
                                contact_type="leverandør", payment_accounts=payment_accounts,

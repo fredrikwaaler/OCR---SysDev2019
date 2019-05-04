@@ -9,6 +9,7 @@ Flask/test_purchase.json
 Flask/test_sale.json
 
 .idea/*
+OCR/.idea/*
 Flask/.idea/*
 # ignore pyCharm related files
 .idea/*

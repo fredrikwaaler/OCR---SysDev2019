@@ -99,7 +99,7 @@ def purchase(image=None):
         except ValueError:
             suppliers = []
             accounts = []
-
+        print(suppliers)
         return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
                                image=image, current_user=current_user, suppliers=suppliers, accounts=accounts)
 
@@ -111,6 +111,7 @@ def purchase2(image=None, pop=False):
     customer_modal_form = CustomerForm()
     print(pop)
     ocr_line_data = None
+    ocr_supplier = None
     try:
         if pop:
             if 'invoice_number' in pop:
@@ -121,10 +122,12 @@ def purchase2(image=None, pop=False):
                 form.maturity_date.data = pop['maturity_date']
             if 'vat_and_gross_amount' in pop:
                 ocr_line_data = pop['vat_and_gross_amount']
+            if 'organization_number' in pop:
+                ocr_supplier = pop['organization_number']
     except KeyError:
         print("KeyError")
     return render_template('purchase.html', title="Kjøp2", form=form, customer_modal_form=customer_modal_form,
-                           image=image, ocr_line_data=ocr_line_data)
+                           image=image, ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
 
 
 @app.route('/sale', methods=['GET', 'POST'])
@@ -546,6 +549,15 @@ def create_customer():
         flash("Ny kunde opprettet.")
 
     return redirect(url_for('sale'))
+
+
+@app.route('/loader')
+def loader():
+    return render_template('loader.html')
+
+
+def temporary_loader():
+    return render_template(url_for('loader'))
 
 
 def send_to_fiken(data, type):

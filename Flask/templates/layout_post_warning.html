@@ -17,7 +17,6 @@
         <meta name="viewport" content="width=device-width">
     </head>
     <body>
-
         {{ nav.nav.render() }}
         <div class = wrapper>
             {% if not current_user.fiken_manager.has_valid_login() %}
@@ -52,7 +51,6 @@
     <script src="{{ url_for('static',filename='js/popup.js') }}"></script>
 
     <script>
-
         {%  if not current_user.fiken_manager.has_valid_login() or not current_user.fiken_manager.get_company_slug() %}
             let val = true;
         {% else %}

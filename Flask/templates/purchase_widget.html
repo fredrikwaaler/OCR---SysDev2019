@@ -40,7 +40,11 @@
                     <select id="supplier" name="supplier" required>
                         <option disabled selected value> Velg leverandør </option>
                         {% for supplier_string, supplier in suppliers %}
-                            <option value="{{ supplier["href"] }}">{{ supplier_string }}</option>
+                            {% if 'organizationIdentifier' in supplier %}
+                                <option id="{{ supplier["organizationIdentifier"] }}" value="{{ supplier["href"] }}">{{ supplier_string }}</option>
+                            {% else %}
+                                <option value="{{ supplier["href"] }}">{{ supplier_string }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                     <div class="empty"></div>
@@ -253,6 +257,31 @@ function change_total(gross_total, vat_total, net_total) {
     amount.value = gross_total;
 }
 
+// Purchase form population
+
+/**
+ * Adds data from OCR to form
+ */
+function add_ocr_data() {
+    add_ocr_supplier();
+    add_ocr_lines();
+}
+add_ocr_data(); // Initialize the function
+
+/**
+ * Adds supplier found in OCR to form
+ */
+function add_ocr_supplier() {
+    {% if ocr_supplier %}
+    let supplier = "{{ ocr_supplier }}".replace(/\s/g,'');;
+    let selectDOM = document.getElementById("supplier");
+    let supplierDOM = document.getElementById(supplier);
+    if (supplierDOM != null) {
+        supplierDOM.selected=true;
+    }
+    {% endif %}
+}
+
 /**
  *  Adds lines to purchase form for values from OCR.
  */
@@ -283,7 +312,6 @@ function add_ocr_lines() {
     {% endfor %}
     {% endif %}
 }
-add_ocr_lines(); // Initialize the function on page load
 
 
 // SALE FORM

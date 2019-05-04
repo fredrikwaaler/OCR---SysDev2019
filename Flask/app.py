@@ -66,11 +66,25 @@ vision_manager = VisionManager('key.json')
 
 @app.route('/purchase', methods=['GET', 'POST'])
 @login_required
-def purchase(image=None):
+def purchase(image=None, pop=None):
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
-    if request.method == "POST":
-        return "NONFUNC"
+    ocr_line_data = None
+    ocr_supplier = None
+    try:
+        if pop:
+            if 'invoice_number' in pop:
+                form.invoice_number.data = pop['invoice_number']
+            if 'invoice_date' in pop:
+                form.invoice_date.data = pop['invoice_date']
+            if 'maturity_date' in pop:
+                form.maturity_date.data = pop['maturity_date']
+            if 'vat_and_gross_amount' in pop:
+                ocr_line_data = pop['vat_and_gross_amount']
+            if 'organization_number' in pop:
+                ocr_supplier = pop['organization_number']
+    except KeyError:
+        print("KeyError")
 
     else:
         try:
@@ -98,7 +112,8 @@ def purchase(image=None):
 
         return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
                                image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
-                               contact_type="leverandør", payment_accounts=payment_accounts)
+                               contact_type="leverandør", payment_accounts=payment_accounts,
+                               ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
 
 
 @app.route('/register_purchase', methods=['GET', 'POST'])
@@ -142,33 +157,6 @@ def register_purchase():
         flash(errors[0])
 
     return redirect(url_for('purchase'))
-
-
-@app.route('/purchase2', methods=['GET', 'POST'])
-@login_required
-def purchase2(image=None, pop=False):
-    form = PurchaseForm()
-    customer_modal_form = CustomerForm()
-    print(pop)
-    ocr_line_data = None
-    ocr_supplier = None
-    try:
-        if pop:
-            if 'invoice_number' in pop:
-                form.invoice_number.data = pop['invoice_number']
-            if 'invoice_date' in pop:
-                form.invoice_date.data = pop['invoice_date']
-            if 'maturity_date' in pop:
-                form.maturity_date.data = pop['maturity_date']
-            if 'vat_and_gross_amount' in pop:
-                ocr_line_data = pop['vat_and_gross_amount']
-            if 'organization_number' in pop:
-                ocr_supplier = pop['organization_number']
-    except KeyError:
-        print("KeyError")
-    return render_template('purchase.html', title="Kjøp2", form=form, customer_modal_form=customer_modal_form,
-                           image=image, ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
-
 
 @app.route('/sale', methods=['GET', 'POST'])
 @login_required
@@ -387,10 +375,10 @@ def upload_file():
             # Get image data from image processor
             pop = get_image_data('static/uploads/'+filename)
             # Return purchase page with parsed data
-            return purchase2(image=filename, pop=pop)
+            return purchase(image=filename, pop=pop)
         else:
             flash("Unsupported media")
-            return purchase2()
+            return purchase()
     return "EMPTY PAGE"
 
 

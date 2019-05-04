@@ -31,7 +31,7 @@
         <h3 class="first-field-title">Fiken-instillinger</h3>
         <hr>
         {% if not current_user.fiken_manager.has_valid_login() %}
-            <input class="stacked_button modal_button" type="submit" Value="Logg Inn" >
+            <input class="modal_button form-button" type="submit" Value="Logg Inn" >
             <span class="modal_button"></span>
         {% else %}
             <div class="profile-section">
@@ -170,7 +170,7 @@
                 <p>All brukerdata vil bli slettet</p>
                 <p>Vennligst bekreft passordet ditt før du kan slette kontoen.</p>
                 Passord: {{ confirm_password_form.password }}
-                <input class="boxedButton" id="warning" type="submit" Value="Slett konto">
+                <input class="form-button" id="warning" type="submit" Value="Slett konto">
             </form>
         </div>
     </div>

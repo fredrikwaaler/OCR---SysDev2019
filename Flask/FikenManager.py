@@ -232,7 +232,6 @@ class FikenManager:
         except ValueError:
             return None
 
-
     @staticmethod
     def is_valid_credentials(login, password):
         response = get(url="https://fiken.no/api/v1/whoAmI", auth=(login, password))

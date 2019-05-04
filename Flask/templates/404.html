@@ -1,0 +1,12 @@
+<!-- error code: 404 - page not found -->
+{% if logged_in %}
+    {% extends 'layout_post.html' %}
+{% else %}
+    {% extends 'layout_pre.html' %}
+{% endif %}
+{% block container %}
+<div>
+    <h1>Page not found (error code: 404)</h1>
+    <p>This pages does not exist. Please try a different page</p>
+</div>
+{% endblock container %}

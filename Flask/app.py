@@ -66,6 +66,8 @@ vision_manager = VisionManager('key.json')
 @app.route('/purchase', methods=['GET', 'POST'])
 @login_required
 def purchase(image=None):
+    # TODO - implement the 404 page
+    #abort(404)
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
     if request.method == "POST":
@@ -268,6 +270,7 @@ def admin():
     if not current_user.is_admin:
         abort(401)
     form = SignUpForm()
+    abort(401)
     if form.is_submitted():
         name = form.data["name"]
         email = form.data["email"]
@@ -582,6 +585,120 @@ def string_to_datetime(input_string):
     print(date)
     return date
 
+
+@app.route('/widget', methods=['GET'])
+@login_required
+def widget():
+    form = PurchaseForm()
+    return render_template("purchase_widget.html", form=form)
+
+
+@app.route('/widget2', methods=['GET'])
+@login_required
+def widget2():
+    form = SaleForm()
+    return render_template("sale_widget.html", form=form)
+
+
+# checks if the user is logged in
+def is_logged_in():
+    logged_in = False
+    if current_user.is_authenticated:
+        logged_in = True
+    return logged_in
+
+# TODO - view all pages, see that they look ok and behave
+# TODO - make sure every page is necessary 
+# unauthorized error page, ex: accessing admin site, admin
+@app.errorhandler(401)
+def page_forbidden(e):
+    return render_template('401.html', title="401 forbidden page", logged_in=is_logged_in()), 401
+
+
+# page not found, used when accessing nonsense, eg. /pasta
+#@app.app_errorhandler(404)
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html', title="404 not found", logged_in=is_logged_in()), 404
+
+
+# method not allowed, ex: when accessing upload_files
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return render_template('405.html', title="405 method not allowed", logged_in=is_logged_in()), 405
+
+
+# file no longer exists, ex: accessing a file that used to exist
+# used when ???
+# TODO - remove errir code 410
+@app.errorhandler(410)
+def page_gone(e):
+    return render_template('410.html', title="410 not found", logged_in=is_logged_in()), 410
+
+
+# 415 - unsupported media type, ex: user send a svg image.
+# TODO - PORT IT AS A FLASH
+@app.errorhandler(415)
+def unsupported_media_type(e):
+    return render_template('415.html', title="415 unsupported media type", logged_in=is_logged_in()), 415
+
+
+# internal server error, ex: server is up, but not working right
+# used when azure fucks up
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html', title="500 internal server error", logged_in=is_logged_in()), 500
+
+
+# Web server isn't available, ex: our server is down
+# used when azure fucks up
+@app.errorhandler(503)
+def service_unavailable(e):
+    return render_template('503.html', title="503 service unavailable", logged_in=is_logged_in()), 503
+
+
+# Server failed to communicate with secondary server, ex: fiken or vision fails
+# used when vision or fiken fucks up
+@app.errorhandler(504)
+def gateway_timeout(e):
+    return render_template('504.html', title="504 gateway timeout", logged_in=is_logged_in()), 504
+
+
+# This is just temp routing to make error pages easily accessable for debugging
+# TODO - remove the temp routing when error pages have been properly integraed
+@app.route('/401', methods=['GET'])
+def page_forbidden_page():
+    return render_template('401.html', title="401 unauth error)"), 401
+
+
+@app.route('/404', methods=['GET'])
+def page_not_found_page():
+    return render_template('404.html', title="404 page not found"), 404
+
+
+@app.route('/405', methods=['GET'])
+def method_not_allowed_page():
+    return render_template('405.html', title="405 method not allowed"), 405
+
+
+@app.route('/415', methods=['GET'])
+def unsupported_media_type_page():
+    return render_template('415.html', title="415 media type not supported"), 415
+
+
+@app.route('/500', methods=['GET'])
+def internal_server_error_page():
+    return render_template('500.html', title="500 internal server error"), 500
+
+
+@app.route('/503', methods=['GET'])
+def service_unavailable_page():
+    return render_template('503.html', title="503 service unavailable"), 503
+
+
+@app.route('/504', methods=['GET'])
+def gateway_timeout_page():
+    return render_template('504.html', title="504 gateway timeout"), 504
 
 if __name__ == '__main__':
     app.run(debug=True, port="8000")

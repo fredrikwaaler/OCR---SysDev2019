@@ -169,7 +169,6 @@ def register_purchase():
     else:
         flash(errors[0])
 
-    return redirect(url_for('purchase'))
 
 @app.route('/sale', methods=['GET', 'POST'])
 @login_required
@@ -421,15 +420,14 @@ def get_image_data(filename):
     """
     img_text = vision_manager.get_text_detection_from_img(filename)
     text_processor = TextProcessor(img_text)
+    type = text_processor.define_invoice_or_receipt()
     try:
-        return text_processor.get_receipt_info()
-    except:
-        print("This is not a receipt")
-        try:
+        if type == "receipt":
+            return text_processor.get_receipt_info()
+        elif type == "invoice":
             return text_processor.get_invoice_info()
-        except:
-            print("This is not an invoice")
-    flash("Vi kan dessverre ikke hente data fra det opplastede bildet.")
+    except:
+        flash("Vi kan dessverre ikke hente data fra det opplastede bildet.")
     return None
 
 
@@ -643,7 +641,6 @@ def string_to_datetime(input_string):
     """
     split = input_string.split("-")
     date = datetime.datetime(int(split[0]), int(split[1]), int(split[2]))
-    print(date)
     return date
 
 

@@ -28,7 +28,7 @@
     </div>
     <!-- Change/connect to fiken user here -->
     <div class="form-part" id="fiken-account">
-        <h3 class="first-field-title">Fiken-instillinger</h3>
+        <h3>Fiken-instillinger</h3>
         <hr>
         {% if not current_user.fiken_manager.has_valid_login() %}
             <input class="modal_button form-button" type="submit" Value="Logg Inn" >
@@ -65,7 +65,6 @@
         <hr>
         <input class ="form-button modal_button" type="submit" id="warning" Value="Slett konto">
     </div>
-</div>
 
 <!-- Modal for changing name -->
 <div class="modal">
@@ -157,11 +156,6 @@
             </form>
         </div>
     </div>
-
-<!-- invisable box to help align content with box-display -->
-<div class ="box-invis">
-<!--Buttons to download userdata and deleting account-->
-
 <div class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>

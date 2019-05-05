@@ -87,6 +87,24 @@ class TextProcessor:
 
         return invoice_info
 
+    def define_invoice_or_receipt(self):
+        """
+        refines if the text string given is from a receipt or an invoice. Can get two different strings from this
+        method. Either you get; <String>invoice<String> or <String>receipt<String>
+        :return: two different strings from this method. Either you get; <String>invoice<String> or
+        <String>receipt<String>
+        """
+        return_string = ""
+        if "faktura" in self._text_string:
+            return_string = "invoice"
+        if "salgskvittering" in self._text_string:
+            return_string = "receipt"
+        if "faktura" or "salgskvittering" not in self._text_string:
+            return_string = "receipt"
+        else:
+            return_string = "receipt"
+        return return_string
+
     def get_org_nr_from_invoice(self):
         """
         Gets a suggestion for the organization number og the company delivering the invoice given as class parameter.

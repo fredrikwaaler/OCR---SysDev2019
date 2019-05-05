@@ -1,7 +1,6 @@
 # Base URL - https://fiken.no/api/v1
 
 from requests import get, post
-from DatabaseManager import DatabaseManager
 from datetime import datetime
 
 

@@ -31,7 +31,7 @@
                         {% endfor %}
                     </select>
                     <div class="empty"></div>
-                    <input class="modal_button sf-button" id="new-account-button" type="button" value="Opprett ny">
+                    <input disabled class="modal_button sf-button disabled_func" id="new-account-button" type="button" value="Opprett ny">
                 </div>
             </div>
         </div>
@@ -628,8 +628,8 @@ function createHTML(type) {
                         <label for="sale_type-2">Tjeneste</label>
                     </li>
                     <li>
-                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="4">
-                        <label for="sale_type-3">Annet</label>
+                        <input class="disabled_func" disabled onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="4">
+                        <label class="disabled_func" for="sale_type-3">Annet</label>
                     </li>
                 </ul>
                 <div class="sf-line-input">

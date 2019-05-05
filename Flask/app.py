@@ -1,4 +1,4 @@
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_fresh
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import os, datetime, json, re
 from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup
 from forms import *
@@ -14,7 +14,7 @@ from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
 from ImageProcessor import VisionManager, TextProcessor
 import smtplib
-import requests
+from datetime import timedelta
 
 
 def create_login_manager():
@@ -116,6 +116,14 @@ def purchase(image=None, pop=None):
                                ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
 
 
+@app.before_request
+def before_request():
+    """
+    If a user is inactive for 30 minutes, log him/her out.
+    """
+    app.permanent_session_lifetime = timedelta(minutes=30)
+
+
 @app.route('/register_purchase', methods=['GET', 'POST'])
 @login_required
 def register_purchase():
@@ -127,7 +135,7 @@ def register_purchase():
         if post.status_code == 201:
             # Get the purchase-info from fiken for later reference
             # The purchase in question is at index 0, since it is the most recent
-            purchase = current_user.get_raw_data_from_fiken("purchases")["_embedded"][
+            purchase = current_user.fiken_manager.get_raw_data_from_fiken("purchases")["_embedded"][
                 "https://fiken.no/api/v1/rel/purchases"][0]
             # If it is a supplier-purchase, register any payments
             if request.form["purchase_type"] == '1':
@@ -139,13 +147,18 @@ def register_purchase():
                     current_user.fiken_manager.make_fiken_post_request(payment_post_url, payment)
 
             # Post any attachments
-            if 'file' in request.form.keys():
+            if 'filename' in request.form.keys():
                 # Ready file for send-in to fiken
-                file = PurchaseDataFormatter.ready_attachment(request.form['file'])
-                # Retrieve the link for registering attachments to the purchase
-                attachment_post_url = purchase["_links"]["https://fiken.no/api/v1/rel/attachments"]
-                # Post the attachment
-                current_user.fiken_manager.make_fiken_post_request_files(attachment_post_url, file)
+                filename = request.form["filename"]
+                if filename is not 'None':
+                    file_path = '{}/static/uploads/{}'.format(os.getcwd(), filename)
+                    file = PurchaseDataFormatter.ready_attachment(file_path, filename)
+                    # Retrieve the link for registering attachments to the purchase
+                    attachment_post_url = purchase["_links"]["https://fiken.no/api/v1/rel/attachments"]["href"]
+                    # Post the attachment
+                    current_user.fiken_manager.make_fiken_post_request_files(attachment_post_url, file)
+                    # Delete the file from server
+                    os.remove(file_path)
 
             flash("Kjøp registrert.")
         # Interpret this as some kind of error with VAT.
@@ -218,15 +231,34 @@ def history():
 
     # If the method is get, we just retrieved the page with default value "all".
     if request.method == 'GET':
-        return render_template('history.html', title="Historikk", entry_view=sales + purchases, current_user=current_user)
+        entries = sales + purchases
+        entries.sort(key=_get_entry_date)
+        entries.reverse()
+        return render_template('history.html', title="Historikk", entry_view=entries, current_user=current_user)
     else:
         data_type = request.form["type"]
         if data_type == "all":
             return redirect(url_for('historikk'))
         elif data_type == "purchases":
-            return render_template('history.html', title="Historikk", entry_view=purchases, checked="purchases", current_user=current_user)
+            entries = purchases
+            entries.sort(key=_get_entry_date)
+            entries.reverse()
+            return render_template('history.html', title="Historikk", entry_view=entries, checked="purchases", current_user=current_user)
         elif data_type == "sales":
-            return render_template('history.html', title="Historikk", entry_view=sales, checked="sales", current_user=current_user)
+            entries = sales
+            entries.sort(key=_get_entry_date)
+            entries.reverse()
+            return render_template('history.html', title="Historikk", entry_view=entries, checked="sales", current_user=current_user)
+
+
+def _get_entry_date(entry):
+    """
+    Returns the date of a ledger-entry from fiken.
+    Used for sorting entries by date.
+    :param entry: The entry
+    :return: The date of the entry
+    """
+    return entry[0]["date"]
 
 
 @app.route('/profile', methods=['GET'])
@@ -266,7 +298,7 @@ def log_in():
         if user:
             password = form.data["password"]
             if PasswordHandler.compare_hash_with_text(user.password, password):
-                login_user(user)
+                login_user(user, remember=False)
                 # In case the company set has active has been deleted in fiken since last time (very unlikely)
                 if current_user.fiken_manager.has_valid_login():
                     slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
@@ -357,28 +389,26 @@ def contact():
 @app.route('/upload_file', methods=['POST'])
 @login_required
 def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # Get image data from image processor
-            pop = get_image_data('static/uploads/'+filename)
-            # Return purchase page with parsed data
-            return purchase(image=filename, pop=pop)
-        else:
-            flash("Unsupported media")
-            return purchase()
-    return "EMPTY PAGE"
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    # if user does not select file, browser also
+    # submit an empty part without filename
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Get image data from image processor
+        pop = get_image_data('static/uploads/'+filename)
+        # Return purchase page with parsed data
+        return purchase(image=filename, pop=pop)
+    else:
+        flash("Unsupported media")
+        return purchase()
 
 
 def get_image_data(filename):

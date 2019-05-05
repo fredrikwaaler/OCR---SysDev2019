@@ -544,14 +544,15 @@ img {
     max-width: 70%;
     display: block;
     margin: auto;
+    width: 80%;
 }
 
 /* Image modal code borrowed from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal_img */
 .history_modal_img {
-  margin: auto;
-  display: block;
-  width: 80%;
-  max-width: 700px;
+  margin: auto !important;
+  display: block !important;
+  width: 80% !important;
+  max-width: 700px !important;
 }
 
 /* The Close Button */
@@ -598,6 +599,13 @@ img {
     display: none;
 }
 
+
+/**
+CSS for visually displaying that some functionality is not in order.
+ */
+.disabled_func {
+    opacity: 0.3;
+}
 
 /* Pop-up for å endre selskap i fiken */
 

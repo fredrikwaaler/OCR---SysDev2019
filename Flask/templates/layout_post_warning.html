@@ -51,11 +51,9 @@
     <script src="{{ url_for('static',filename='js/popup.js') }}"></script>
 
     <script>
-<<<<<<< HEAD
 
         /* Deactivate buttons if not logged in with fiken */
-=======
->>>>>>> b35a8880b7362fb41032f4f5eaeb229f48728de3
+
         {%  if not current_user.fiken_manager.has_valid_login() or not current_user.fiken_manager.get_company_slug() %}
             let val = true;
         {% else %}
@@ -63,7 +61,7 @@
         {% endif %}
         let buttons = document.getElementsByTagName("input");
         for (let i = 0; i < buttons.length; i++) {
-            if (buttons[i].type == "submit" || buttons[i].type == "button") {
+            if ((buttons[i].type == "submit" || buttons[i].type == "button") && !buttons[i].classList.contains('no_disable')) {
                 buttons[i].disabled = val;
                 if (val) {
                     buttons[i].classList.add('disabled_button');

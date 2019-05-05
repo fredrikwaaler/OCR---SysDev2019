@@ -1,4 +1,4 @@
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_fresh
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import os, datetime, json, re
 from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup
 from forms import *
@@ -14,6 +14,7 @@ from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
 from ImageProcessor import VisionManager, TextProcessor
 import smtplib
+from datetime import timedelta
 
 
 def create_login_manager():
@@ -65,11 +66,25 @@ vision_manager = VisionManager('key.json')
 
 @app.route('/purchase', methods=['GET', 'POST'])
 @login_required
-def purchase(image=None):
+def purchase(image=None, pop=None):
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
-    if request.method == "POST":
-        return "NONFUNC"
+    ocr_line_data = None
+    ocr_supplier = None
+    try:
+        if pop:
+            if 'invoice_number' in pop:
+                form.invoice_number.data = pop['invoice_number']
+            if 'invoice_date' in pop:
+                form.invoice_date.data = pop['invoice_date']
+            if 'maturity_date' in pop:
+                form.maturity_date.data = pop['maturity_date']
+            if 'vat_and_gross_amount' in pop:
+                ocr_line_data = pop['vat_and_gross_amount']
+            if 'organization_number' in pop:
+                ocr_supplier = pop['organization_number']
+    except KeyError:
+        print("KeyError")
 
     else:
         try:
@@ -94,10 +109,19 @@ def purchase(image=None):
             suppliers = []
             accounts = []
             payment_accounts = []
-
+ 
         return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
                                image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
-                               contact_type="leverandør", payment_accounts=payment_accounts)
+                               contact_type="leverandør", payment_accounts=payment_accounts,
+                               ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
+
+
+@app.before_request
+def before_request():
+    """
+    If a user is inactive for 30 minutes, log him/her out.
+    """
+    app.permanent_session_lifetime = timedelta(minutes=30)
 
 
 @app.route('/register_purchase', methods=['GET', 'POST'])
@@ -111,7 +135,7 @@ def register_purchase():
         if post.status_code == 201:
             # Get the purchase-info from fiken for later reference
             # The purchase in question is at index 0, since it is the most recent
-            purchase = current_user.get_raw_data_from_fiken("purchases")["_embedded"][
+            purchase = current_user.fiken_manager.get_raw_data_from_fiken("purchases")["_embedded"][
                 "https://fiken.no/api/v1/rel/purchases"][0]
             # If it is a supplier-purchase, register any payments
             if request.form["purchase_type"] == '1':
@@ -123,13 +147,18 @@ def register_purchase():
                     current_user.fiken_manager.make_fiken_post_request(payment_post_url, payment)
 
             # Post any attachments
-            if 'file' in request.form.keys():
+            if 'filename' in request.form.keys():
                 # Ready file for send-in to fiken
-                file = PurchaseDataFormatter.ready_attachment(request.form['file'])
-                # Retrieve the link for registering attachments to the purchase
-                attachment_post_url = purchase["_links"]["https://fiken.no/api/v1/rel/attachments"]
-                # Post the attachment
-                current_user.fiken_manager.make_fiken_post_request_files(attachment_post_url, file)
+                filename = request.form["filename"]
+                if filename is not 'None':
+                    file_path = '{}/static/uploads/{}'.format(os.getcwd(), filename)
+                    file = PurchaseDataFormatter.ready_attachment(file_path, filename)
+                    # Retrieve the link for registering attachments to the purchase
+                    attachment_post_url = purchase["_links"]["https://fiken.no/api/v1/rel/attachments"]["href"]
+                    # Post the attachment
+                    current_user.fiken_manager.make_fiken_post_request_files(attachment_post_url, file)
+                    # Delete the file from server
+                    os.remove(file_path)
 
             flash("Kjøp registrert.")
         # Interpret this as some kind of error with VAT.
@@ -141,33 +170,6 @@ def register_purchase():
         flash(errors[0])
 
     return redirect(url_for('purchase'))
-
-
-@app.route('/purchase2', methods=['GET', 'POST'])
-@login_required
-def purchase2(image=None, pop=False):
-    form = PurchaseForm()
-    customer_modal_form = CustomerForm()
-    print(pop)
-    ocr_line_data = None
-    ocr_supplier = None
-    try:
-        if pop:
-            if 'invoice_number' in pop:
-                form.invoice_number.data = pop['invoice_number']
-            if 'invoice_date' in pop:
-                form.invoice_date.data = pop['invoice_date']
-            if 'maturity_date' in pop:
-                form.maturity_date.data = pop['maturity_date']
-            if 'vat_and_gross_amount' in pop:
-                ocr_line_data = pop['vat_and_gross_amount']
-            if 'organization_number' in pop:
-                ocr_supplier = pop['organization_number']
-    except KeyError:
-        print("KeyError")
-    return render_template('purchase.html', title="Kjøp2", form=form, customer_modal_form=customer_modal_form,
-                           image=image, ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
-
 
 @app.route('/sale', methods=['GET', 'POST'])
 @login_required
@@ -297,7 +299,7 @@ def log_in():
         if user:
             password = form.data["password"]
             if PasswordHandler.compare_hash_with_text(user.password, password):
-                login_user(user)
+                login_user(user, remember=False)
                 # In case the company set has active has been deleted in fiken since last time (very unlikely)
                 if current_user.fiken_manager.has_valid_login():
                     slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
@@ -404,10 +406,10 @@ def upload_file():
         # Get image data from image processor
         pop = get_image_data('static/uploads/'+filename)
         # Return purchase page with parsed data
-        return purchase2(image=filename, pop=pop)
+        return purchase(image=filename, pop=pop)
     else:
         flash("Unsupported media")
-        return purchase2()
+        return purchase()
 
 
 def get_image_data(filename):

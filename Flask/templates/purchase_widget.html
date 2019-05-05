@@ -15,11 +15,15 @@
 <div class="purchase-left">
     <form class="main-form" method="POST" action="/upload_file" enctype=multipart/form-data>
         <div class="form-part" id="upload-file-part">
-            <input type=file name=file>
-            <input id="upload-file-button" type=submit value=Upload>
+            <input type=file name=file id="file" onchange="deactivate_upload();">
+            <input class="no_disable" id="upload-file-button" type=submit value=Upload>
         </div>
     </form>
     <form class="main-form" id="purchase-form" method="post" action = "{{ url_for('register_purchase') }}">
+        {# For retrieving the filename after post #}
+        <div style="display: none">
+            <input value="{{ image }}" id="filename" name="filename" type="hidden">
+        </div>
         <div class="form-part pf-split">
             <div class="pf-split-left">
                 <div class="pf-form-input" id="purchase-block">
@@ -134,6 +138,7 @@ let amount = document.getElementById("amount");
 
 let counter = 1; //Counter to represent amount of made lines
 
+deactivate_upload();
 restrict_dates();
 init();
 
@@ -169,7 +174,29 @@ function restrict_dates() {
 function restrict_maturity_date() {
    let invoice_date = document.getElementById('invoice_date').value;
    let maturity_date = document.getElementById('maturity_date');
+   // If the maturity date is set to a value that is now illegal, reset it
+    if (maturity_date.value < invoice_date) {
+        maturity_date.value = "";
+    }
    maturity_date.setAttribute("min", invoice_date);
+}
+
+/**
+ * Deactivates the upload-button if an image is not chosen
+ */
+function deactivate_upload() {
+    let file = document.getElementById('file').value;
+    let upload_btn = document.getElementById('upload-file-button');
+    if (file == "") {
+        upload_btn.disabled = true;
+        upload_btn.style.opacity = 0.3;
+    }
+    else {
+        {% if current_user.fiken_manager.has_valid_login() and current_user.fiken_manager.get_company_slug() %}
+            upload_btn.disabled = false;
+            upload_btn.style.opacity = 1;
+        {% endif %}
+    }
 }
 
 // PURCHASE FORM

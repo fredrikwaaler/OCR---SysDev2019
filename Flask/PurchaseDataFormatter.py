@@ -167,7 +167,9 @@ class PurchaseDataFormatter:
         return payments
 
     @staticmethod
-    def ready_attachment(filename):
-        return {'AttachmentFile': (filename, open(filename, 'rb')), 'PurchaseAttachment': (None,
-                                            '{"filename":"{}", "attachToPurchase": true, "attachToPayment": false}'), }
+    def ready_attachment(filepath, filename ):
+        dict_string = '{{"filename":"{}", "attachToPurchase": true, "attachToPayment": false}}'.format(filename)
+
+        return {'AttachmentFile': (filename, open(filepath, 'rb')), 'PurchaseAttachment': (None,
+                                            '{}'.format(dict_string)), }
 

@@ -1,6 +1,6 @@
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_fresh
 import os, datetime, json, re
-from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup
+from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup, make_response, send_file
 from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
@@ -13,7 +13,6 @@ from SalesDataFormatter import SalesDataFormatter
 from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
 import smtplib
-
 
 def create_login_manager():
     """
@@ -180,6 +179,7 @@ def profile():
     form = ProfileForm()
     fiken_modal_form = FikenModalForm()
     confirm_password_form = ConfirmPasswordForm()
+    user_data = get_user_data()
 
     # Retrieve user-specific data
     name = current_user.name
@@ -196,7 +196,7 @@ def profile():
         companies = []
     return render_template('profile.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form,
                            confirm_password_form=confirm_password_form, name=name, email=email,
-                           companies=companies, current_user=current_user)
+                           companies=companies, current_user=current_user, user_data = user_data)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -440,13 +440,20 @@ def log_out_fiken():
     flash("Du er nå logget ut av fiken.")
     return redirect(url_for('profile'))
 
-
-@app.route('/get_user_data', methods=['POST'])
-@login_required
+@app.route('/get_user_data', methods=['GET', 'POST'])
 def get_user_data():
-    return "NONFUNCTIONAL > Get user data"
+    filename = 'bruker_data.txt'
+    f = open(filename,"w+")
+    f.write("This is your email: " + current_user.email + "\n")
+    f.write("This is your name: " + current_user.name + "\n")
+    f.write("This is your admin status: {}".format(current_user.admin) + "\n")
+    f.write("This is your account activity status: {}".format(current_user.active) + "\n")
+    f.write("This is your fiken-account: {}".format(current_user.fiken_manager.get_fiken_login()) + "\n")
+    f.write("This is your active company: {}".format(current_user.fiken_manager.get_company_slug()) + "\n")
+    f.close()
+    return send_file('bruker_data.txt', as_attachment=True)
 
-
+    
 @app.route('/delete_account', methods=['POST'])
 @login_required
 def delete_account():
@@ -564,14 +571,6 @@ def method_not_allowed(e):
     return render_template('405.html', title="405 method not allowed", logged_in=is_logged_in()), 405
 
 
-# file no longer exists, ex: accessing a file that used to exist
-# used when ???
-# TODO - remove errir code 410
-@app.errorhandler(410)
-def page_gone(e):
-    return render_template('410.html', title="410 not found", logged_in=is_logged_in()), 410
-
-
 # 415 - unsupported media type, ex: user send a svg image.
 # TODO - PORT IT AS A FLASH
 @app.errorhandler(415)
@@ -579,6 +578,7 @@ def unsupported_media_type(e):
     return render_template('415.html', title="415 unsupported media type", logged_in=is_logged_in()), 415
 
 
+# TODO - make sure that these display when respective service fails
 # internal server error, ex: server is up, but not working right
 # used when azure fucks up
 @app.errorhandler(500)

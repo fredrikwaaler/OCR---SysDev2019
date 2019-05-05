@@ -96,14 +96,13 @@ class TextProcessor:
         """
         return_string = ""
         if "faktura" in self._text_string:
-            return_string = "invoice"
+            return "invoice"
         if "salgskvittering" in self._text_string:
-            return_string = "receipt"
+            return "receipt"
         if "faktura" or "salgskvittering" not in self._text_string:
-            return_string = "receipt"
+            return "receipt"
         else:
-            return_string = "receipt"
-        return return_string
+            return "receipt"
 
     def get_org_nr_from_invoice(self):
         """

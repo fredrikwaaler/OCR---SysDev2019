@@ -61,8 +61,8 @@ h4 {
     font-size: 0.9em;
     font-family: 'Overpass', sans-serif;
     font-weight: 400;
-    margin: 0 0 0 10px;
-    padding:0;
+    margin: 0;
+    padding: 0;
     display: block;
 }
 
@@ -890,6 +890,118 @@ textarea {
     margin-bottom: 5%;
 }
 
+/*
+    =================
+        Modals
+    =================
+*/
+
+.modal, .popup {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal {
+  display: none;
+}
+
+.popup {
+  display: block; /* If there is a pop-up, show it by default */
+}
+
+.modal-content, .popup-content {
+  background-color: #f5f5f5;
+  margin: 20px auto;
+  border-radius: 4px;
+  box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  width: 90%;
+}
+
+.popup-content {
+  padding: 10px 20px 40px 20px;
+  width: 30%;
+  text-align: center;
+}
+
+.popup-messages {
+  margin-top: 30px;
+}
+
+.modal-form, .popup-content{
+  background: #ffffff;
+  padding: 100px auto;
+}
+
+/* The Close Button */
+.close, .popup-close {
+  margin-top: 10px;
+  margin-right: 10px;
+
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.popup-close-btn {
+  float: none !important;
+  margin: 20px auto 0 !important;
+}
+
+.close:hover,
+.close:focus,
+.popup-close:hover,
+.popup-close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*
+  TYPE SPECIFIC
+*/
+
+.new-contact, .new-account {
+  margin: 0 15px;
+  padding: 10px 0;
+}
+
+.new-contact-input, .new-account-input {
+    margin:0;
+    padding: 5px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+#customer-supplier {
+  margin:0;
+  padding:0;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+#customer-supplier li {
+  list-style-type: none;
+}
+
+#new-customer {
+  display: none;
+}
+
+#foreign {
+  display: none;
+}
+
 
 
     /* Styling for non-widescren (not phones)
@@ -967,6 +1079,10 @@ textarea {
 
     #loader-image {
         width: 10%;
+    }
+
+    .modal-content {
+        width: 70%;
     }
 
 
@@ -1149,6 +1265,20 @@ textarea {
 
         #loader-image {
             width: 5%;
+        }
+
+        .modal-content {
+            width: 60%;
+        }
+
+        .new-contact-input {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .new-contact-input h4 {
+            padding:0 10px;
+            text-align: right;
+            line-height: 30px;
         }
     }
 }

@@ -21,9 +21,9 @@ body {
 /* This continer currently holds all content,
     except for navbar and footer */
 .wrapper {
-    min-height: 94%;
+    min-height: 100%;
     margin: 0;
-    padding: 20px 0px;
+    padding: 20px 0;
     width: 100%;
     background: #ffffff;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -217,8 +217,13 @@ hr {
 /*
 Pre
  */
+.pre-container {
+    background-color: white;
+}
+
 .pre-wrapper {
     min-height: 100%;
+    height: 100%;
     margin: 0 auto;
     overflow: hidden;
 }
@@ -1147,13 +1152,14 @@ textarea {
         }
 
         .wrapper {
-                min-height: 94%;
-                margin: 0 auto;
-                padding: 20px 10px;
-                max-width: 85%;
-                background: #ffffff;
-                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            }
+            min-height: 100%;
+            margin: 0 auto;
+            padding: 20px 10px;
+            max-width: 85%;
+            background: #ffffff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
         #purchase-container {
             grid-template-columns: 1fr 1fr;
             grid-column-gap: 1em;
@@ -1307,7 +1313,7 @@ textarea {
         }
 
         .modal-content {
-            width: 60%;
+            width: 40%;
         }
 
         .new-contact-input {

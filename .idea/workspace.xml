@@ -2,16 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="162e0a86-8a0f-49ab-bbdf-0e1ae88e2136" name="Default Changelist" comment="Added population of supplier">
-      <change afterPath="$PROJECT_DIR$/Flask/static/js/loader.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Flask/templates/loader.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Flask/FikenManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/FikenManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Flask/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Flask/static/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/static/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Flask/static/purchase_widget.css" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/static/purchase_widget.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Flask/templates/layout_post_warning.html" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/templates/layout_post_warning.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Flask/templates/purchase_widget.html" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/templates/purchase_widget.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Flask/templates/log_in.html" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/templates/log_in.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Flask/templates/popup.html" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/templates/popup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Flask/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/Flask/templates/profile.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,72 +16,92 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/OCR$app.coverage" NAME="app Coverage Results" MODIFIED="1556968194984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Flask" />
+    <SUITE FILE_PATH="coverage/OCR$app.coverage" NAME="app Coverage Results" MODIFIED="1557048761373" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Flask" />
     <SUITE FILE_PATH="coverage/OCR$user.coverage" NAME="user Coverage Results" MODIFIED="1554284878228" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Flask" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Flask/FikenManager.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="691">
-              <caret line="233" selection-start-line="233" selection-end-line="233" />
-              <folding>
-                <element signature="e#38#68#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Flask/app.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4809">
-              <caret line="113" column="23" selection-start-line="113" selection-start-column="23" selection-end-line="113" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#104#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="11" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Flask/templates/loader.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" column="6" lean-forward="true" selection-start-line="17" selection-start-column="6" selection-end-line="17" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Flask/templates/purchase_widget.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="265" column="23" selection-start-line="265" selection-start-column="23" selection-end-line="265" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Flask/templates/layout_post_warning.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="50" column="74" selection-start-line="50" selection-start-column="74" selection-end-line="50" selection-end-column="74" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.4976048">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Flask/static/purchase_widget.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="34">
+                  <caret line="2" selection-start-line="2" selection-end-line="2" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Flask/static/main.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="543">
+                  <caret line="988" column="27" lean-forward="true" selection-start-line="988" selection-start-column="27" selection-end-line="988" selection-end-column="27" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Flask/templates/popup.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="170">
+                  <caret line="10" column="41" selection-start-line="10" selection-start-column="41" selection-end-line="10" selection-end-column="41" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Flask/forms.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="51">
+                  <caret line="3" column="18" selection-start-line="3" selection-end-line="4" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Flask/templates/sale_widget.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="9350">
+                  <caret line="550" column="45" selection-start-line="550" selection-start-column="45" selection-end-line="550" selection-end-column="45" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Flask/templates/log_in.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="170">
+                  <caret line="10" column="58" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="58" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Flask/templates/history.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="2533">
+                  <caret line="149" column="12" selection-start-line="149" selection-start-column="12" selection-end-line="149" selection-end-column="12" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Flask/templates/profile.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="510">
+                  <caret line="30" column="11" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="11" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -98,36 +114,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>border</find>
-      <find>fiken-acc</find>
-      <find>get</find>
-      <find>h2</find>
-      <find>profile-container</find>
-      <find>sign_u</find>
-      <find>hr</find>
-      <find>sign_up</find>
-      <find>name-</find>
-      <find>input</find>
-      <find>form-button</find>
-      <find>account_number</find>
-      <find>{{</find>
-      <find>login</find>
-      <find>/log_in</find>
-      <find>date</find>
-      <find>flash(</find>
-      <find>Hei</find>
-      <find>add_purchase</find>
-      <find>repla</find>
-      <find>counter++</find>
-      <find>vat</find>
-      <find>flash</find>
-      <find>get_total_a</find>
-      <find>counter</find>
-      <find>User</find>
-      <find>upload_f</find>
-      <find>ocr</find>
-      <find>{%</find>
-      <find>upload</find>
+      <find>purchase1</find>
+      <find>kostn</find>
+      <find>kostnadskontoBlock</find>
+      <find>sendInvoi</find>
+      <find>d1</find>
+      <find>dlUserData</find>
+      <find>part3</find>
+      <find>sendForm</find>
+      <find>small-hr</find>
+      <find>w</find>
+      <find>mvaBlock</find>
+      <find>imagebox</find>
+      <find>img_class</find>
+      <find>Block</find>
+      <find>#mvaBlock</find>
+      <find>logg_i</find>
+      <find>prePaid</find>
+      <find>pp-line</find>
+      <find>warning</find>
+      <find>password-button</find>
+      <find>first-field-title</find>
+      <find>imageb</find>
+      <find>purchase_type</find>
+      <find>last-boxed-button</find>
+      <find>boxedButton</find>
+      <find>nav</find>
+      <find>boxedButtonPointer</find>
+      <find>pre-wrapper</find>
+      <find>pre-form</find>
+      <find>footer</find>
     </findStrings>
     <replaceStrings>
       <replace>box-display</replace>
@@ -171,10 +187,8 @@
         <option value="$PROJECT_DIR$/Flask/templates/help.html" />
         <option value="$PROJECT_DIR$/Flask/templates/layout_pre.html" />
         <option value="$PROJECT_DIR$/Flask/templates/contact.html" />
-        <option value="$PROJECT_DIR$/Flask/templates/log_in.html" />
         <option value="$PROJECT_DIR$/Flask/templates/forgot_password.html" />
         <option value="$PROJECT_DIR$/Flask/templates/history.html" />
-        <option value="$PROJECT_DIR$/Flask/static/main.css" />
         <option value="$PROJECT_DIR$/Flask/templates/admin.html" />
         <option value="$PROJECT_DIR$/Flask/static/js/popup.js" />
         <option value="$PROJECT_DIR$/Flask/static/modal.css" />
@@ -183,20 +197,23 @@
         <option value="$PROJECT_DIR$/Flask/DatabaseManager.py" />
         <option value="$PROJECT_DIR$/Flask/forms.py" />
         <option value="$PROJECT_DIR$/Flask/templates/sale_widget.html" />
-        <option value="$PROJECT_DIR$/Flask/settings.py" />
-        <option value="$PROJECT_DIR$/Flask/templates/profile.html" />
         <option value="$PROJECT_DIR$/Python/key.json" />
         <option value="$PROJECT_DIR$/Flask/static/js/modal.js" />
         <option value="$PROJECT_DIR$/Flask/ImageProcessor.py" />
         <option value="$PROJECT_DIR$/Flask/FikenManager.py" />
         <option value="$PROJECT_DIR$/Flask/templates/layout_post.html" />
-        <option value="$PROJECT_DIR$/Flask/static/purchase_widget.css" />
         <option value="$PROJECT_DIR$/Flask/templates/loader.html" />
         <option value="$PROJECT_DIR$/Flask/static/js/loader.js" />
-        <option value="$PROJECT_DIR$/Flask/app.py" />
         <option value="$PROJECT_DIR$/Flask/templates/purchase_widget.html" />
-        <option value="$PROJECT_DIR$/Flask/templates/layout_post_warning.html" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/Flask/templates/layout_post_warning.html" />
+        <option value="$PROJECT_DIR$/Flask/settings.py" />
+        <option value="$PROJECT_DIR$/Flask/app.py" />
+        <option value="$PROJECT_DIR$/Flask/templates/log_in.html" />
+        <option value="$PROJECT_DIR$/Flask/templates/profile.html" />
+        <option value="$PROJECT_DIR$/Flask/templates/popup.html" />
+        <option value="$PROJECT_DIR$/Flask/static/purchase_widget.css" />
+        <option value="$PROJECT_DIR$/Flask/static/main.css" />
       </list>
     </option>
   </component>
@@ -227,6 +244,17 @@
               <item name="OCR" type="b2602c69:ProjectViewProjectNode" />
               <item name="OCR" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="OCR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="OCR" type="462c0819:PsiDirectoryNode" />
+              <item name="Flask" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="OCR" type="b2602c69:ProjectViewProjectNode" />
+              <item name="OCR" type="462c0819:PsiDirectoryNode" />
+              <item name="Flask" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -241,7 +269,7 @@
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.notifications" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -353,6 +381,7 @@
       <workItem from="1556615295069" duration="10903000" />
       <workItem from="1556785459924" duration="15202000" />
       <workItem from="1556965763752" duration="3911000" />
+      <workItem from="1557048117185" duration="1364000" />
     </task>
     <task id="LOCAL-00001" summary="Added test skeleton for a session">
       <created>1552997812688</created>
@@ -508,11 +537,25 @@
       <option name="project" value="LOCAL" />
       <updated>1556797695113</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Merged temporary solution to population of purchase form">
+      <created>1556972750834</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1556972750834</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Fixed delete account modal">
+      <created>1556972884292</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1556972884292</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="216687000" />
+    <option name="totallyTimeSpent" value="224257000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -528,17 +571,17 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.78018576" visible="true" weight="0.28944564" />
-      <window_info id="Structure" order="2" sideWeight="0.21981424" side_tool="true" weight="0.28944564" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.7788162" visible="true" weight="0.1108742" />
+      <window_info id="Structure" order="2" sideWeight="0.22133334" side_tool="true" weight="0.1098081" />
       <window_info anchor="bottom" id="Database Changes" order="0" />
-      <window_info anchor="bottom" id="Terminal" order="1" sideWeight="0.49840087" weight="0.1973001" />
+      <window_info anchor="bottom" id="Terminal" order="1" sideWeight="0.49840087" weight="0.36033228" />
       <window_info anchor="bottom" id="Event Log" order="2" sideWeight="0.50159913" side_tool="true" weight="0.29179648" />
       <window_info anchor="bottom" id="Version Control" order="3" weight="0.32917964" />
       <window_info anchor="bottom" id="Python Console" order="4" weight="0.21495327" />
       <window_info anchor="bottom" id="Docker" order="5" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="6" />
       <window_info anchor="bottom" id="Find" order="7" weight="0.32917964" />
-      <window_info anchor="bottom" id="Run" order="8" sideWeight="0.49946696" visible="true" weight="0.2211838" />
+      <window_info active="true" anchor="bottom" id="Run" order="8" sideWeight="0.49946696" visible="true" weight="0.036344755" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.3997923" />
       <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
@@ -597,7 +640,19 @@
     <MESSAGE value="Merge google vision api to integration" />
     <MESSAGE value="Added support for image processor to Fiken application. Populates some of the data to forms" />
     <MESSAGE value="Added population to purchase lines" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added population to purchase lines" />
+    <MESSAGE value="Merged temporary solution to population of purchase form" />
+    <MESSAGE value="Fixed delete account modal" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed delete account modal" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Flask/user.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
@@ -614,33 +669,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Flask/templates/new_contact.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/templates/log_in.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/test_population.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="23" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/static/js/input_check.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="40" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/templates/sale.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -649,20 +677,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/Flask/static/js/widget.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="895">
           <caret line="273" column="31" selection-start-line="273" selection-start-column="23" selection-end-line="273" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/static/main.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6647">
-          <caret line="391" column="21" selection-start-line="391" selection-start-column="16" selection-end-line="391" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -673,102 +691,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/static/normalize.css">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/SalesDataFormatter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1785">
-          <caret line="105" column="19" selection-start-line="105" selection-start-column="19" selection-end-line="105" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/mailer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1768">
-          <caret line="104" column="15" lean-forward="true" selection-start-line="104" selection-start-column="15" selection-end-line="104" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/PasswordHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="38" column="8" lean-forward="true" selection-start-line="38" selection-start-column="8" selection-end-line="38" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/mm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="3" lean-forward="true" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/HistoryPresenter.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/HistoryDataFormatter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1513">
-          <caret line="89" column="51" lean-forward="true" selection-start-line="89" selection-start-column="51" selection-end-line="89" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/FormValidator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/Database.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="867">
-          <caret line="51" column="53" selection-start-line="51" selection-start-column="53" selection-end-line="51" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Flask/.idea/Flask.iml">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/DatabaseManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1156">
-          <caret line="70" selection-start-line="70" selection-end-line="70" />
-          <folding>
-            <element signature="e#0#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/templates/sale_widget.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9163">
-          <caret line="539" column="39" selection-start-line="539" selection-start-column="39" selection-end-line="539" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Flask/static/js/popup.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -777,23 +701,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Python/key.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="33" lean-forward="true" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/key.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/key.json" />
     <entry file="file://$PROJECT_DIR$/Flask/templates/forgot_password.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -832,13 +740,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/templates/profile.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="12" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Flask/static/modal.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="527">
@@ -860,25 +761,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/static/desktop.ini">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/static/desktop.ini" />
     <entry file="file://$PROJECT_DIR$/Flask/static/loader-gif.gif">
       <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/user.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="564">
-          <caret line="126" selection-start-line="126" selection-end-line="126" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/static/purchase_widget.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="419" column="20" selection-start-line="419" selection-start-column="20" selection-end-line="419" selection-end-column="20" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Flask/static/js/loader.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -901,16 +786,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/ImageProcessor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="206" column="40" selection-start-line="206" selection-start-column="40" selection-end-line="206" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Flask/templates/loader.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -918,44 +793,230 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/templates/purchase_widget.html">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="265" column="23" selection-start-line="265" selection-start-column="23" selection-end-line="265" selection-end-column="23" />
+        <state relative-caret-position="204">
+          <caret line="12" column="11" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/templates/layout_post_warning.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="490">
+          <caret line="50" column="74" selection-start-line="50" selection-start-column="74" selection-end-line="50" selection-end-column="74" />
+          <folding>
+            <element signature="e#2003#2009#0#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/key.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" lean-forward="true" selection-end-line="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="9" selection-start-line="8" selection-end-line="8" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/Database.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/DatabaseManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="2" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Flask/FikenManager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="691">
-          <caret line="233" selection-start-line="233" selection-end-line="233" />
+        <state relative-caret-position="34">
+          <caret line="2" selection-start-line="2" selection-end-line="4" selection-end-column="29" />
           <folding>
             <element signature="e#38#68#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/FormValidator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="3" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/HistoryDataFormatter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1513">
+          <caret line="89" column="51" lean-forward="true" selection-start-line="89" selection-start-column="51" selection-end-line="89" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/HistoryPresenter.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/ImageProcessor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="3" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/mailer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="3" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/mm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="3" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/PasswordHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="3" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/PurchaseDataFormatter.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/SalesDataFormatter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="24" selection-start-line="8" selection-start-column="24" selection-end-line="8" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/test_population.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="23" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/user.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" selection-start-line="12" selection-end-line="12" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Flask/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4809">
-          <caret line="113" column="23" selection-start-line="113" selection-start-column="23" selection-end-line="113" selection-end-column="23" />
+        <state relative-caret-position="920">
+          <caret line="111" column="1" selection-start-line="111" selection-start-column="1" selection-end-line="111" selection-end-column="1" />
           <folding>
             <element signature="e#0#104#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/Flask/templates/purchase_widget.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="11" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
+        <state relative-caret-position="5321">
+          <caret line="313" column="1" selection-start-line="313" selection-start-column="1" selection-end-line="313" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Flask/templates/layout_post_warning.html">
+    <entry file="file://$PROJECT_DIR$/Flask/static/normalize.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="50" column="74" selection-start-line="50" selection-start-column="74" selection-end-line="50" selection-end-column="74" />
+        <state relative-caret-position="-4284" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="18" selection-start-line="3" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/templates/sale_widget.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9350">
+          <caret line="550" column="45" selection-start-line="550" selection-start-column="45" selection-end-line="550" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/templates/log_in.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="58" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/templates/history.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2533">
+          <caret line="149" column="12" selection-start-line="149" selection-start-column="12" selection-end-line="149" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/templates/profile.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="30" column="11" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/templates/popup.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="41" selection-start-line="10" selection-start-column="41" selection-end-line="10" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/static/purchase_widget.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Flask/static/main.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="543">
+          <caret line="988" column="27" lean-forward="true" selection-start-line="988" selection-start-column="27" selection-end-line="988" selection-end-column="27" />
         </state>
       </provider>
     </entry>

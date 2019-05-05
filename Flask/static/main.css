@@ -194,6 +194,14 @@ footer {
     border-top: 2px solid #c7d4e8;
 }
 
+footer a {
+    padding: 0 5px;
+    font-size: 1em;
+    font-family: 'Overpass', sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+}
+
 hr {
     border-top: 1px solid #ccc;
     margin: 10px auto;
@@ -1000,6 +1008,37 @@ textarea {
 
 #foreign {
   display: none;
+}
+
+/*
+    =================
+        Flashes
+    =================
+*/
+
+.flash {
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 1em;
+    width: 100%;
+
+}
+.message, .success {
+    margin: 0;
+    list-style: None;
+    padding: 6px 14px;
+    border-radius: 4px;
+}
+
+.message {
+    background-color: rgba(244, 119, 119, 0.5);
+    border: 1px red solid;
+}
+
+.success {
+    background-color: rgba(144, 255, 0, 0.5);
+    border: 1px green solid;
 }
 
 

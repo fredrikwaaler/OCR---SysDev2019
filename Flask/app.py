@@ -71,6 +71,7 @@ def purchase(image=None, pop=None):
     customer_modal_form = CustomerForm()
     ocr_line_data = None
     ocr_supplier = None
+    print(pop)
     if pop:
         if 'invoice_number' in pop:
             form.invoice_number.data = pop['invoice_number']
@@ -716,44 +717,6 @@ def service_unavailable(e):
 @app.errorhandler(504)
 def gateway_timeout(e):
     return render_template('504.html', title="504 gateway timeout", logged_in=is_logged_in()), 504
-
-
-# This is just temp routing to make error pages easily accessable for debugging
-# TODO - remove the temp routing when error pages have been properly integraed
-@app.route('/401', methods=['GET'])
-def page_forbidden_page():
-    return render_template('401.html', title="401 unauth error)"), 401
-
-
-@app.route('/404', methods=['GET'])
-def page_not_found_page():
-    return render_template('404.html', title="404 page not found"), 404
-
-
-@app.route('/405', methods=['GET'])
-def method_not_allowed_page():
-    return render_template('405.html', title="405 method not allowed"), 405
-
-
-@app.route('/415', methods=['GET'])
-def unsupported_media_type_page():
-    return render_template('415.html', title="415 media type not supported"), 415
-
-
-@app.route('/500', methods=['GET'])
-def internal_server_error_page():
-    return render_template('500.html', title="500 internal server error"), 500
-
-
-@app.route('/503', methods=['GET'])
-def service_unavailable_page():
-    return render_template('503.html', title="503 service unavailable"), 503
-
-
-@app.route('/504', methods=['GET'])
-def gateway_timeout_page():
-    return render_template('504.html', title="504 gateway timeout"), 504
-
 
 if __name__ == '__main__':
     app.run(debug=True, port="8000")

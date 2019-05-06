@@ -475,8 +475,12 @@ function add_ocr_lines() {
         } else {
             index = "0";
         }
-        let id = "vat-"+(counter-1);
-        document.getElementById(id).selectedIndex = index;
+        let vat_id = "vat-"+(counter-1);
+        let gross_id = "gross_amount-"+(counter-1);
+        document.getElementById(vat_id).selectedIndex = index;
+        document.getElementById(gross_id).value = gross;
+        change_net();
+
     {% endfor %}
     {% endif %}
 }

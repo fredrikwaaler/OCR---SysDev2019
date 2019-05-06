@@ -15,13 +15,8 @@
 <div class="purchase-left">
     <form class="main-form" method="POST" action="/upload_file" enctype=multipart/form-data>
         <div class="form-part" id="upload-file-part">
-<<<<<<< HEAD
-            <input type=file name=file>
-            <input id="upload-file-button" type=submit value="Last opp">
-=======
             <input type=file name=file id="file" onchange="deactivate_upload();">
             <input class="no_disable" id="upload-file-button" type=submit value=Upload>
->>>>>>> 22d80fba1763bd855d6805de4bab81fd3c7cf6c4
         </div>
     </form>
     <form class="main-form" id="purchase-form" method="post" action = "{{ url_for('register_purchase') }}">

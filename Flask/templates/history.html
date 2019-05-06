@@ -7,19 +7,19 @@
 {# Keeps control over which radio-button should be checked when the user enters / is redirected to the site. #}
 <form name="filter_ledger" class="filter_buttons" method="post" action="">
     {%  if not checked %}
-    <input onclick="this.form.submit();" type="radio" name="type" value="all" checked="checked"> Alle
-    <input onclick="this.form.submit();" type="radio" name="type" value="purchases"> Kjøp
-    <input onclick="this.form.submit();" type="radio" name="type" value="sales"> Salg
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="all" checked="checked"> Alle
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="purchases"> Kjøp
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="sales"> Salg
 
     {%  elif checked == "purchases" %}
-    <input onclick="this.form.submit();" type="radio" name="type" value="all"> Alle
-    <input onclick="this.form.submit();" type="radio" name="type" value="purchases" checked="checked"> Kjøp
-    <input onclick="this.form.submit();" type="radio" name="type" value="sales"> Salg
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="all"> Alle
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="purchases" checked="checked"> Kjøp
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="sales"> Salg
 
     {% elif checked == "sales" %}
-    <input onclick="this.form.submit();" type="radio" name="type" value="all"> Alle
-    <input onclick="this.form.submit();" type="radio" name="type" value="purchases"> Kjøp
-    <input onclick="this.form.submit();" type="radio" name="type" value="sales" checked="checked"> Salg
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="all"> Alle
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="purchases"> Kjøp
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="sales" checked="checked"> Salg
     {% endif %}
 
 </form>

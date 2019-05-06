@@ -219,6 +219,7 @@ Pre
  */
 .pre-container {
     background-color: white;
+    text-align: center;
 }
 
 .pre-wrapper {
@@ -233,6 +234,12 @@ Pre
     padding: 0 15px;
     display: grid;
     grid-template-columns: 1fr;
+}
+
+.pre-img {
+    padding: 0;
+    margin: 0 auto;
+    width: 7%;
 }
 
 /*
@@ -621,7 +628,7 @@ textarea {
     top: 0;
     left: 0;
     position: fixed;
-    display: block;
+    display: none;
     background-color: rgba(255, 255, 255, 0.6);
     z-index: 99;
     text-align: center;

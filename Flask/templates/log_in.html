@@ -1,6 +1,7 @@
 {% extends 'layout_pre.html' %}
 {% block container %}
-<h2>Logg inn</h2>
+    <img class="pre-img" src="{{ url_for('static', filename="fikto.png") }}">
+    <h2>Logg inn</h2>
 <form class="pre-form" method="POST" action="">
     <div class="form-part">
         {{ form.csrf_token }}

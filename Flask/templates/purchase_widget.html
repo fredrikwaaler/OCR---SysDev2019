@@ -16,7 +16,7 @@
     <form class="main-form" method="POST" action="/upload_file" enctype=multipart/form-data>
         <div class="form-part" id="upload-file-part">
             <input type=file name=file id="file" onchange="deactivate_upload();">
-            <input class="no_disable" id="upload-file-button" type=submit value=Upload>
+            <input class="no_disable" id="upload-file-button" onclick="toggle_loader_on()" type=submit value=Upload>
         </div>
     </form>
     <form class="main-form" id="purchase-form" method="post" action = "{{ url_for('register_purchase') }}">

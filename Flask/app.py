@@ -40,7 +40,7 @@ app.config['SECRET_KEY'] = 'secretkey'
 navbar = Navbar('',
     View('Kjøp', 'purchase'),
     View('Salg', 'sale'),
-    View('Historikk', 'history'),
+    View('Historikk', 'loader', href='history'),
     View('Profil', 'profile')
 )
 nav.register_element('nav', navbar)
@@ -71,49 +71,44 @@ def purchase(image=None, pop=None):
     customer_modal_form = CustomerForm()
     ocr_line_data = None
     ocr_supplier = None
+    if pop:
+        if 'invoice_number' in pop:
+            form.invoice_number.data = pop['invoice_number']
+        if 'invoice_date' in pop:
+            form.invoice_date.data = pop['invoice_date']
+        if 'maturity_date' in pop:
+            form.maturity_date.data = pop['maturity_date']
+        if 'vat_and_gross_amount' in pop:
+            ocr_line_data = pop['vat_and_gross_amount']
+        if 'organization_number' in pop:
+            ocr_supplier = pop['organization_number']
     try:
-        if pop:
-            if 'invoice_number' in pop:
-                form.invoice_number.data = pop['invoice_number']
-            if 'invoice_date' in pop:
-                form.invoice_date.data = pop['invoice_date']
-            if 'maturity_date' in pop:
-                form.maturity_date.data = pop['maturity_date']
-            if 'vat_and_gross_amount' in pop:
-                ocr_line_data = pop['vat_and_gross_amount']
-            if 'organization_number' in pop:
-                ocr_supplier = pop['organization_number']
-    except KeyError:
-        print("KeyError")
+        # Retrieve all contacts from fiken
+        contacts = current_user.fiken_manager.get_data_from_fiken(data_type="contacts", links=True)
+        # Get the suppliers in a presentable format
+        suppliers = PurchaseDataFormatter.get_supplier_strings(contacts)
 
-    else:
-        try:
-            # Retrieve all contacts from fiken
-            contacts = current_user.fiken_manager.get_data_from_fiken(data_type="contacts", links=True)
-            # Get the suppliers in a presentable format
-            suppliers = PurchaseDataFormatter.get_supplier_strings(contacts)
+        # Retrieve all accounts from fiken
+        accounts = current_user.fiken_manager.get_data_from_fiken(data_type="expense_accounts", links=True)
+        # Get the accounts in a presentable format
+        accounts = PurchaseDataFormatter.get_account_strings(accounts)
 
-            # Retrieve all accounts from fiken
-            accounts = current_user.fiken_manager.get_data_from_fiken(data_type="expense_accounts", links=True)
-            # Get the accounts in a presentable format
-            accounts = PurchaseDataFormatter.get_account_strings(accounts)
+        # Retrieve all payment-accounts from fiken
+        payment_accounts = current_user.fiken_manager.get_data_from_fiken(data_type="payment_accounts", links=True)
+        # Get the accounts in a presentable format
+        payment_accounts = SalesDataFormatter.get_account_strings(payment_accounts)
 
-            # Retrieve all payment-accounts from fiken
-            payment_accounts = current_user.fiken_manager.get_data_from_fiken(data_type="payment_accounts", links=True)
-            # Get the accounts in a presentable format
-            payment_accounts = SalesDataFormatter.get_account_strings(payment_accounts)
+    # If we get a ValueError, it means that fiken-manager is not set properly to interact with fiken.
+    # Thus, we have no data to retrieve from fiken, and the lists should be empty.
+    except ValueError:
+        suppliers = []
+        accounts = []
+        payment_accounts = []
 
-        # If we get a ValueError, it means that fiken-manager is not set properly to interact with fiken.
-        # Thus, we have no data to retrieve from fiken, and the lists should be empty.
-        except ValueError:
-            suppliers = []
-            accounts = []
-            payment_accounts = []
- 
-        return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
-                               image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
-                               contact_type="leverandør", payment_accounts=payment_accounts,
-                               ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
+    return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
+                           image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
+                           contact_type="leverandør", payment_accounts=payment_accounts,
+                           ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
 
 
 @app.before_request
@@ -238,7 +233,7 @@ def history():
     else:
         data_type = request.form["type"]
         if data_type == "all":
-            return redirect(url_for('historikk'))
+            return redirect(url_for('history'))
         elif data_type == "purchases":
             entries = purchases
             entries.sort(key=_get_entry_date)
@@ -420,11 +415,11 @@ def get_image_data(filename):
     """
     img_text = vision_manager.get_text_detection_from_img(filename)
     text_processor = TextProcessor(img_text)
-    type = text_processor.define_invoice_or_receipt()
+    types = text_processor.define_invoice_or_receipt()
     try:
-        if type == "receipt":
+        if types == "receipt":
             return text_processor.get_receipt_info()
-        elif type == "invoice":
+        elif types == "invoice":
             return text_processor.get_invoice_info()
     except:
         flash("Vi kan dessverre ikke hente data fra det opplastede bildet.")
@@ -613,9 +608,9 @@ def create_contact(contact_type):
         return redirect(url_for('purchase'))
 
 
-@app.route('/loader')
-def loader():
-    return render_template('loader.html')
+@app.route('/loader/<href>')
+def loader(href=None):
+    return render_template('loader.html', href=href)
 
 
 def temporary_loader():

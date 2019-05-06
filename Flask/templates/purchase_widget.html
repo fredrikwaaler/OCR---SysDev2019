@@ -455,33 +455,40 @@ function add_ocr_supplier() {
  */
 function add_ocr_lines() {
     {% if ocr_line_data %}
+        let vat = "";
+        let gross = "";
+        let index = "";
+        let vat_id = "";
+        let gross_id = "";
     {% for vat, gross in ocr_line_data.items() %}
-        let vat = {{ vat }};
-        let gross = {{ gross }};
+        vat = "{{ vat }}";
+        gross = "{{ gross }}";
         if (counter > 2) {
             add_purchase_line();
-        } else {
-            counter++
         }
-        let index = "";
-        if (vat === 25) {
+        index = "0";
+        if (vat === "25" || vat === "25,00") {
             index = "0";
-        } else if (vat === 15) {
+        } else if (vat === 15 || vat === "15,00") {
             index = "1";
-        } else if (vat === 11.11) {
+        } else if (vat === 11.11 || vat === "11,11") {
             index = "2";
-        } else if (vat === 12) {
+        } else if (vat === 12 || vat === "12,00") {
             index = "3";
         } else if (vat === null) {
             index = "4";
         } else {
             index = "0";
         }
-        let vat_id = "vat-"+(counter-1);
-        let gross_id = "gross_amount-"+(counter-1);
+        vat_id = "vat-"+(counter-1);
+        gross_id = "gross_amount-"+(counter-1);
         document.getElementById(vat_id).selectedIndex = index;
         document.getElementById(gross_id).value = gross;
         change_net();
+
+        if (counter <= 2) {
+            counter++
+        }
 
     {% endfor %}
     {% endif %}

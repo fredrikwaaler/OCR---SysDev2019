@@ -21,9 +21,9 @@ body {
 /* This continer currently holds all content,
     except for navbar and footer */
 .wrapper {
-    min-height: 94%;
+    min-height: 100%;
     margin: 0;
-    padding: 20px 0px;
+    padding: 20px 0;
     width: 100%;
     background: #ffffff;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -217,8 +217,14 @@ hr {
 /*
 Pre
  */
+.pre-container {
+    background-color: white;
+    text-align: center;
+}
+
 .pre-wrapper {
     min-height: 100%;
+    height: 100%;
     margin: 0 auto;
     overflow: hidden;
 }
@@ -228,6 +234,12 @@ Pre
     padding: 0 15px;
     display: grid;
     grid-template-columns: 1fr;
+}
+
+.pre-img {
+    padding: 0;
+    margin: 0 auto;
+    width: 50%;
 }
 
 /*
@@ -616,7 +628,7 @@ textarea {
     top: 0;
     left: 0;
     position: fixed;
-    display: block;
+    display: none;
     background-color: rgba(255, 255, 255, 0.6);
     z-index: 99;
     text-align: center;
@@ -1073,6 +1085,10 @@ CSS for visually displaying that some functionality is not in order.
         margin: 10px 220px;
     }
 
+    .pre-img {
+        width: 25%;
+    }
+
     /*
     ====================
         Purchase Page
@@ -1141,6 +1157,10 @@ CSS for visually displaying that some functionality is not in order.
             margin: 0 25% 0 25%;
         }
 
+        .pre-img {
+            width: 8%;
+        }
+
         nav ul {
             width: 85%;
         }
@@ -1155,13 +1175,14 @@ CSS for visually displaying that some functionality is not in order.
         }
 
         .wrapper {
-                min-height: 94%;
-                margin: 0 auto;
-                padding: 20px 10px;
-                max-width: 85%;
-                background: #ffffff;
-                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            }
+            min-height: 100%;
+            margin: 0 auto;
+            padding: 20px 10px;
+            max-width: 85%;
+            background: #ffffff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
         #purchase-container {
             grid-template-columns: 1fr 1fr;
             grid-column-gap: 1em;
@@ -1315,7 +1336,7 @@ CSS for visually displaying that some functionality is not in order.
         }
 
         .modal-content {
-            width: 60%;
+            width: 40%;
         }
 
         .new-contact-input {

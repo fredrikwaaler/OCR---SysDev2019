@@ -2,6 +2,7 @@ from google.oauth2 import service_account
 from google.cloud import vision
 from datetime import datetime
 import re
+from flask import url_for
 
 
 class VisionManager:
@@ -285,7 +286,7 @@ class TextProcessor:
                     new_string = new_string.split('\n')
                     amount1 = new_string[4]
                     amount2 = new_string[5]
-                    paired_vat_and_amount = {vat[0]: amount1.replace(",", "."), vat[1]: amount2.replace(",", ".")}
+                    paired_vat_and_amount = {new_string[6]: amount1.replace(",", "."), new_string[7]: amount2.replace(",", ".")}
                     return paired_vat_and_amount
                 except ValueError:
                     print("ValueError occurred")
@@ -400,4 +401,3 @@ class TextProcessor:
                 return date
             except ValueError:
                 print("ValueError occurred...")
-

@@ -1,7 +1,7 @@
 # coding=utf-8
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import os, datetime, json, re
-from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup
+from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup, make_response, send_file
 from forms import *
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
@@ -34,14 +34,14 @@ def create_login_manager():
 
 app = Flask(__name__)
 
-#Navbar
+# Navbar
 nav = Nav(app)
 app.config['SECRET_KEY'] = 'secretkey'
 
 navbar = Navbar('',
     View('Kjøp', 'purchase'),
     View('Salg', 'sale'),
-    View('Historikk', 'history'),
+    View('Historikk', 'loader', href='history'),
     View('Profil', 'profile')
 )
 nav.register_element('nav', navbar)
@@ -72,49 +72,45 @@ def purchase(image=None, pop=None):
     customer_modal_form = CustomerForm()
     ocr_line_data = None
     ocr_supplier = None
+    print(pop)
+    if pop:
+        if 'invoice_number' in pop:
+            form.invoice_number.data = pop['invoice_number']
+        if 'invoice_date' in pop:
+            form.invoice_date.data = pop['invoice_date']
+        if 'maturity_date' in pop:
+            form.maturity_date.data = pop['maturity_date']
+        if 'vat_and_gross_amount' in pop:
+            ocr_line_data = pop['vat_and_gross_amount']
+        if 'organization_number' in pop:
+            ocr_supplier = pop['organization_number']
     try:
-        if pop:
-            if 'invoice_number' in pop:
-                form.invoice_number.data = pop['invoice_number']
-            if 'invoice_date' in pop:
-                form.invoice_date.data = pop['invoice_date']
-            if 'maturity_date' in pop:
-                form.maturity_date.data = pop['maturity_date']
-            if 'vat_and_gross_amount' in pop:
-                ocr_line_data = pop['vat_and_gross_amount']
-            if 'organization_number' in pop:
-                ocr_supplier = pop['organization_number']
-    except KeyError:
-        print("KeyError")
+        # Retrieve all contacts from fiken
+        contacts = current_user.fiken_manager.get_data_from_fiken(data_type="contacts", links=True)
+        # Get the suppliers in a presentable format
+        suppliers = PurchaseDataFormatter.get_supplier_strings(contacts)
 
-    else:
-        try:
-            # Retrieve all contacts from fiken
-            contacts = current_user.fiken_manager.get_data_from_fiken(data_type="contacts", links=True)
-            # Get the suppliers in a presentable format
-            suppliers = PurchaseDataFormatter.get_supplier_strings(contacts)
+        # Retrieve all accounts from fiken
+        accounts = current_user.fiken_manager.get_data_from_fiken(data_type="expense_accounts", links=True)
+        # Get the accounts in a presentable format
+        accounts = PurchaseDataFormatter.get_account_strings(accounts)
 
-            # Retrieve all accounts from fiken
-            accounts = current_user.fiken_manager.get_data_from_fiken(data_type="expense_accounts", links=True)
-            # Get the accounts in a presentable format
-            accounts = PurchaseDataFormatter.get_account_strings(accounts)
+        # Retrieve all payment-accounts from fiken
+        payment_accounts = current_user.fiken_manager.get_data_from_fiken(data_type="payment_accounts", links=True)
+        # Get the accounts in a presentable format
+        payment_accounts = SalesDataFormatter.get_account_strings(payment_accounts)
 
-            # Retrieve all payment-accounts from fiken
-            payment_accounts = current_user.fiken_manager.get_data_from_fiken(data_type="payment_accounts", links=True)
-            # Get the accounts in a presentable format
-            payment_accounts = SalesDataFormatter.get_account_strings(payment_accounts)
+    # If we get a ValueError, it means that fiken-manager is not set properly to interact with fiken.
+    # Thus, we have no data to retrieve from fiken, and the lists should be empty.
+    except ValueError:
+        suppliers = []
+        accounts = []
+        payment_accounts = []
 
-        # If we get a ValueError, it means that fiken-manager is not set properly to interact with fiken.
-        # Thus, we have no data to retrieve from fiken, and the lists should be empty.
-        except ValueError:
-            suppliers = []
-            accounts = []
-            payment_accounts = []
- 
-        return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
-                               image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
-                               contact_type="leverandør", payment_accounts=payment_accounts,
-                               ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
+    return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
+                           image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
+                           contact_type="leverandør", payment_accounts=payment_accounts,
+                           ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
 
 
 @app.before_request
@@ -239,7 +235,7 @@ def history():
     else:
         data_type = request.form["type"]
         if data_type == "all":
-            return redirect(url_for('historikk'))
+            return redirect(url_for('history'))
         elif data_type == "purchases":
             entries = purchases
             entries.sort(key=_get_entry_date)
@@ -268,6 +264,7 @@ def profile():
     form = ProfileForm()
     fiken_modal_form = FikenModalForm()
     confirm_password_form = ConfirmPasswordForm()
+    user_data = get_user_data()
 
     # Retrieve user-specific data
     name = current_user.name
@@ -284,7 +281,7 @@ def profile():
         companies = []
     return render_template('profile.html', title="Profil", form=form, fiken_modal_form=fiken_modal_form,
                            confirm_password_form=confirm_password_form, name=name, email=email,
-                           companies=companies, current_user=current_user)
+                           companies=companies, current_user=current_user, user_data = user_data)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -421,11 +418,11 @@ def get_image_data(filename):
     """
     img_text = vision_manager.get_text_detection_from_img(filename)
     text_processor = TextProcessor(img_text)
-    type = text_processor.define_invoice_or_receipt()
+    types = text_processor.define_invoice_or_receipt()
     try:
-        if type == "receipt":
+        if types == "receipt":
             return text_processor.get_receipt_info()
-        elif type == "invoice":
+        elif types == "invoice":
             return text_processor.get_invoice_info()
     except:
         flash("Vi kan dessverre ikke hente data fra det opplastede bildet.")
@@ -551,12 +548,20 @@ def log_out_fiken():
     return redirect(url_for('profile'))
 
 
-@app.route('/get_user_data', methods=['POST'])
-@login_required
+@app.route('/get_user_data', methods=['GET', 'POST'])
 def get_user_data():
-    return "NONFUNCTIONAL > Get user data"
+    filename = 'bruker_data.txt'
+    f = open(filename,"w+")
+    f.write("This is your email: " + current_user.email + "\n")
+    f.write("This is your name: " + current_user.name + "\n")
+    f.write("This is your admin status: {}".format(current_user.admin) + "\n")
+    f.write("This is your account activity status: {}".format(current_user.active) + "\n")
+    f.write("This is your fiken-account: {}".format(current_user.fiken_manager.get_fiken_login()) + "\n")
+    f.write("This is your active company: {}".format(current_user.fiken_manager.get_company_slug()) + "\n")
+    f.close()
+    return send_file('bruker_data.txt', as_attachment=True)
 
-
+    
 @app.route('/delete_account', methods=['POST'])
 @login_required
 def delete_account():
@@ -614,9 +619,9 @@ def create_contact(contact_type):
         return redirect(url_for('purchase'))
 
 
-@app.route('/loader')
-def loader():
-    return render_template('loader.html')
+@app.route('/loader/<href>')
+def loader(href=None):
+    return render_template('loader.html', href=href)
 
 
 def temporary_loader():
@@ -688,14 +693,6 @@ def method_not_allowed(e):
     return render_template('405.html', title="405 method not allowed", logged_in=is_logged_in()), 405
 
 
-# file no longer exists, ex: accessing a file that used to exist
-# used when ???
-# TODO - remove errir code 410
-@app.errorhandler(410)
-def page_gone(e):
-    return render_template('410.html', title="410 not found", logged_in=is_logged_in()), 410
-
-
 # 415 - unsupported media type, ex: user send a svg image.
 # TODO - PORT IT AS A FLASH
 @app.errorhandler(415)
@@ -703,6 +700,7 @@ def unsupported_media_type(e):
     return render_template('415.html', title="415 unsupported media type", logged_in=is_logged_in()), 415
 
 
+# TODO - make sure that these display when respective service fails
 # internal server error, ex: server is up, but not working right
 # used when azure fucks up
 @app.errorhandler(500)
@@ -722,43 +720,6 @@ def service_unavailable(e):
 @app.errorhandler(504)
 def gateway_timeout(e):
     return render_template('504.html', title="504 gateway timeout", logged_in=is_logged_in()), 504
-
-
-# This is just temp routing to make error pages easily accessable for debugging
-# TODO - remove the temp routing when error pages have been properly integraed
-@app.route('/401', methods=['GET'])
-def page_forbidden_page():
-    return render_template('401.html', title="401 unauth error)"), 401
-
-
-@app.route('/404', methods=['GET'])
-def page_not_found_page():
-    return render_template('404.html', title="404 page not found"), 404
-
-
-@app.route('/405', methods=['GET'])
-def method_not_allowed_page():
-    return render_template('405.html', title="405 method not allowed"), 405
-
-
-@app.route('/415', methods=['GET'])
-def unsupported_media_type_page():
-    return render_template('415.html', title="415 media type not supported"), 415
-
-
-@app.route('/500', methods=['GET'])
-def internal_server_error_page():
-    return render_template('500.html', title="500 internal server error"), 500
-
-
-@app.route('/503', methods=['GET'])
-def service_unavailable_page():
-    return render_template('503.html', title="503 service unavailable"), 503
-
-
-@app.route('/504', methods=['GET'])
-def gateway_timeout_page():
-    return render_template('504.html', title="504 gateway timeout"), 504
 
 
 if __name__ == '__main__':

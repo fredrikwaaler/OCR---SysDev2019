@@ -8,6 +8,7 @@
         {% else %}
             <title> OCR </title>
         {% endif %}
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
         <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
@@ -15,11 +16,9 @@
         <meta name="viewport" content="width=device-width">
     </head>
     <body>
-        <div class = container>
-            <div class="wrapper pre-wrapper">
+        <div class = "container pre-container">
                 {% block container %}
                 {% endblock %}
-            </div>
         </div>
     </body>
 </html>

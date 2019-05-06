@@ -21,3 +21,5 @@ CREATE TABLE IF NOT EXISTS UserInfo (
   fiken_manager bytea NULL,
   admin boolean NOT NULL
   );
+
+

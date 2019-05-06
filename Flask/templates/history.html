@@ -105,9 +105,7 @@
             </div>
 
             <div class="entry_pic">
-                {# TODO - Pic should be modal #}
-                {# TODO - Possible to display pdf #}
-                {%  if entry["https://fiken.no/api/v1/rel/attachments"] %}
+                {%  if entry["img"] or entry["pdf"] %}
                     {% if entry["img"] %}
                     <img class="entry_image" src="{{ entry["img"] }}" >
                     <!-- Modal for the picture -->
@@ -167,6 +165,7 @@ let body = document.querySelector('body');
 for (let i = 0; i < imgs.length; i++) {
     if (imgs[i] != null) {
         imgs[i].onclick = function () {
+            imgs[i].classList.remove('entry_pic_img');
             modals[i].style.display = "block";
             modalImgs[i].src = this.src;
             body.style.overflow = "hidden";
@@ -174,6 +173,7 @@ for (let i = 0; i < imgs.length; i++) {
     }
     if (spans[i] != null) {
         spans[i].onclick = function () {
+            imgs[i].classList.add('entry_pic_img');
             modals[i].style.display = "none";
             body.style.overflow = "auto";
         };

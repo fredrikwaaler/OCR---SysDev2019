@@ -8,16 +8,13 @@
         {% else %}
             <title> OCR </title>
         {% endif %}
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
         <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='purchase_widget.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
         <meta name="viewport" content="width=device-width">
     </head>
     <body>
-
         {{ nav.nav.render() }}
         <div class = wrapper>
             {% if not current_user.fiken_manager.has_valid_login() %}
@@ -53,6 +50,8 @@
 
     <script>
 
+        /* Deactivate buttons if not logged in with fiken */
+
         {%  if not current_user.fiken_manager.has_valid_login() or not current_user.fiken_manager.get_company_slug() %}
             let val = true;
         {% else %}
@@ -60,8 +59,14 @@
         {% endif %}
         let buttons = document.getElementsByTagName("input");
         for (let i = 0; i < buttons.length; i++) {
-            if (buttons[i].type == "submit" || buttons[i].type == "button") {
+            if ((buttons[i].type == "submit" || buttons[i].type == "button") && !buttons[i].classList.contains('no_disable')) {
                 buttons[i].disabled = val;
+                if (val) {
+                    buttons[i].classList.add('disabled_button');
+                }
+                else {
+                    buttons[i].classList.remove('disabled_button');
+                }
             }
         }
 

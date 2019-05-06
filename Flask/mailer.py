@@ -79,7 +79,7 @@ class Mailer:
             <body>
             <h2>Nytt passord</h2>
             <p>Du har bedt om å få tilsendt et nytt passord. Ditt nye passord er: <span style="font-weight : bold;">{}</span> <br> 
-            Vennligst endre passordet dit ved å gå til "Profil" når du logger inn.</p>
+            Vennligst endre passordet dit ved å gå til "Profil" når du <a href="www.fikto.no">logger inn</a></p>
             <p><br>Obs: Vennligst ikke svar på denne mailen.</p>
             </body>
         </html>
@@ -98,7 +98,7 @@ class Mailer:
             <head></head>
             <body>
             <h2>Velkommen!</h2>
-            <p>Du er nå registrert hos oss og kan nå logge inn for å bruke vår applikasjon</p>
+            <p>Du er nå registrert hos oss og kan nå <a href="www.fikto.no">logge inn</a> for å bruke vår applikasjon</p>
             <p>Epost: {} <br> Passord: {} </p>
             <p><br>Obs: Vennligts ikke svar på denne mailen.</p>
             </body>

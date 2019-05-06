@@ -1,4 +1,4 @@
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_fresh
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import os, datetime, json, re
 from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup, make_response, send_file
 from forms import *
@@ -12,7 +12,9 @@ from FormValidator import validate_new_name, validate_new_email, validate_new_pa
 from SalesDataFormatter import SalesDataFormatter
 from PurchaseDataFormatter import PurchaseDataFormatter
 from mailer import Mailer
+from ImageProcessor import VisionManager, TextProcessor
 import smtplib
+from datetime import timedelta
 
 def create_login_manager():
     """
@@ -57,27 +59,31 @@ lm = create_login_manager()
 lm.init_app(app)
 lm.login_view = 'log_in'
 
+# Initialize image processor
+vision_manager = VisionManager('key.json')
+
 
 @app.route('/purchase', methods=['GET', 'POST'])
 @login_required
-def purchase(image=None):
-    # TODO - implement the 404 page
-    #abort(404)
+def purchase(image=None, pop=None):
     form = PurchaseForm()
     customer_modal_form = CustomerForm()
-    if request.method == "POST":
-        validated, errors = validate_purchase_form(request.form)
-        if validated:
-            purchase_data = PurchaseDataFormatter.ready_data_for_purchase(request.form)
-            post = current_user.fiken_manager.post_data_to_fiken(purchase_data, "purchase")
-            if post.status_code == 201:
-                flash("Kjøp registrert.")
-            else:
-                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
-        else:
-            flash(errors[0])
-
-        return redirect(url_for('purchase'))
+    ocr_line_data = None
+    ocr_supplier = None
+    try:
+        if pop:
+            if 'invoice_number' in pop:
+                form.invoice_number.data = pop['invoice_number']
+            if 'invoice_date' in pop:
+                form.invoice_date.data = pop['invoice_date']
+            if 'maturity_date' in pop:
+                form.maturity_date.data = pop['maturity_date']
+            if 'vat_and_gross_amount' in pop:
+                ocr_line_data = pop['vat_and_gross_amount']
+            if 'organization_number' in pop:
+                ocr_supplier = pop['organization_number']
+    except KeyError:
+        print("KeyError")
 
     else:
         try:
@@ -91,14 +97,76 @@ def purchase(image=None):
             # Get the accounts in a presentable format
             accounts = PurchaseDataFormatter.get_account_strings(accounts)
 
+            # Retrieve all payment-accounts from fiken
+            payment_accounts = current_user.fiken_manager.get_data_from_fiken(data_type="payment_accounts", links=True)
+            # Get the accounts in a presentable format
+            payment_accounts = SalesDataFormatter.get_account_strings(payment_accounts)
+
         # If we get a ValueError, it means that fiken-manager is not set properly to interact with fiken.
         # Thus, we have no data to retrieve from fiken, and the lists should be empty.
         except ValueError:
             suppliers = []
             accounts = []
-
+            payment_accounts = []
+ 
         return render_template('purchase.html', title="Kjøp", form=form, customer_modal_form=customer_modal_form,
-                               image=image, current_user=current_user, suppliers=suppliers, accounts=accounts)
+                               image=image, current_user=current_user, suppliers=suppliers, accounts=accounts,
+                               contact_type="leverandør", payment_accounts=payment_accounts,
+                               ocr_line_data=ocr_line_data, ocr_supplier=ocr_supplier)
+
+
+@app.before_request
+def before_request():
+    """
+    If a user is inactive for 30 minutes, log him/her out.
+    """
+    app.permanent_session_lifetime = timedelta(minutes=30)
+
+
+@app.route('/register_purchase', methods=['GET', 'POST'])
+@login_required
+def register_purchase():
+    validated, errors = validate_purchase_form(request.form)
+    if validated:
+        purchase_data = PurchaseDataFormatter.ready_data_for_purchase(request.form)
+        post = current_user.fiken_manager.post_data_to_fiken(purchase_data, "purchases")
+
+        if post.status_code == 201:
+            # Get the purchase-info from fiken for later reference
+            # The purchase in question is at index 0, since it is the most recent
+            purchase = current_user.fiken_manager.get_raw_data_from_fiken("purchases")["_embedded"][
+                "https://fiken.no/api/v1/rel/purchases"][0]
+            # If it is a supplier-purchase, register any payments
+            if request.form["purchase_type"] == '1':
+                # The purchase in question is at 0 index, since it is the most recent
+                payment_post_url = purchase["_links"]["https://fiken.no/api/v1/rel/payments"]["href"]
+                payments = PurchaseDataFormatter.ready_payments(request.form)
+                # Post the payments
+                for payment in payments:
+                    current_user.fiken_manager.make_fiken_post_request(payment_post_url, payment)
+
+            # Post any attachments
+            if 'filename' in request.form.keys():
+                # Ready file for send-in to fiken
+                filename = request.form["filename"]
+                if filename is not 'None':
+                    file_path = '{}/static/uploads/{}'.format(os.getcwd(), filename)
+                    file = PurchaseDataFormatter.ready_attachment(file_path, filename)
+                    # Retrieve the link for registering attachments to the purchase
+                    attachment_post_url = purchase["_links"]["https://fiken.no/api/v1/rel/attachments"]["href"]
+                    # Post the attachment
+                    current_user.fiken_manager.make_fiken_post_request_files(attachment_post_url, file)
+                    # Delete the file from server
+                    os.remove(file_path)
+
+            flash("Kjøp registrert.")
+        # Interpret this as some kind of error with VAT.
+        elif post.status_code == 400 and "vat" in post.text.lower():
+            flash("VAT-type ikke kompatibel med utgiftskonto. Prøv på nytt.")
+        else:
+            flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+    else:
+        flash(errors[0])
 
 
 @app.route('/sale', methods=['GET', 'POST'])
@@ -146,7 +214,7 @@ def sale():
             products = []
         return render_template('sale.html', title="Salg", form=form, products=products,
                                bank_accounts=bank_accounts, customers=customers, customer_modal_form=customer_modal_form,
-                               account_modal_form=account_modal_form)
+                               account_modal_form=account_modal_form, contact_type="kunde")
 
 
 @app.route('/history', methods=['GET', 'POST'])
@@ -162,15 +230,34 @@ def history():
 
     # If the method is get, we just retrieved the page with default value "all".
     if request.method == 'GET':
-        return render_template('history.html', title="Historikk", entry_view=sales + purchases, current_user=current_user)
+        entries = sales + purchases
+        entries.sort(key=_get_entry_date)
+        entries.reverse()
+        return render_template('history.html', title="Historikk", entry_view=entries, current_user=current_user)
     else:
         data_type = request.form["type"]
         if data_type == "all":
             return redirect(url_for('historikk'))
         elif data_type == "purchases":
-            return render_template('history.html', title="Historikk", entry_view=purchases, checked="purchases", current_user=current_user)
+            entries = purchases
+            entries.sort(key=_get_entry_date)
+            entries.reverse()
+            return render_template('history.html', title="Historikk", entry_view=entries, checked="purchases", current_user=current_user)
         elif data_type == "sales":
-            return render_template('history.html', title="Historikk", entry_view=sales, checked="sales", current_user=current_user)
+            entries = sales
+            entries.sort(key=_get_entry_date)
+            entries.reverse()
+            return render_template('history.html', title="Historikk", entry_view=entries, checked="sales", current_user=current_user)
+
+
+def _get_entry_date(entry):
+    """
+    Returns the date of a ledger-entry from fiken.
+    Used for sorting entries by date.
+    :param entry: The entry
+    :return: The date of the entry
+    """
+    return entry[0]["date"]
 
 
 @app.route('/profile', methods=['GET'])
@@ -211,12 +298,13 @@ def log_in():
         if user:
             password = form.data["password"]
             if PasswordHandler.compare_hash_with_text(user.password, password):
-                login_user(user)
+                login_user(user, remember=False)
                 # In case the company set has active has been deleted in fiken since last time (very unlikely)
                 if current_user.fiken_manager.has_valid_login():
                     slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
                     if current_user.fiken_manager.get_company_slug() not in slugs:
                         current_user.fiken_manager.reset_slug()
+                # Store the user
                 current_user.store_user()
                 next_page = request.args.get("next", url_for('purchase'))
                 return redirect(next_page)
@@ -301,25 +389,46 @@ def contact():
 @app.route('/upload_file', methods=['POST'])
 @login_required
 def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # Change filename here when adding own parsed data
-            with open('test_population.json', 'r') as f:
-                parsed_data = json.load(f)
-            return purchase(image=filename, pop=None)
-    return "EMPTY PAGE"
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    # if user does not select file, browser also
+    # submit an empty part without filename
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Get image data from image processor
+        pop = get_image_data('static/uploads/'+filename)
+        # Return purchase page with parsed data
+        return purchase(image=filename, pop=pop)
+    else:
+        flash("Unsupported media")
+        return purchase()
+
+
+def get_image_data(filename):
+    """
+    Gets image data from image processor. Checks first if data can be fetched as a receipt,
+    before checking if data can be fetched as an invoice.
+    :param filename: The file to get the data from
+    :return: Data form image processor.
+    """
+    img_text = vision_manager.get_text_detection_from_img(filename)
+    text_processor = TextProcessor(img_text)
+    type = text_processor.define_invoice_or_receipt()
+    try:
+        if type == "receipt":
+            return text_processor.get_receipt_info()
+        elif type == "invoice":
+            return text_processor.get_invoice_info()
+    except:
+        flash("Vi kan dessverre ikke hente data fra det opplastede bildet.")
+    return None
 
 
 def allowed_file(filename):
@@ -466,12 +575,11 @@ def delete_account():
         return redirect(url_for('profile'))
 
 
-@app.route('/create_customer', methods=['POST'])
+@app.route('/create_contact/<contact_type>', methods=['POST'])
 @login_required
-def create_customer():
+def create_contact(contact_type):
     new_contact_info = request.form
 
-    # if (validate_new_contact(new_contact_info)):
     # Create JSON-HAL for sending to fiken
     contact = {"name": new_contact_info["name"]}
     if not new_contact_info["org_nr"].strip() == '':
@@ -492,6 +600,7 @@ def create_customer():
         contact["postalCode"] = new_contact_info["zip_code"]
     if not new_contact_info["postal_area"].strip() == '':
         contact["postalPlace"] = new_contact_info["postal_area"]
+    contact[contact_type] = True
     contact["language"] = new_contact_info["language"]
     contact["currency"] = new_contact_info["currency"]
     contact["customer"] = True
@@ -503,7 +612,21 @@ def create_customer():
     else:
         flash("Ny kunde opprettet.")
 
-    return redirect(url_for('sale'))
+    # Customers are created on sales-page
+    if contact_type == "customer":
+        return redirect(url_for('sale'))
+    # Suppliers are created on purchase-page
+    if contact_type == "supplier":
+        return redirect(url_for('purchase'))
+
+
+@app.route('/loader')
+def loader():
+    return render_template('loader.html')
+
+
+def temporary_loader():
+    return render_template(url_for('loader'))
 
 
 def send_to_fiken(data, type):
@@ -525,7 +648,6 @@ def string_to_datetime(input_string):
     """
     split = input_string.split("-")
     date = datetime.datetime(int(split[0]), int(split[1]), int(split[2]))
-    print(date)
     return date
 
 
@@ -549,6 +671,7 @@ def is_logged_in():
     if current_user.is_authenticated:
         logged_in = True
     return logged_in
+
 
 # TODO - view all pages, see that they look ok and behave
 # TODO - make sure every page is necessary 
@@ -635,6 +758,7 @@ def service_unavailable_page():
 @app.route('/504', methods=['GET'])
 def gateway_timeout_page():
     return render_template('504.html', title="504 gateway timeout"), 504
+
 
 if __name__ == '__main__':
     app.run(debug=True, port="8000")

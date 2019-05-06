@@ -5,21 +5,7 @@
         {% include 'sale_widget.html' %}
     </div>
     {% include 'new_account_modal.html' %}
-    {% include 'create_customer_modal.html' %}
+    {% include 'create_contact_modal.html' %}
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="popup">
-                <div class="popup-content">
-                <span class="popup-close">&times;</span>
-                <div class="popup-messages">
-                    {% for message in messages %}
-                        <p>{{ message }}</p>
-                    {% endfor %}
-                </div>
-                <input class="boxedButton popup-close-btn" type="submit" value="OK">
-                </div>
-            </div>
-        {% endif %}
-    {% endwith %}
+    {% include 'popup.html' %}
 {% endblock container %}

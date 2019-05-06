@@ -1,0 +1,15 @@
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="popup">
+                <div class="popup-content">
+                <span class="popup-close">&times;</span>
+                <div class="popup-messages">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+                <input class="form-button popup-close-btn" type="submit" value="OK">
+                </div>
+            </div>
+        {% endif %}
+{% endwith %}

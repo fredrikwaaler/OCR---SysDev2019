@@ -124,22 +124,34 @@ def validate_sales_form(form):
     # Validate that all line totals are positive
     prices = form.getlist('price') + form.getlist('price_free')
     quantities = form.getlist('quantity') + form.getlist('quantity_free')
+    total = 0
     for price in prices:
         # JS ensures that only numerical values can be put in price fields. Safely typecast.
-        if not float(price) > 0:
-            errors.append("Obs: Totalbeløpet må være positivt.")
-            break
+        total += float(price)
 
-    # No point for checking for errors in quantities if one is already found
+    if not total >= 0:
+        errors.append("Obs: Totalbeløpet må være positivt")
+
+    # No point in checking for errors in quantities if one is already found
     if len(errors) == 0:
         for quantity in quantities:
             # JS ensures safe typecast.
             if not float(quantity) > 0:
-                errors.append("Obs: Totalbeløpet må være positivt.")
+                errors.append("Obs: Kvantitet kan ikke være null.")
 
     return len(errors) == 0, errors
 
 
 def validate_purchase_form(form):
-    # TODO - Fix
-    pass
+    errors = []
+
+    # Validate that all lines have a positive sum
+    grosses = form.getlist('gross_amount')
+    total = 0
+    for gross in grosses:
+        total += float(gross) # JS ensures that only numerical values can be put in price fields.
+
+    if not total >= 0:
+        errors.append("Obs: Totalbeløpet må være positivt")
+
+    return len(errors) == 0, errors

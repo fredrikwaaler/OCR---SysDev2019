@@ -22,7 +22,7 @@ class HistoryDataFormatter:
         Returns a list of edited purchase-data, ready for display.
         :return: Returns a list of edited purchase-data, ready for display.
         """
-        purchases = self.fiken_manager.get_data_from_fiken(data_type="purchases")
+        purchases = self.fiken_manager.get_raw_data_from_fiken("purchases")["_embedded"]["https://fiken.no/api/v1/rel/purchases"]
         return_view = []
         externals = {}
         for purchase in purchases:
@@ -35,14 +35,19 @@ class HistoryDataFormatter:
 
             purchase["kind"] = purchase_type[purchase["kind"]]
 
+            if purchase["date"] == "2019-05-06":
+                a = "stop"
+                print(a)
+
             # Check whether or not the purchase has a pdf attached.
             # If so, create a pdf-key we can use to retrieve pdf-link
-            if "https://fiken.no/api/v1/rel/attachments" in purchase.keys():
-                url = purchase["https://fiken.no/api/v1/rel/attachments"][0]["downloadUrl"]
-                if url.endswith('.pdf'):
-                    purchase["pdf"] = url
-                else:
-                    purchase["img"] = url
+            if "_embedded" in purchase.keys():
+                if "https://fiken.no/api/v1/rel/attachments" in purchase["_embedded"].keys():
+                    url = purchase["_embedded"]["https://fiken.no/api/v1/rel/attachments"][0]["downloadUrl"]
+                    if url.endswith('.pdf'):
+                        purchase["pdf"] = url
+                    else:
+                        purchase["img"] = url
 
             for product in purchase["lines"]:
                 for key in product.keys():
@@ -65,7 +70,7 @@ class HistoryDataFormatter:
         Returns a list of edited sale-dara, ready for display.
         :return: Returns a list of edited sale-data, ready for display.
         """
-        sales = self.fiken_manager.get_data_from_fiken(data_type="sales")
+        sales = self.fiken_manager.get_raw_data_from_fiken("sales")["_embedded"]["https://fiken.no/api/v1/rel/sales"]
         return_view = []
         externals = {}
         for sale in sales:
@@ -87,12 +92,13 @@ class HistoryDataFormatter:
 
             # Check whether or not the sale has a pdf attached.
             # If so, create a pdf-key we can use to retrieve pdf-link
-            if "https://fiken.no/api/v1/rel/attachments" in sale.keys():
-                url = sale["https://fiken.no/api/v1/rel/attachments"][0]["downloadUrl"]
-                if url.endswith('.pdf'):
-                    sale["pdf"] = url
-                else:
-                    sale["img"] = url
+            if "_embedded" in sale.keys():
+                if "https://fiken.no/api/v1/rel/attachments" in sale["_embedded"].keys():
+                    url = sale["_embedded"]["https://fiken.no/api/v1/rel/attachments"][0]["downloadUrl"]
+                    if url.endswith('.pdf'):
+                        sale["pdf"] = url
+                    else:
+                        sale["img"] = url
 
             if sale["paid"] == "False":
                 sale["paid"] = "Nei"

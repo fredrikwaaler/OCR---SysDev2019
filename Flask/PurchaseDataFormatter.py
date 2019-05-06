@@ -38,26 +38,33 @@ class PurchaseDataFormatter:
         """
         Takes a list of accounts and makes presentable strings for each account.
         Note: Expects account-data from fiken.
+        If there are specified 'favorite-accounts' they will appear first.
         :param accounts: The list of accounts to make presentable.
         :return: Returns presentable strings for each account in a tuple of the form "account_name (account_number)"
         Also returns all info about all accounts in a separate seconds list, in case needed.
         Each tuple also contains all info about the account, just in case.
         """
 
-        # TODO - Favorites should be added here.
-        favorites = []
+        favorite_codes = [3000, 3030, 3040, 3220, 3611, 4000, 4030, 4060, 4300, 4600, 6360, 6510, 6520, 6530, 6540, 6553,
+                     6560, 6572, 6590, 6800, 6890, 7300, 7321, 7740, 7770]
 
-        return_list = []
-        # Add and format all accounts not already in favorites.
+        favorite_accounts = []
+        other_accounts = []
+        # Add and format all accounts.
         for account in accounts:
-            if account["code"] not in favorites and ":" not in account["code"]:
+            if ":" not in account["code"]:
                 account_string = "{} ({})".format(account["code"], account["name"])
-                return_list.append((account_string, account))
+                if int(account["code"]) in favorite_codes:
+                    favorite_accounts.append((account_string, account))
+                else:
+                    other_accounts.append((account_string, account))
 
-        # Sort by account-code
-        return_list.sort(key=PurchaseDataFormatter._get_code_num)
+        # Sort both by account-code
+        favorite_accounts.sort(key=PurchaseDataFormatter._get_code_num)
+        other_accounts.sort(key=PurchaseDataFormatter._get_code_num)
 
-        return return_list
+        # Add and return accounts together, but with favorites first.
+        return favorite_accounts + other_accounts
 
     @staticmethod
     def _get_code_num(account):
@@ -70,6 +77,13 @@ class PurchaseDataFormatter:
 
     @staticmethod
     def ready_data_for_purchase(data):
+        """
+        Readies purchase-data for send-in to fiken.
+        Takes a form from the web-pages 'purchase' page and constructs a JSON-HAL
+        object ready for send-in as specified in the fiken API.
+        :param data: Pre-validated form from 'purchase' page.
+        :return: Returns the JSON-HAL object based on form-data. Ready for send-in to fiken.
+        """
         return_data = {}
         # Add date
         return_data["date"] = data["invoice_date"]
@@ -77,14 +91,21 @@ class PurchaseDataFormatter:
         if not data["maturity_date"].strip() == '':
             return_data["dueDate"] = data["maturity_date"]
         # Add purchase type
-        if data['purchase_type'] == "0":
+        if data['purchase_type'] == "1":
             return_data["kind"] = "SUPPLIER"
         else:
             return_data["kind"] = "CASH_PURCHASE"
+            # If it is a CASH_PURCHASE, payment-info must be appended
+            return_data["paymentAccount"] = data["payment-account"]
+            return_data["paymentDate"] = data["invoice_date"]
+            # Get total:
+            total_amount = 0
+            for gross in data.getlist('gross_amount'):
+                total_amount += float(gross)
+            return_data["paymentAmount"] = total_amount
         # Add identifier if existent:
         if not data["invoice_number"].strip() == '':
             return_data["identifier"] = data["invoice_number"]
-        # TODO - ADD "PAID". Hør med klaus hvorfor den ikke er i request.form
         # Retrieve product info and add product lines:
         # Descriptions
         descriptions = data.getlist('description')
@@ -115,16 +136,40 @@ class PurchaseDataFormatter:
             products.append(product_line)
         # Add product-lines
         return_data["lines"] = products
-        # Add supplier
-        return_data["supplier"] = data["supplier"]
+        # Add supplier (not on cash_purchases)
+        if data["purchase_type"] == '1':
+            return_data["supplier"] = data["supplier"]
 
-        # TODO - Registering av betaling
-        # TODO - Registrering av attachment
+        return return_data
 
+    @staticmethod
+    def ready_payments(data):
+        """
+        Readies payment-data for send-in to fiken.
+        The payments are structured in a json-hal manner such as specified in the fiken api documentation.
+        Payments are returned in a list.
+        :param data: The form-data to extract payments from
+        :return: Returns a list of dictionaries describing each payment as specified in the fiken api-doc.
+        """
+        # Retrieve data for all payments.
+        payment_accounts = data.getlist('payment-account')
+        payment_amounts = data.getlist('payment-amount')
+        payment_dates = data.getlist('payment-date')
 
+        # Store payments in this list
+        payments = []
 
+        # Should be one account for each payment
+        for i in range(len(payment_accounts)):
+            payment = {"account": payment_accounts[i], "amount": payment_amounts[i], "date": payment_dates[i]}
+            payments.append(payment)
 
+        return payments
 
+    @staticmethod
+    def ready_attachment(filepath, filename ):
+        dict_string = '{{"filename":"{}", "attachToPurchase": true, "attachToPayment": false}}'.format(filename)
 
-
+        return {'AttachmentFile': (filename, open(filepath, 'rb')), 'PurchaseAttachment': (None,
+                                            '{}'.format(dict_string)), }
 

@@ -1,3 +1,4 @@
+# coding=utf-8
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import os, datetime, json, re
 from flask import Flask, render_template, flash, request, redirect, url_for, abort, Markup
@@ -761,4 +762,4 @@ def gateway_timeout_page():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port="8000")
+    app.run(debug=False, port="80")

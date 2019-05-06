@@ -239,7 +239,7 @@ Pre
 .pre-img {
     padding: 0;
     margin: 0 auto;
-    width: 7%;
+    width: 50%;
 }
 
 /*
@@ -1085,6 +1085,10 @@ CSS for visually displaying that some functionality is not in order.
         margin: 10px 220px;
     }
 
+    .pre-img {
+        width: 25%;
+    }
+
     /*
     ====================
         Purchase Page
@@ -1151,6 +1155,10 @@ CSS for visually displaying that some functionality is not in order.
         .pre-form {
             display: block;
             margin: 0 25% 0 25%;
+        }
+
+        .pre-img {
+            width: 8%;
         }
 
         nav ul {

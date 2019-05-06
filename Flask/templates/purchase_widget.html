@@ -460,6 +460,8 @@ function add_ocr_lines() {
         let gross = {{ gross }};
         if (counter > 2) {
             add_purchase_line();
+        } else {
+            counter++
         }
         let index = "";
         if (vat === 25) {

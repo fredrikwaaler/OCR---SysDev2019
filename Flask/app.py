@@ -16,6 +16,7 @@ from ImageProcessor import VisionManager, TextProcessor
 import smtplib
 from datetime import timedelta
 
+
 def create_login_manager():
     """
     Handles the creation of a LoginManager for the app
@@ -32,7 +33,7 @@ def create_login_manager():
 
 app = Flask(__name__)
 
-#Navbar
+# Navbar
 nav = Nav(app)
 app.config['SECRET_KEY'] = 'secretkey'
 
@@ -545,6 +546,7 @@ def log_out_fiken():
     flash("Du er nå logget ut av fiken.")
     return redirect(url_for('profile'))
 
+
 @app.route('/get_user_data', methods=['GET', 'POST'])
 def get_user_data():
     filename = 'bruker_data.txt'
@@ -717,6 +719,7 @@ def service_unavailable(e):
 @app.errorhandler(504)
 def gateway_timeout(e):
     return render_template('504.html', title="504 gateway timeout", logged_in=is_logged_in()), 504
+
 
 if __name__ == '__main__':
     app.run(debug=True, port="8000")

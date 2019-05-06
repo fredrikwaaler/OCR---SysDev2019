@@ -1,0 +1,26 @@
+{% extends 'layout_post.html' %}
+{% block container %}
+    <h2>Adminpanel</h2>
+    <form class="main-form" method="POST" id="register-user" action="{{ url_for('admin') }}">
+        <div class="form-part">
+            <h3>Registrer ny bruker</h3>
+            <div class="register-input">
+                <h4>Navn</h4>
+                {{ form.name }}
+            </div>
+            <div class="register-input">
+                <h4>Email</h4>
+                {{ form.email }}
+            </div>
+            <div class="register-input">
+                <h4>Admin</h4>
+                {{ form.admin }}
+            </div>
+            <!-- Flash messages -->
+            <div class="admin-flash">
+                {% include 'flash.html' %}
+            </div>
+            <input type="submit" class="form-button" id="sign_up_button" Value="Registrer">
+        </div>
+    </form>
+{% endblock container %}

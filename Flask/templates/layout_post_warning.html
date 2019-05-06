@@ -1,0 +1,81 @@
+<!-- Lage hovedstruktur for siden (Nav-bar, etc.) -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        {% if title %}
+            <title> {{ title }}</title>
+        {% else %}
+            <title> OCR </title>
+        {% endif %}
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+        <div id="loader">
+            <img id="loader-image" src="{{ url_for('static', filename='loader-gif.gif') }}">
+        </div>
+        {{ nav.nav.render() }}
+        <div class = wrapper>
+            {% if not current_user.fiken_manager.has_valid_login() %}
+            <div class="fiken_warning">
+                <p>
+                    Obs: Du må logge inn med en fiken-bruker før du kan bruke denne siden.
+                    Du kan logge inn <a href="{{ url_for('profile') }}">her.</a>
+                </p>
+            </div>
+            {% elif not current_user.fiken_manager.get_company_slug() %}
+            <div class="fiken_warning">
+                <p>
+                    Obs: Du må velge hvilket firma som skal brukes fra fiken.
+                    Du kan gjøre dette <a href="{{ url_for('profile') }}">her.</a>
+                </p>
+            </div>
+            {% endif %}
+            <div class=container>
+                {% block container %}
+                {% endblock %}
+            </div>
+            <footer>
+                <a href="{{ url_for('contact') }}">Problemer?</a>
+                <a href="{{ url_for('log_out') }}">Logg ut</a>
+                <p>&copy; 2019 fikto.no<p>
+            </footer>
+        </div>
+    </body>
+
+
+    <script src="{{ url_for('static',filename='js/modal.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/popup.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/loader.js') }}"></script>
+
+    <script>
+
+        /* Deactivate buttons if not logged in with fiken */
+
+        {%  if not current_user.fiken_manager.has_valid_login() or not current_user.fiken_manager.get_company_slug() %}
+            let val = true;
+        {% else %}
+            let val = false;
+        {% endif %}
+        let buttons = document.getElementsByTagName("input");
+        for (let i = 0; i < buttons.length; i++) {
+            if ((buttons[i].type == "submit" || buttons[i].type == "button") && !buttons[i].classList.contains('no_disable')) {
+                buttons[i].disabled = val;
+                if (val) {
+                    buttons[i].classList.add('disabled_button');
+                }
+                else {
+                    buttons[i].classList.remove('disabled_button');
+                }
+            }
+        }
+
+
+    </script>
+
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loading...</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="loader">
+    <img id="loader-image" src="{{ url_for('static', filename='loader-gif.gif') }}">
+</div>
+</body>
+<script src="{{ url_for('static',filename='js/loader.js') }}"></script>
+
+<script>
+    toggle_loader_on();
+    {% if href %}
+    window.location.replace("/{{ href }}");
+    {% endif %}
+</script>
+</html>

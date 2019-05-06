@@ -1,0 +1,189 @@
+{% extends 'layout_post.html' %}
+{% block container %}
+{{ form.csrf_token }}
+<h2>Min Konto</h2>
+<!--Info about the users name and email that we have-->
+<!--Structure: "Name:"    <actual name>  <Change button> -->
+<div id="profile-container">
+    <div class="form-part" id="user-account">
+        <div class="profile-section">
+            <h3 class="profile-title">Navn</h3>
+            <p class="profile-p">{{ name }}</p>
+            <input class="modal_button form-button" type="submit" Value="Endre">
+        </div>
+        <hr>
+        <!-- Change email here -->
+        <div class="profile-section">
+            <h3 class="profile-title">Email</h3>
+            <p class="profile-p">{{ email }}</p>
+            <input class="modal_button form-button" type="submit" Value="Endre">
+        </div>
+        <hr>
+    <!--Change password here -->
+        <div class="profile-section">
+            <h3 class="profile-title">Passord</h3>
+            <div class="empty"></div>
+            <input class="modal_button form-button" type="submit" Value="Endre">
+        </div>
+    </div>
+    <!-- Change/connect to fiken user here -->
+    <div class="form-part" id="fiken-account">
+        <h3>Fiken-instillinger</h3>
+        <hr>
+        {% if not current_user.fiken_manager.has_valid_login() %}
+            <input class="modal_button form-button" type="submit" Value="Logg Inn" >
+            <span class="modal_button"></span>
+        {% else %}
+            <div class="profile-section">
+                <h3 class="profile-title">Bruker</h3>
+                <p class="profile-p">{{ current_user.fiken_manager.get_fiken_login() }}</p>
+                <input class="form-button modal_button" type="submit" Value="Endre">
+            </div>
+            <hr>
+            <div class="profile-section">
+                <h3 class="profile-title">Firma</h3>
+                {%  if current_user.fiken_manager.get_active_company_name() %}
+                    <p class="profile-p active_info">{{ current_user.fiken_manager.get_active_company_name() }}</p>
+                {% else %}
+                    <div class="empty"></div>
+                {% endif %}
+                <input class="form-button modal_button" type="submit" Value="Endre">
+            </div>
+            <hr>
+            <form action="{{ url_for('log_out_fiken') }}">
+                <input class="form-button" type="submit" Value="Logg ut av fiken">
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="form-part">
+        <h3>Personvern</h3>
+        <hr>
+        <form method="POST" action="{{ url_for('get_user_data') }}"> 
+            <input type="submit" Value="Last ned brukerdata" class="form-button">
+        </form>
+        <hr>
+        <input class ="form-button modal_button" type="submit" id="warning" Value="Slett konto">
+    </div>
+
+<!-- Modal for changing name -->
+<div class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form class="profile-modal-form" method="POST" action="{{ url_for('change_name') }}">
+            <h3>Endre navn</h3>
+            <h4>Nytt navn:</h4>
+            {{ form.new_name }}
+            <input class="form-button" type="submit" value="Endre">
+        </form>
+    </div>
+</div>
+<!-- Modal for changing email -->
+<div class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form class="profile-modal-form"  method="POST" action="{{ url_for('change_email') }}">
+            <h3>Endre Email</h3>
+            <h4>Ny Email</h4>
+            {{ form.new_email }}
+            <input class="form-button" type="submit" value="Endre">
+        </form>
+    </div>
+</div>
+<!-- Modal for changing password -->
+<div class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form class="profile-modal-form" method="POST" action="{{ url_for('change_password') }}">
+            <h3>Endre passord</h3>
+            <h4>Nytt passord</h4>
+            {{ form.new_password }}
+            <h4>Gjenta passord</h4>
+            {{ form.repeat_password }}
+            <input class="form-button" type="submit" value="Endre">
+        </form>
+    </div>
+</div>
+<!-- Code for modal content for the change Fiken user functionality-->
+<div class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form class="profile-modal-form" method="POST" action="{{ url_for('change_fiken') }}">
+            {%  if current_user.fiken_manager.has_valid_login() %}
+            <h3>Endre Fiken-bruker</h3>
+            {% else %}
+            <h3>Logg Inn</h3>
+            {% endif %}
+            <h4>Email</h4>
+            {{ fiken_modal_form.email }}
+            <h4>Passord</h4>
+            {{ fiken_modal_form.password }}
+            {% if current_user.fiken_manager.has_valid_login() %}
+            <input class="form-button" type="submit" Value="Endre">
+            {% else %}
+            <input class="form-button" type="submit" Value="Logg Inn">
+            {% endif %}
+        </form>
+    </div>
+</div>
+<!--End of modal content-->
+
+<!-- Code for modal to change associated fiken company -->
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form class="profile-modal-form" action="{{ url_for('set_active_company') }}" method="post">
+                <h3> Endre firma </h3>
+                    <table class="company_table">
+                        {% for company_info, company_key in companies %}
+                            <tr>
+                                <td>
+                                <label>
+                                    {% if company_info[0] == current_user.fiken_manager.get_active_company_name() %}
+                                    <input type="radio" checked="checked" name="company_keys" value={{ company_key }}>
+                                    {%  else %}
+                                    <input type="radio" name="company_keys" value="{{ company_key }}">
+                                    {% endif %}
+                                </label>
+                                </td>
+                                <td>
+                                    {{ company_info[0] }} <span class="org_num">({{ company_info[1] }})</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                <input class="form-button" type="submit" Value="Velg">
+            </form>
+        </div>
+    </div>
+<div class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form class="profile-modal-form" method="POST" action="{{ url_for('delete_account') }}">
+                <h3>Slett konto</h3>
+                <p>All brukerdata vil bli slettet</p>
+                <p>Vennligst bekreft passordet ditt før du kan slette kontoen.</p>
+                Passord: {{ confirm_password_form.password }}
+                <input class="form-button" id="warning" type="submit" Value="Slett konto">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="popup">
+            <div class="popup-content">
+            <span class="popup-close">&times;</span>
+            <div class="popup-messages">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            <input class="form-button popup-close-btn" type="submit" value="OK">
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
+
+{% endblock container %}

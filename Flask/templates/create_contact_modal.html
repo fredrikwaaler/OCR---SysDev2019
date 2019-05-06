@@ -1,0 +1,15 @@
+<div class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        {% if contact_type == "kunde" %}
+        <form class="main-form new-contact" method="POST" action="{{ url_for('create_contact', contact_type="customer") }}">
+        {% elif contact_type == "leverandør" %}
+        <form class="main-form new-contact" method="POST" action="{{ url_for('create_contact', contact_type="supplier") }}">
+        {% endif %}
+
+            <h3>Opprett ny {{ contact_type }}</h3>
+
+            {% include 'contact_form.html' %}
+        </form>
+    </div>
+</div>

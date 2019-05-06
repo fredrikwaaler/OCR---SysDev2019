@@ -1,0 +1,849 @@
+
+{% if image %}
+<div class="imagebox purchase-right" id="imagebox-id">
+    <img src="static/uploads/{{ image }}" id="uploaded-image" alt="Uploaded Image">
+</div>
+{% else %}
+<div class="purchase-right">
+    <div class="form-part" id="image-filler">
+        <h4>Bildegjenkjenning</h4>
+        <p>Last opp et bilag for å generere forslag for innfylling av skjema.</p>
+        <p>Husk å se over alle felter, da feil kan oppstå.</p>
+    </div>
+</div>
+{% endif %}
+<div class="purchase-left">
+    <form class="main-form" method="POST" action="/upload_file" enctype=multipart/form-data>
+        <div class="form-part" id="upload-file-part">
+            <input type=file name=file id="file" onchange="deactivate_upload();">
+            <input class="no_disable" id="upload-file-button" onclick="toggle_loader_on()" type=submit value=Upload>
+        </div>
+    </form>
+    <form class="main-form" id="purchase-form" method="post" action = "{{ url_for('register_purchase') }}">
+        {# For retrieving the filename after post #}
+        <div style="display: none">
+            <input value="{{ image }}" id="filename" name="filename" type="hidden">
+        </div>
+        <div class="form-part pf-split">
+            <div class="pf-split-left">
+                <div class="pf-form-input" id="purchase-block">
+                    <h4 class="input-header">Type</h4>
+                    <ul id="purchase_type">
+                        <li>
+                            <input id="purchase_type-0" name="purchase_type" type="radio" value="1" onclick="mode_supplier()" checked="checked">
+                            <label for="purchase_type-0">Kjøp fra leverandør</label>
+                        </li>
+                        <li>
+                            <input id="purchase_type-1" name="purchase_type" type="radio" value="2" onclick="mode_cash()">
+                            <label for="purchase_type-1">Kontantkjøp</label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="pf-form-input" id="supplier-block">
+                    <h4 class="input-header">Leverandør</h4>
+                    <select id="supplier" name="supplier" required>
+                        <option disabled selected value> Velg leverandør </option>
+                        {% for supplier_string, supplier in suppliers %}
+                            {% if 'organizationIdentifier' in supplier %}
+                                <option id="{{ supplier["organizationIdentifier"] }}" value="{{ supplier["href"] }}">{{ supplier_string }}</option>
+                            {% else %}
+                                <option value="{{ supplier["href"] }}">{{ supplier_string }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <div class="empty"></div>
+                    <input class="modal_button" id="supplier-button" type="button" value="Opprett ny">
+                </div>
+                <div class="pf-form-input" id="invoice_date-block">
+                    <h4 class="input-header">Fakturadato</h4>
+                    {{ form.invoice_date(**{"onchange":"restrict_maturity_date(); change_cash_payment_date();"}) }}
+                </div>
+            </div>
+            <div class="pf-split-right">
+                <div class="pf-form-input" id="invoice_number-block">
+                    <p class="italic input-header">Valgfrie felter:</p>
+                    <div class="empty"></div>
+                    <h4 class="input-header">Fakturanummer</h4>
+                    {{ form.invoice_number }}
+                </div>
+                <div class="pf-form-input" id="maturity_date-block">
+                    <h4 class="input-header">Forfallsdato</h4>
+                    {{ form.maturity_date }}
+                </div>
+            </div>
+        </div>
+        <div class="form-part">
+            <div class="pf-lines-top">
+                <div class="pf-line-input">
+                    <h4>Tekst</h4>
+                </div>
+                <div class="pf-line-input">
+                    <h4>Konto</h4>
+                </div>
+                <div class="pf-line-input">
+                    <h4>Bruttobeløp</h4>
+                </div>
+                <div class="pf-line-input">
+                    <h4>Mva</h4>
+                </div>
+                <div class="pf-line-input">
+                    <h4>Nettobeløp</h4>
+                </div>
+                <div class="pf-line-input">
+                    <div class="empty"></div>
+                </div>
+            </div>
+            <div id="pf-lines">
+            </div>
+            <div class="pf-lines-bottom">
+                <h4 class="total-amount" id="pf-total">Totalbeløp: 0,00 + mva: 0,00 = 0,00</h4>
+                <input class="pf-button" type="button" Value="Del beløpet over flere kontoer" onclick="add_purchase_line()">
+            </div>
+        </div>
+        <div class="form-part" id="pf-paid">
+            <div id="pf-paid-content">
+                <input type="checkbox" id="paid" onclick="mode_supplier(); handle_paid_change(this);">
+                <h4>Betaling</h4>
+                <p>Kryss av dersom handelen er betalt</p>
+            </div>
+        </div>
+        <div class="form-part" id="pf-payment">
+            <div id="pf-payments">
+
+            </div>
+            <div>
+                <h4 class="total-amount" id="remainder">Restbeløp: 0.00 - 0.00 = 0.00</h4>
+                <input class="pf-button" id="split-payment" type="button" value="Del betalingen over flere kontoer" onclick="add_payment_line();">
+            </div>
+        </div>
+        <div class="form-part">
+            <div class="pf-buttons">
+                <input class="button-red" type="button" value="Slett utkast" onclick="clear_purchase_form()">
+                <input class="button-green" type="submit" value="Registrer kjøp">
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+let mdblock = document.getElementById("maturity_date-block");
+let mdblock_filler = document.getElementById("maturity_date-block-filler");
+let paid_section = document.getElementById("pf-paid");
+let paid = document.getElementById('paid');
+let payment = document.getElementById("pf-payment");
+let split_payment_btn = document.getElementById('split-payment');
+let supplier = document.getElementById("supplier");
+let supplier_button = document.getElementById("supplier-button");
+let amount = document.getElementById("amount");
+
+let counter = 1; //Counter to represent amount of made lines
+
+deactivate_upload();
+restrict_dates();
+init();
+
+function init() {
+    if (document.getElementById("purchase-form")) {
+        add_purchase_line();
+    }
+    if (document.getElementById("sale-form")) {
+        add_product_line();
+    }
+}
+
+/**
+ * Restrict the choice of dates on the page to only dates this year.
+ */
+function restrict_dates() {
+    let invoice_date = document.getElementById('invoice_date');
+    let maturity_date = document.getElementById('maturity_date');
+    let today = new Date();
+    let this_year = today.getFullYear();
+    let min_date = this_year+'-01-01';
+    let max_date = this_year+'-12-31';
+    invoice_date.setAttribute("min", min_date);
+    invoice_date.setAttribute("max", max_date);
+    maturity_date.setAttribute("min", min_date);
+    maturity_date.setAttribute("max",max_date);
+}
+
+/**
+ * Restricts the choice of maturity-date on the page,
+ * so that it must be higher or equal to invoice-date.
+ */
+function restrict_maturity_date() {
+   let invoice_date = document.getElementById('invoice_date').value;
+   let maturity_date = document.getElementById('maturity_date');
+   // If the maturity date is set to a value that is now illegal, reset it
+    if (maturity_date.value < invoice_date) {
+        maturity_date.value = "";
+    }
+   maturity_date.setAttribute("min", invoice_date);
+}
+
+/**
+ * Deactivates the upload-button if an image is not chosen
+ */
+function deactivate_upload() {
+    let file = document.getElementById('file').value;
+    let upload_btn = document.getElementById('upload-file-button');
+    if (file == "") {
+        upload_btn.disabled = true;
+        upload_btn.style.opacity = 0.3;
+    }
+    else {
+        {% if current_user.fiken_manager.has_valid_login() and current_user.fiken_manager.get_company_slug() %}
+            upload_btn.disabled = false;
+            upload_btn.style.opacity = 1;
+        {% endif %}
+    }
+}
+
+// PURCHASE FORM
+// -- Mode Selection
+
+/**
+ * Changes the mode to supplier mode.
+ */
+function mode_supplier() {
+    mdblock.style.display = "grid";
+    paid_section.style.display = "grid";
+    clear_payment_lines();
+    update_payment();
+    payment.style.display = "none";
+    split_payment_btn.style.display = "initial";
+    supplier.disabled = false;
+    supplier_button.disabled = false;
+}
+
+/**
+ * Changes the mode to cash mode.
+ */
+function mode_cash() {
+    mdblock.style.display = "none";
+    paid_section.style.display = "none";
+    split_payment_btn.style.display = "none";
+    clear_payment_lines();
+    add_cash_payment_line();
+    update_payment();
+    change_cash_payment_date();
+    // Set paid-button to false, so it is
+    // not stored on switch-back to mode_supplier
+    paid.checked = false;
+    payment.style.display = "grid";
+    supplier.disabled = true;
+    supplier_button.disabled = true;
+}
+
+
+// -- Line selection
+
+/**
+ * Adds a new line to purchase form.
+ */
+function add_purchase_line() {
+    let purchase_line = createHTML("purchase_line");
+    let parent = "pf-lines";
+    let element = "div";
+    let element_id = "pf-line-"+counter;
+    addElement(parent, "pf-line", element, element_id, purchase_line);
+}
+
+/**
+ * Adds a payment-line to purchase payment form.
+ */
+function add_payment_line() {
+    let id = "pp-line-" + counter;
+    let payment_line = createHTML("payment-line");
+    addElement("pf-payments", 'pp-line', 'div', id, payment_line);
+}
+
+function add_cash_payment_line() {
+    let id = "pp-line-" + counter;
+    let payment_line = createHTML('payment-line-cash');
+    addElement("pf-payments", 'pp-line', 'div', id, payment_line);
+}
+
+function handle_paid_change(checkbox) {
+    if (checkbox.checked == true) {
+        payment.style.display = "grid";
+        add_payment_line();
+    }
+    else {
+        // Clear the payment-lines
+        for (let i = 1; i <= counter; i ++) {
+            remove_payment_line(i, true);
+        }
+    }
+}
+
+/**
+ * Changes the date that marks the "cash-payment" to the invoice date.
+ * If the invoice date is not set, the date field for cash-payment is left empty.
+ */
+function change_cash_payment_date() {
+    let cash_payment_date_field = document.getElementById('cash_payment_date');
+    let invoice_date = document.getElementById('invoice_date').value;
+    if (invoice_date) {
+        cash_payment_date_field.innerHTML = invoice_date;
+    }
+    else {
+        cash_payment_date_field.innerHTML = "";
+    }
+}
+
+
+function remove_payment_line(counter, clear) {
+    if (clear) {
+        removeElement('pp-line-' + counter);
+    }
+    else {
+        let payment_lines = document.getElementById('pf-payments');
+        if(payment_lines.children.length > 1) {
+            removeElement('pp-line-' + counter);
+        }
+    }
+}
+
+function clear_payment_lines() {
+    for (let i = 1; i <= counter; i++) {
+        remove_payment_line(i, true);
+    }
+}
+
+/**
+ * Removes a line in purchase form.
+ * @param id The id of line to be removed.
+ */
+function remove_purchase_line(id) {
+    let pf_lines = document.getElementById("pf-lines");
+    if (pf_lines.children.length > 1){
+        removeElement(id);
+    } else {
+        // TODO - Flash if only one element is left
+        console.log("Cant remove line");
+    }
+}
+
+/**
+ * Clears the purchase form for input and deletes lines.
+ */
+function clear_purchase_form() {
+    document.getElementById("purchase-form").reset();
+    for (let i = 1; i < counter; i++) {
+        let id = "pf-line-"+i;
+        remove_purchase_line(id);
+    }
+}
+
+let purchaseForm = document.getElementById("purchase-form");
+
+/**
+ * Changes the net value in a line.
+ * Used when gross amount is changed.
+ */
+function change_net(){
+    // TODO - Change value of gross field when net field is changed.
+    let gross_total = 0;
+    let net_total = 0;
+    for (let i = 1; i < counter; i++) {
+        let gross_id = "gross_amount-" + i;
+        let net_id = "net_amount-" + i;
+        let gross_pointer = document.getElementById(gross_id);
+        let net_pointer = document.getElementById(net_id);
+        if (gross_pointer != null){
+            let gross_amount = Number(gross_pointer.value);
+            let net_amount = gross_amount/(1 + get_active_purchase_mva(i)).toFixed(2);
+            net_pointer.value = net_amount.toFixed(2);
+            gross_total += gross_amount;
+            net_total += net_amount;
+        }
+    }
+    let vat_total = gross_total-net_total;
+    change_total(gross_total, vat_total, net_total);
+    update_payment();
+}
+
+/**
+ * Returns the actual mva (in percentage) of the line with given counter for purchases.
+* */
+function get_active_purchase_mva(counter) {
+    let mvaOp = document.getElementById('vat-'+counter);
+    let mvaVal = mvaOp.options[mvaOp.selectedIndex].value;
+    if (mvaVal == 1) {
+        return 0.25;
+    }
+    else if (mvaVal == 11) {
+        return 0.15;
+    }
+    else if (mvaVal == 12) {
+        return 0.1111;
+    }
+    else if (mvaVal == 13) {
+        return 0.12;
+    }
+    else if (mvaVal == 0) {
+        return 0;
+    }
+
+}
+
+/**
+ * Changes the total field.
+ * @param gross_total The gross total.
+ * @param vat_total The vat total.
+ * @param net_total The net total.
+ */
+function change_total(gross_total, vat_total, net_total) {
+    let total = document.getElementById("pf-total");
+    let amount = document.getElementById("amount");
+    total.innerHTML = "Totalbeløp: " + net_total.toFixed(2) + " + mva: " +
+        vat_total.toFixed(2) +" = " +  gross_total.toFixed(2);
+}
+
+function update_payment() {
+    let total = parseFloat(document.getElementById('pf-total').textContent.split('=')[1].trim());
+    let payments = document.getElementsByName('payment-amount');
+    let remainder_text = document.getElementById('remainder');
+    let total_paid = 0;
+    for (let i = 0; i < payments.length; i ++) {
+        total_paid += parseFloat(payments[i].value);
+    }
+    if (!total_paid) {
+        total_paid = 0;
+    }
+    let remainder = total - total_paid;
+    remainder_text.innerHTML = "Restbeløp: " + total.toFixed(2) + " - " + total_paid.toFixed(2) + " = " + remainder.toFixed(2);
+    set_cash_payment_sum();
+}
+
+function set_cash_payment_sum() {
+    let total = parseFloat(document.getElementById('pf-total').textContent.split('=')[1].trim());
+    let payment_field = document.getElementById('payment-amount-cash');
+    if (payment_field != null) {
+        payment_field.value = parseFloat(total).toFixed(2);
+    }
+}
+
+// Purchase form population
+
+/**
+ * Adds data from OCR to form
+ */
+function add_ocr_data() {
+    add_ocr_supplier();
+    add_ocr_lines();
+}
+add_ocr_data(); // Initialize the function
+
+/**
+ * Adds supplier found in OCR to form
+ */
+function add_ocr_supplier() {
+    {% if ocr_supplier %}
+    let supplier = "{{ ocr_supplier }}".replace(/\s/g,'');;
+    let selectDOM = document.getElementById("supplier");
+    let supplierDOM = document.getElementById(supplier);
+    if (supplierDOM != null) {
+        supplierDOM.selected=true;
+    }
+    {% endif %}
+}
+
+/**
+ *  Adds lines to purchase form for values from OCR.
+ */
+function add_ocr_lines() {
+    {% if ocr_line_data %}
+        let vat = "";
+        let gross = "";
+        let index = "";
+        let vat_id = "";
+        let gross_id = "";
+    {% for vat, gross in ocr_line_data.items() %}
+        vat = "{{ vat }}";
+        gross = "{{ gross }}";
+        if (counter > 2) {
+            add_purchase_line();
+        }
+        index = "0";
+        if (vat === "25" || vat === "25,00") {
+            index = "0";
+        } else if (vat === 15 || vat === "15,00") {
+            index = "1";
+        } else if (vat === 11.11 || vat === "11,11") {
+            index = "2";
+        } else if (vat === 12 || vat === "12,00") {
+            index = "3";
+        } else if (vat === null) {
+            index = "4";
+        } else {
+            index = "0";
+        }
+        vat_id = "vat-"+(counter-1);
+        gross_id = "gross_amount-"+(counter-1);
+        document.getElementById(vat_id).selectedIndex = index;
+        document.getElementById(gross_id).value = gross;
+        change_net();
+
+        if (counter <= 2) {
+            counter++
+        }
+
+    {% endfor %}
+    {% endif %}
+}
+
+
+// SALE FORM
+
+function update_maturity_date() {
+    let days = document.getElementById("days_to_maturity").value;
+    let time = new Date();
+    time.setDate(time.getDate()+Number(days));
+    let day = time.getDate();
+    let month = time.getMonth() + 1;
+    let year = time.getFullYear();
+    document.getElementById("maturity-text").innerHTML = "Forfallsdato: " + day +"." + month + "." + year;
+}
+
+// -- Line selection
+/**
+ * Adds a new product line to sale form.
+ */
+function add_product_line() {
+    let id = "sf-line-" + counter;
+    let product_line = createHTML("product_line");
+    addElement("sf-lines", "sf-line", "div", id, product_line);
+    update_sale_lines();
+}
+
+/**
+ * Adds a new freetext line to sale form.
+ */
+function add_freetext_line() {
+    let id = "sf-line-" + counter;
+    let freetext_line = createHTML("freetext_line");
+    addElement("sf-lines", "sf-line", "div", id, freetext_line);
+    update_sale_lines();
+}
+
+
+/**
+ * Removes a line in purchase form.
+ * @param id The id of line to be removed.
+ */
+function remove_sale_line(id) {
+    let sf_lines = document.getElementById("sf-lines");
+    if (sf_lines.children.length > 1){
+        removeElement(id);
+    } else {
+        // TODO - Flash if only one element is left
+        console.log("Cant remove line");
+    }
+    update_sale_lines();
+}
+
+/**
+ * Validates that the gross-field with the given counter is set to strictly numerical.
+ * If it is not, the value is set to 0.
+ */
+function check_gross(counter) {
+    let price = document.getElementById('gross_amount-'+counter);
+    if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(price.value))) || price.value.startsWith('-')) {
+        price.value = 0;
+        change_net();
+    }
+}
+
+/**
+ * Validates that the payment-field with the given counter is set to strictly numerical.
+ * If it is not, the value is set to 0.
+ */
+function check_payment(counter) {
+    let payment = document.getElementById('payment-amount-'+counter);
+    if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(payment.value))) || payment.value.startsWith('-')) {
+        payment.value = 0;
+        change_net();
+    }
+}
+
+/**
+ * Clears the purchase form for input and deletes lines.
+ */
+function clear_sale_form() {
+    document.getElementById("sale-form").reset();
+    for (let i = 1; i < counter; i++) {
+        let id = "sf-line-"+i;
+        remove_sale_line(id);
+    }
+    update_sale_lines();
+}
+
+function update_sale_lines() {
+    change_sale_line_total();
+    change_sale_total();
+}
+
+function change_sale_line_total() {
+    // TODO - Calculate vat
+    for (let i = 1; i < counter; i++){
+        let price_pointer = document.getElementById("price-"+i);
+        let discount_pointer = document.getElementById("discount-"+i);
+        let amount_pointer = document.getElementById("amount-"+i);
+        if (price_pointer != null) {
+            let price = price_pointer.value;
+            let discount = discount_pointer.value;
+            let amount = amount_pointer.value;
+            let total = amount*price;
+            if (discount > 0) {total = total*(1-(discount/100))}
+            document.getElementById("sf-line-total-"+i).innerHTML = total.toFixed(2);
+        }
+    }
+}
+
+function change_sale_total() {
+    // TODO - Add vat calculation
+    let total = document.getElementById("sf-total");
+    let gross_amount = 0;
+    let net_amount = 0;
+    let vat_amount = 0;
+    for (let i = 1; i < counter; i++){
+        let total_pointer = document.getElementById("sf-line-total-"+i);
+        if (total_pointer != null) {
+            gross_amount += Number(total_pointer.innerHTML)
+        }
+    }
+    total.innerHTML = gross_amount.toFixed(2) + " " + "(0.00 inkl. mva)"
+}
+
+
+
+// GENERAL
+
+/**
+ * Adds an element to the document.
+ * @param parentId The id of parent element.
+ * @param elementClass The class of the new element.
+ * @param elementTag The tag of the new element.
+ * @param elementId The id of the new element.
+ * @param html The html to be filled in new element.
+ */
+function addElement(parentId, elementClass, elementTag, elementId, html) {
+    // Adds an element to the document
+    let p = document.getElementById(parentId);
+    let newElement = document.createElement(elementTag);
+    newElement.setAttribute('class', elementClass);
+    newElement.setAttribute('id', elementId);
+    newElement.innerHTML = html;
+    p.appendChild(newElement);
+    counter++;
+}
+
+/**
+ * Removes an element in document.
+ * @param elementId The id of element to be removed.
+ */
+function removeElement(elementId) {
+    let element = document.getElementById(elementId);
+    if (element != null) {
+        element.parentNode.removeChild(element);
+    }
+}
+
+/**
+ * Creates HTML for document
+ * @param type The HTML type
+ * @returns {string} The HTML for specific type.
+ */
+function createHTML(type) {
+    if (type === "purchase_line") {
+        return `
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden"> Tekst</h4>
+                <input id="text-${counter}" name="description" type="text" required>
+            </div>
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden">Kostnadskonto</h4>
+                <select id="billing_account-${counter}" name="billing_account" required>
+                        <option disabled selected value> Velg konto </option>
+                        {% for account_string, account in accounts %}
+                        <option value="{{ account["code"] }}">{{ account_string }}</option>
+                        {% endfor %}
+                </select>
+            </div>
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden">Bruttobeløp</h4>
+                <input id="gross_amount-${counter}" name="gross_amount" type="text" onchange="change_net(); check_gross(${counter});" required>
+            </div>
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden">Mva</h4>
+                <select id="vat-${counter}" name="vat" onchange="change_net();">
+                    <option value=1>25%</option>
+                    <option value=11>15%</option>
+                    <option value=12>11,11%</option>
+                    <option value=13>12%</option>
+                    <option value=0>Ingen</option>
+                </select>
+            </div>
+            <div class="pf-line-input">
+                <h4 class="pf-header-hidden">Nettobeløp</h4>
+                <input id="net_amount-${counter}" name="net_amount-${counter}" type="number" disabled>
+            </div>
+            <div class="pf-line-input">
+                <input class="pf-button" id="pf-button-${counter}" type="button" value="Slett linje" onclick="remove_purchase_line(this.parentNode.parentNode.id)">
+            </div>
+            `;
+    }
+    else if (type === "product_line") {
+        return `
+            <div class="description-column">
+                <div class="sf-line-input">
+                    <select id="product-${counter}" name="product-${counter}"></select>
+                </div>
+                <div class="sf-line-input">
+                    <h4 class="sf-header-hidden">Kommentar</h4>
+                    <input id="sale_comment-${counter}" name="sale_comment-${counter}" type="text" placeholder="Kommentar (ikke påkrevd)">
+                </div>
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Pris</h4>
+                <input id="price-${counter}" name="price-${counter}" type="number" value="0.00" onchange="update_sale_lines()">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Rabatt</h4>
+                <input id="discount-${counter}" name="discount-${counter}" type="number" value="0" onchange="update_sale_lines()">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Antall</h4>
+                <input id="amount-${counter}" name="amount-${counter}" type="number" value="1" onchange="update_sale_lines()">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Mva</h4>
+                <select id="sale_vat-${counter}" name="sale_vat-${counter}" onchange="update_sale_lines()" disabled></select>
+            </div>
+            <div class="sf-line-input sf-line-button">
+                <p class="sf-line-total" id="sf-line-total-${counter}">0.00</p>
+                <input class="sf-button" id="sf-button-${counter}" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
+            </div>
+            `;
+    }
+    else if (type === "freetext_line") {
+        return `
+            <div class="description-column">
+                <div class="sf-line-input">
+                    <h4 class="sf-header-hidden">Tekst</h4>
+                    <input id="description" name="description" type="text">
+                </div>
+                <ul class="sf-line-input" id="sale-type">
+                    <li>
+                        <input name="sale_type-${counter}" type="radio" value="1" checked="checked">
+                        <label for="sale_type-0">Vare (for videresalg)</label>
+                    </li>
+                    <li>
+                        <input name="sale_type-${counter}" type="radio" value="2">
+                        <label for="sale_type-1">Vare (egenprodusert)</label>
+                    </li>
+                    <li>
+                        <input name="sale_type-${counter}" type="radio" value="3">
+                        <label for="sale_type-2">Tjeneste</label>
+                    </li>
+                    <li>
+                        <input name="sale_type-${counter}" type="radio" value="4">
+                        <label for="sale_type-3">Annet</label>
+                    </li>
+                </ul>
+                <div class="sf-line-input">
+                    <h4 class="sf-header-hidden">Kommentar</h4>
+                    <input id="sale_comment-${counter}" name="sale_comment-1" type="text">
+                </div>
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Pris</h4>
+                <input id="price-${counter}" name="price-${counter}" type="number" value="0.00" onchange="update_sale_lines()">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Rabatt</h4>
+                <input id="discount-${counter}" name="discount-${counter}" type="number" value="0" onchange="update_sale_lines()">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Antall</h4>
+                <input id="amount-${counter}" name="amount-${counter}" type="number" value="1" onchange="update_sale_lines()">
+            </div>
+            <div class="sf-line-input line-split">
+                <h4 class="sf-header-hidden">Mva</h4>
+                <select id="sale_vat-${counter}" name="sale_vat-${counter}" onchange="update_sale_lines()"></select>
+            </div>
+            <div class="sf-line-input sf-line-button">
+                <p class="sf-line-total" id="sf-line-total-${counter}">0.00</p>
+                <input class="sf-button" id="sf-button-${counter}" type="button" Value="Slett linje" onclick="remove_sale_line(this.parentNode.parentNode.id)">
+            </div>
+            `;
+    }
+    else if (type === "payment-line") {
+        return `
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Betalt fra</h4>
+                    <select id="payment-account-${counter}" name="payment-account" required>
+                        <option disabled selected value>Velg</option>
+                        <optgroup label="Bankkonto">
+                            {% for account_string, account in payment_accounts %}
+                            <option value="{{ account["number"] }}">{{ account_string }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        <optgroup label="Kontanter">
+                            <option value="1901">Kontanter NOK</option>
+                        </optgroup>
+                        <optgroup label="Annet">
+                            <option value="7740">Øreavrunding</option>
+                        </optgroup>
+                        <optgroup label="Utlegg av eier">
+                            <option value="2915">Av foretakets eier</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Beløp</h4>
+                    <input id="payment-amount-${counter}" value="0" min="1" name="payment-amount" type="number" onchange="check_payment(${counter}); update_payment();" required>
+                </div>
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Betalingsdato</h4>
+                    <input id="payment-date-${counter}" name="payment-date" type="date" required>
+                </div>
+                <div class="pf-line-input">
+                    <input class="pf-button" value="Slett linje" id="payment-remove-${counter}" name="payment_remove" type="button" onclick="remove_payment_line(${counter}); update_payment();">
+                </div>`
+    }
+    else if (type === "payment-line-cash") {
+        return `
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Betalt fra</h4>
+                    <select id="payment-account-${counter}" name="payment-account" required>
+                        <option disabled selected value>Velg</option>
+                        <optgroup label="Bankkonto">
+                            {% for account_string, account in payment_accounts %}
+                            <option value="{{ account["number"] }}">{{ account_string }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        <optgroup label="Kontanter">
+                            <option value="1901">Kontanter NOK</option>
+                        </optgroup>
+                        <optgroup label="Annet">
+                            <option value="7740">Øreavrunding</option>
+                        </optgroup>
+                        <optgroup label="Utlegg av eier">
+                            <option value="2915">Av foretakets eier</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Beløp</h4>
+                    <input disabled id="payment-amount-cash" name="payment-amount" type="number" onchange="update_payment();" required>
+                </div>
+                <div class="pf-line-input">
+                    <h4 class="pf-header">Betalingsdato</h4>
+                    <p class="date-display" id="cash_payment_date"></p>
+                </div>`
+    }
+}
+</script>

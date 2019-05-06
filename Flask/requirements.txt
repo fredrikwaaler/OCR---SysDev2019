@@ -1,0 +1,10 @@
+flask==1.0.2
+flask_bcrypt==0.7.1
+flask_nav==0.6
+flask_session==0.3.1
+flask_wtf==0.14.2
+flask_login==0.4.1
+psycopg2==2.7.7
+requests==2.18.4
+wtforms==2.2.1
+google==2.0.1

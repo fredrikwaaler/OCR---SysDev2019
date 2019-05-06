@@ -1,0 +1,18 @@
+{
+    "csrv_token": "jksakjnhdflafs",
+    "purchase_type": 1,
+    "supplier": "Kiwi",
+    "invoice_date": "2019-12-31",
+    "invoice_number": 234243,
+    "maturity_date": "2019-12-31",
+
+
+    "text": "Tekst",
+    "billing_account": 100,
+    "gross_amount": 99999,
+    "vat": 1,
+    "net_amount": 88888
+
+
+  }
+  

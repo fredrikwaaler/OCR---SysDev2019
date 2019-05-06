@@ -1,0 +1,201 @@
+{% extends 'layout_post_warning.html' %}
+{% block container %}
+<h2>Historikk</h2>
+<!--Salg, kjøp and Alle are check buttons-->
+{% if entry_view|length > 0 %}
+
+{# Keeps control over which radio-button should be checked when the user enters / is redirected to the site. #}
+<form name="filter_ledger" class="filter_buttons" method="post" action="">
+    {%  if not checked %}
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="all" checked="checked"> Alle
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="purchases"> Kjøp
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="sales"> Salg
+
+    {%  elif checked == "purchases" %}
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="all"> Alle
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="purchases" checked="checked"> Kjøp
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="sales"> Salg
+
+    {% elif checked == "sales" %}
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="all"> Alle
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="purchases"> Kjøp
+    <input onclick="toggle_loader_on(); this.form.submit();" type="radio" name="type" value="sales" checked="checked"> Salg
+    {% endif %}
+
+</form>
+
+{% for entry, external in entry_view %}
+    {# TODO - Endre design på collapsible #}
+    <button class="collapsible">
+        {% if entry["contact"] %}
+            {% if entry["type"] == "Kjøp" %}
+                <span class="collapsible_text">{{ entry["type"] }} hos {{ external["contact"]["name"] }}</span>
+                <span class="collapsible_text collapsible_date">{{ entry["date"] }}</span>
+            {% else %}
+                <span class="collapsible_text">{{ entry["kind"] }} til {{ external["contact"]["name"] }}</span>
+                <span class="collapsible_text collapsible_date">{{ entry["date"] }}</span>
+            {% endif %}
+        {% else %}
+        <span class="collapsible_text">{{ entry["kind"] }}</span>
+        <span class="collapsible_text collapsible_date">{{ entry["date"] }}</span>
+        {% endif %}
+    </button>
+    <div class="content">
+
+        <div class="entry_container">
+
+            <div class="entry_data_container">
+                <div class="entry_info_container">
+
+                    <div class="entry_info1">
+                        <table class="entry_info_table">
+                            <tr>
+                                <th><h4>Type:</h4></th>
+                                <td>{{ entry["kind"] }}</td>
+                            </tr>
+                            <tr>
+                                <th><h4>Dato:</h4></th>
+                                <td>{{ entry["date"] }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="entry_info2">
+                        <table class="entry_info_table">
+                            <tr>
+                                {% if entry["type"] == "Salg" %}
+                                <th><h4>Kunde:</h4></th>
+                                {% elif entry["type"] == "Kjøp" %}
+                                <th><h4>Leverandør:</h4></th>
+                                {% endif %}
+                                {% if external["contact"] %}
+                                <td>{{ external["contact"]["name"] }}</td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <th><h4>Betalt:</h4></th>
+                                <td>{{ entry["paid"] }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="entry_audit_container">
+                    <table class="entry_audit_table">
+                        <tr>
+                            <th><h4>Beskrivelse:</h4></th>
+                            <th><h4>Nettobeløp:</h4></th>
+                            <th><h4>Mva:</h4></th>
+                            <th><h4>Bruttobeløp:</h4></th>
+                            <th><h4>Konto:</h4></th>
+                        </tr>
+                        {% for product in entry['lines'] %}
+                        <tr>
+                            <td>{{ product['description'] }}</td>
+                            <td>{{ product['netPrice'] }}</td>
+                            <td>{{ product['vat'] }}</td>
+                            <td class="brutto">{{ product['grossPrice'] }}</td>
+                            <td>{{ product['account'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="entry_pic">
+                {%  if entry["img"] or entry["pdf"] %}
+                    {% if entry["img"] %}
+                    <img class="entry_image" src="{{ entry["img"] }}" >
+                    <!-- Modal for the picture -->
+                    <div class="history_modal">
+                      <span class="history_modal_close">&times;</span>
+                      <img class="history_modal_img">
+                    </div>
+                    {% else %}
+                    <a href="{{ entry["pdf"] }}">Last ned bilag</a>
+                    {% endif %}
+                {% else %}
+                    {% if entry["type"] == "Kjøp" %}
+                    Det er ikke lagt til bilag på dette kjøpet
+                    {% else %}
+                    Det er ikke lagt til bilag på dette salget
+                    {% endif %}
+                {%  endif %}
+            </div>
+
+        </div>
+    </div>
+
+{% endfor %}
+{% else %}
+    {% if not current_user.fiken_manager.has_valid_login() %}
+        <p class="no_history">Du må <a href="{{ url_for('profile') }}">logge inn</a> i fiken før du kan bruke denne siden.</p>
+    {% elif not current_user.fiken_manager.get_company_slug() %}
+        <p class="no_history">Du må <a href="{{ url_for('profile') }}">velge</a> et aktivt selskap fra fiken før du bruker denne siden.</p>
+    {% else %}
+        {% if not checked or checked == "all" %}
+            <p class="no_history">Ingen historikk. Legg til <a href="{{ url_for('purchase') }}">kjøp</a>
+            og <a href="{{ url_for('sale') }}">salg</a> først.</p>
+        {% elif checked == "purchases" %}
+            <p class="no_history">Ingen historikk. Legg til <a href="{{ url_for('purchase') }}">kjøp</a> først.</p>
+        {% else %}
+            <p class="no_history">Ingen historikk. Legg til <a href="{{ url_for('purchase') }}"salg></a> først.</p>
+        {% endif %}
+    {% endif %}
+{%  endif %}
+<div class="marginbox"></div>
+
+<script>
+/** Script for the modal for images. Borrowed from w3schools. **/
+// Get the modals
+let modals = document.getElementsByClassName('history_modal');
+
+// Get the image and insert it inside the modal
+let imgs = document.getElementsByClassName('entry_image');
+let modalImgs = document.getElementsByClassName("history_modal_img");
+
+// Get the spans used for closing
+let spans = document.getElementsByClassName('history_modal_close');
+
+// Get the body
+let body = document.querySelector('body');
+
+for (let i = 0; i < imgs.length; i++) {
+    if (imgs[i] != null) {
+        imgs[i].onclick = function () {
+            imgs[i].classList.remove('entry_pic_img');
+            modals[i].style.display = "block";
+            modalImgs[i].src = this.src;
+            body.style.overflow = "hidden";
+        };
+    }
+    if (spans[i] != null) {
+        spans[i].onclick = function () {
+            imgs[i].classList.add('entry_pic_img');
+            modals[i].style.display = "none";
+            body.style.overflow = "auto";
+        };
+    }
+}
+
+/** Script for the collapsible boxes **/
+var coll = document.getElementsByClassName("collapsible");
+
+for (var i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+
+
+</script>
+
+{% endblock container %}

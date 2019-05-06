@@ -1,0 +1,1352 @@
+/*
+    ================
+        General
+    ================
+ */
+
+/*
+ Semantic elements
+ */
+html {
+    height: 100%;
+    background: #e2e2e2;
+}
+
+body {
+    font-family: 'Overpass', sans-serif;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+/* This continer currently holds all content,
+    except for navbar and footer */
+.wrapper {
+    min-height: 100%;
+    margin: 0;
+    padding: 20px 0;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container {
+    display: flow-root;
+    min-height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    margin: 10px 0 0 0;
+}
+
+/* h2 is used for big headings */
+h2 {
+    font-size: 2.5em;
+    text-align: center;
+    font-family: 'Overpass', system-ui;
+    color: rebeccapurple;
+    margin: 10px auto;
+}
+
+/* h3 is used for field; headings */
+h3 {
+    font-size: 1.5em;
+    font-family: 'Overpass', system-ui;
+    margin: 15px 0 0 0;
+    clear: both;
+}
+
+h4 {
+    font-size: 0.9em;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+p {
+    margin: 5px 0;
+}
+
+/* some h2 are elements are used as title for a
+    minor block/boxdisplay. */
+.title {
+    font-size: 1.5em;
+    margin: 10px auto;
+    text-align: center;
+}
+
+li {
+    margin: 5px 0;
+}
+
+label {
+    margin: 5px 0 0 0;
+}
+
+form {
+    display: block;
+    clear: left;
+}
+
+/* styling for active/highlighted buttons */
+input[type="submit"]:focus, input[type="button"]:focus {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #8c8c8c;
+}
+
+/* just for checkboxes */
+input[type="checkbox"] {
+    position: relative;
+    display: block;
+    float: left;
+    margin: 5px 5px 5px 0;
+}
+
+.disabled_button {
+    opacity: 0.3;
+}
+
+#admin {
+    float: none;
+    position: static;
+}
+
+input[type="file"] {
+    margin: 0;
+    padding: 0;
+    max-width: 207px;
+}
+
+/* Styling for buttons on profile page */
+#warning {
+    background-color: red;
+    color: #ffffff;
+}
+
+#warning:focus {
+    background-color: blue;
+    border: 3px solid yellow;
+}
+
+/*
+    ==============
+        Navbar
+    ==============
+ */
+
+nav {
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 1;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    height: 100%;
+    width: 100%;
+}
+
+nav li {
+    margin: 0;
+    padding: 0;
+    display: inline;
+    float: left;
+}
+
+nav a {
+    display: block;
+    padding: 15px 0;
+    margin: 0;
+    width: 80px;
+    color: black;
+    text-decoration: none;
+}
+
+nav a:hover:not(.active) {
+    background-color: rgba(209, 211, 214, 0.164);
+}
+
+.active {
+    border-bottom: 2px solid rebeccapurple;
+}
+
+footer {
+    position: relative;
+    width: 80%;
+    margin: 7em auto 0;
+    padding-top: 15px;
+    text-align: center;
+    background: white;
+    bottom: 0;
+    border-top: 2px solid #c7d4e8;
+}
+
+footer a {
+    padding: 0 5px;
+    font-size: 1em;
+    font-family: 'Overpass', sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+hr {
+    border-top: 1px solid #ccc;
+    margin: 10px auto;
+    width: 100%;
+}
+
+/*
+    ================
+        General
+    ================
+ */
+
+/*
+Pre
+ */
+.pre-container {
+    background-color: white;
+    text-align: center;
+}
+
+.pre-wrapper {
+    min-height: 100%;
+    height: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.pre-form {
+    margin: 0 auto;
+    padding: 0 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.pre-img {
+    padding: 0;
+    margin: 0 auto;
+    width: 50%;
+}
+
+/*
+Post
+ */
+
+.main-form {
+    margin: 0;
+    padding:0;
+    display: grid;
+    grid-template-columns: 1fr;
+
+}
+
+.form-part {
+    margin:10px 0;
+    padding: 10px 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid #e3e3e3;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+}
+
+.button-red {
+    margin:0;
+    padding:10px 0;
+    float: left;
+    width: 125px;
+    font-size: 14px;
+    color: #fff;
+    background-color: rgba(216, 8, 8, 0.9) !important;
+    border: 1px solid red;
+    border-radius: 4px;
+}
+
+.button-green {
+    margin:0;
+    padding:10px 0;
+    float: right;
+    width: 125px;
+    font-size: 14px;
+    color: #fff;
+    background-color: rgba(12, 135, 1, 0.9) !important;
+    border: 1px solid green;
+    border-radius: 4px;
+}
+
+select, input[type="text"], input[type="number"], input[type="date"], textarea, input[type="password"]{
+    margin:0;
+    padding:4px 0;
+    width: 100%;
+    font-size: 14px;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+select:disabled, input[type="text"]:disabled, #supplier-button:disabled, input:disabled{
+    background-color: #eee;
+}
+
+.hidden {
+    display: none;
+}
+
+/*
+    ====================
+        Purchase Page
+    ====================
+ */
+
+.imagebox {
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#image-filler {
+}
+
+.file-upload {
+    margin: 0;
+}
+
+
+.pp-line {
+    margin: 2%;
+    border-bottom: 1px solid #ccc;
+}
+.pp-line:first-child {
+    border-top: 1px solid #ccc;
+}
+
+#uploaded-image {
+    max-width: 100%;
+}
+
+#purchase-container {
+    margin:0;
+    padding: 0 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.pf-group {
+    margin:0;
+    display:grid;
+}
+
+.pf-form-input, .pf-line-input, .sf-line-input {
+    margin:0;
+    padding: 10px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.total-amount {
+    float:right;
+    padding-bottom: 4px;
+}
+
+.pf-line {
+    margin:0;
+    padding: 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    background-image: linear-gradient(#f3f3f3, #f5f5f5);
+    border-top: 1px solid #ccc;
+}
+
+.pf-header-hidden, .sf-header-hidden {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.pf-lines-bottom, .sf-lines-bottom {
+    margin:0;
+    padding: 10px 0;
+    border-top: 1px solid #ccc;
+}
+
+.pf-lines-top {
+    display: none;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.pf-buttons {
+    padding: 10px 0;
+}
+
+
+#pf-paid h4, #pf-paid p {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+#pf-paid p {
+    font-size: 12px;
+}
+
+#pf-paid-content, #pf-payment-content {
+    margin: 0;
+    padding: 10px 15px;
+}
+
+#pf-payment {
+    display: none;
+}
+
+#purchase_type {
+    margin:0;
+    padding: 0;
+    height: 20px;
+}
+
+#purchase_type li{
+    left:0;
+    margin:0;
+    padding-right: 5px;
+    list-style-type: none;
+    float:left;
+}
+
+#supplier-button, .pf-button, .sf-button, #upload-file-button, .modal-submit, .form-button, .company_table {
+    margin:0;
+    padding:4px 0;
+    width:100%;
+    font-size: 14px;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#upload-file-part {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 1em;
+}
+
+/*
+    =================
+        Sale Page
+    =================
+ */
+#sale-container {
+    margin:0;
+    padding: 0 15px;
+}
+
+.sf-upper {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.sf-form-input {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 10px 0;
+}
+
+#maturity-text {
+    margin:5px 0;
+    font-size: 14px;
+}
+#sale-type {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0;
+    padding: 0;
+}
+
+#sale-type li {
+    left: 0;
+    margin: 0;
+    padding: 5px 5px;
+    list-style-type: none;
+    font-size: 13px;
+}
+
+.sf-line {
+    margin:0;
+    padding:0;
+    display: grid;
+    grid-template-columns: 1fr;
+    background-image: linear-gradient(#f3f3f3, #f5f5f5);
+    border-top: 1px solid #ccc;
+}
+
+.sf-line-input {
+    padding: 10px 0;
+}
+
+.sf-line-split {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.line-split {
+    grid-template-columns: 1fr 2fr;
+    text-align: right;
+}
+
+.line-split h4 {
+    padding: 0 14px;
+    text-align: right;
+    line-height: 30px;
+}
+
+
+#line-text {
+    margin: 5px 0;
+}
+
+.sf-line-total {
+    margin: 0;
+    padding: 0;
+    text-align: right;
+}
+
+#sf-lines-top-big {
+    display: none;
+}
+
+textarea {
+    resize: none;
+}
+
+/*
+    ==================
+        Admin Page
+    ==================
+ */
+
+.admin-flash {
+    margin:0;
+    padding:0;
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%
+}
+
+.register-input {
+    margin: 0;
+    padding: 5px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+#register-user {
+    padding: 0 15px;
+}
+
+/*
+    ===================
+        Contact Page
+    ===================
+ */
+.contact-content {
+    margin: 0;
+    padding: 0 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+/*
+    ===================
+        Profile Page
+    ===================
+ */
+#profile-container {
+    margin: 0;
+    padding: 0 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.profile-section {
+    margin: 0;
+    padding: 10px 0;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: 30px;
+    width: 100%;
+}
+
+.profile-title {
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    line-height: 30px;
+}
+
+.profile-p {
+    margin:0;
+    padding:0;
+    padding-left: 5px;
+    font-size: 12px;
+    line-height: 30px;
+}
+
+
+.profile-modal-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 0.5em;
+    margin: 0 auto;
+    padding: 30px 10px;
+    width: 90%;
+}
+
+/*
+    ==================
+        Loader Page
+    ==================
+ */
+#loader {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.6);
+    z-index: 99;
+    text-align: center;
+}
+
+#loader-image {
+    padding-top: 200px;
+    width: 25%;
+    z-index: 100;
+}
+
+/* ------ HISTORY PAGE ----- */
+/* Just a div placed on certain pages
+    to make the footer placed correctly */
+.marginbox {
+    display: block;
+    color: white;
+    background-color: white;
+    width: 100%;
+    height: 400px;
+}
+
+.filter_buttons {
+    position: static;
+    margin: 0 10% 2%;
+    font-size: 130%;
+}
+
+.filter_buttons input[type="radio"] {
+    float: none;
+    display: inline;
+    position: static;
+}
+
+.filter_buttons input {
+    margin-left: 1%;
+}
+
+.filter_buttons input:first-child {
+    margin-left: 0;
+}
+
+.collapsible {
+    display: block;
+    background-color: #f5f5f5;
+    color: black;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    padding: 18px;
+    width: 80%;
+    text-align: left;
+    outline: none;
+    overflow: hidden;
+    margin: 0.5% auto 0;
+    font-size: 115%;
+}
+
+.collapsible:after {
+    content: "";
+    clear: both;
+}
+
+.collapsible_text {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.collapsible_date {
+    float: right;
+    margin-right: 7.5%;
+}
+
+.collapsible_text:first-child {
+    text-align: start;
+}
+
+
+.content {
+    display: none;
+    background-color: #fff;
+    overflow: auto;
+    width: 80%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 3% 1%;
+    border: 1px solid #ddd;
+    border-top: none;
+}
+
+
+.content img {
+    max-width: 300px;
+    width: 100%;
+}
+
+
+
+.no_history {
+    font-size: 200%;
+    padding: 5%;
+    text-align: center;
+}
+
+
+/* ------ HISTORY 2 ----- */
+.entry_container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+.entry_info_container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding-bottom: 1%;
+    border-bottom: 1px solid #d1d1d1;
+}
+
+.entry_info_table h4,
+.entry_audit_table h4 {
+    float: none;
+    font-size: inherit;
+    font-weight: bold;
+    padding-right: 5%;
+    margin: 0;
+}
+
+.entry_info_table h4 {
+    text-align: left;
+}
+
+.entry_audit_table {
+    width: 70%;
+}
+
+.entry_audit_table tr td:first-child {
+    width: 35%;
+}
+
+.entry_audit_table td {
+    padding-right: 5%;
+    vertical-align: text-top;
+}
+
+.entry_audit_table th {
+    text-align: left;
+}
+
+.entry_audit_table .brutto {
+    text-align: right;
+}
+
+.entry_audit_table tr td:last-child {
+    padding-right: 0;
+}
+
+.entry_audit_container {
+    padding: 2% 0 1% 0;
+}
+
+
+.entry_pic {
+    padding: 1%;
+    align-content: center;
+    text-align: center;
+}
+
+.entry_pic img {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    max-width: 70%;
+    display: block;
+    margin: auto;
+    width: 80%;
+}
+
+/* Image modal code borrowed from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal_img */
+.history_modal_img {
+  margin: auto !important;
+  display: block !important;
+  width: 80% !important;
+  max-width: 700px !important;
+}
+
+/* The Close Button */
+.history_modal_close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.history_modal_close:hover,
+.history_modal_close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.history_modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+.entry_pic img:hover {
+    opacity: 0.7;
+}
+
+.history_modal_img:hover {
+    opacity: 1 !important;
+}
+
+.modal_switch {
+    display: none;
+}
+
+
+/**
+CSS for visually displaying that some functionality is not in order.
+ */
+.disabled_func {
+    opacity: 0.3;
+}
+
+/* Pop-up for å endre selskap i fiken */
+
+.company_table {
+    background-color: white;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2%;
+    border-collapse: collapse;
+    box-shadow: 1px 1px #b0b0b0;
+}
+
+.company_table td {
+    text-overflow: ellipsis;
+    border: 1px solid #ddd;
+    padding: 1%;
+    text-align: left;
+}
+
+.company_table td input[type="radio"] {
+    border: 1px solid #fff;
+    margin: 0;
+}
+
+.org_num {
+    font-style: italic;
+}
+
+
+/* Buttons that should stack, floats are cleared. */
+.stacked_button {
+    float: none !important;
+    margin: 5px 0 0 0 !important;
+    display: inline-block !important;
+}
+
+/* Info about active user and fiken user */
+.active_info {
+    font-style: italic;
+    font-size: 50%;
+    text-overflow: ellipsis;
+}
+
+/* Warning box for not having set FM properly */
+.fiken_warning {
+    background-color: lightcoral;
+    padding: 1%;
+    border-radius: 5px;
+    width: auto;
+    margin-bottom: 5%;
+}
+
+/*
+    =================
+        Modals
+    =================
+*/
+
+.modal, .popup {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal {
+  display: none;
+}
+
+.popup {
+  display: block; /* If there is a pop-up, show it by default */
+}
+
+.modal-content, .popup-content {
+  background-color: #f5f5f5;
+  margin: 20px auto;
+  border-radius: 4px;
+  box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  width: 90%;
+}
+
+.popup-content {
+  padding: 10px 20px 40px 20px;
+  width: 30%;
+  text-align: center;
+}
+
+.popup-messages {
+  margin-top: 30px;
+}
+
+.modal-form, .popup-content{
+  background: #ffffff;
+  padding: 100px auto;
+}
+
+/* The Close Button */
+.close, .popup-close {
+  margin-top: 10px;
+  margin-right: 10px;
+
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.popup-close-btn {
+  float: none !important;
+  margin: 20px auto 0 !important;
+}
+
+.close:hover,
+.close:focus,
+.popup-close:hover,
+.popup-close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*
+  TYPE SPECIFIC
+*/
+
+.new-contact, .new-account {
+  margin: 0 15px;
+  padding: 10px 0;
+}
+
+.new-contact-input, .new-account-input {
+    margin:0;
+    padding: 5px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+#customer-supplier {
+  margin:0;
+  padding:0;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+#customer-supplier li {
+  list-style-type: none;
+}
+
+#new-customer {
+  display: none;
+}
+
+#foreign {
+  display: none;
+}
+
+/*
+    =================
+        Flashes
+    =================
+*/
+
+.flash {
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 1em;
+    width: 100%;
+
+}
+.message, .success {
+    margin: 0;
+    list-style: None;
+    padding: 6px 14px;
+    border-radius: 4px;
+}
+
+.message {
+    background-color: rgba(244, 119, 119, 0.5);
+    border: 1px red solid;
+}
+
+.success {
+    background-color: rgba(144, 255, 0, 0.5);
+    border: 1px green solid;
+}
+
+
+
+    /* Styling for non-widescren (not phones)
+    480px < width > 1200px */
+@media screen and (min-width: 480px) {
+    /* temp color changes to make a clear
+        differences between devices */
+    body {
+        word-break: keep-all;
+    }
+
+    nav ul {
+        width: 90%;
+    }
+
+    /* some h2 are elements are used as title for a
+        minor block/boxdisplay. */
+    .title {
+        font-size: 2em;
+        display: block;
+        float: left;
+        margin: 10px 220px;
+    }
+
+    .pre-img {
+        width: 25%;
+    }
+
+    /*
+    ====================
+        Purchase Page
+    ====================
+    */
+
+    .pf-form-input {
+        grid-template-columns: 1fr 2fr;
+    }
+
+    .input-header {
+        padding:0 10px;
+        text-align: right;
+        line-height: 30px;
+    }
+
+    #purchase_type {
+        line-height: 30px;
+    }
+
+    .pf-payment-content {
+        width: 60%;
+    }
+
+    /*
+    ===================
+        Sale Page
+    ===================
+    */
+
+    .sf-line-split {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #sale-type {
+        display: inline-block;
+    }
+
+    #sale-type li {
+        float:left;
+    }
+
+    #contact-info {
+        margin: 0 auto;
+        width: 80%;
+    }
+
+    #purchase-container, #sale-container, #profile-container {
+        padding: 0 40px;
+    }
+
+    #loader-image {
+        width: 10%;
+    }
+
+    .modal-content {
+        width: 70%;
+    }
+
+
+    /* Styling for widescreens, ie. width > 768px */
+    @media screen and (min-width: 1200px) {
+        /* center the forms pre log in */
+        .pre-form {
+            display: block;
+            margin: 0 25% 0 25%;
+        }
+
+        .pre-img {
+            width: 8%;
+        }
+
+        nav ul {
+            width: 85%;
+        }
+
+        /* some h2 are elements are used as title for a
+            minor block/boxdisplay. */
+        .title {
+            font-size: 2em;
+            display: block;
+            float: left;
+            margin: 10px 220px;
+        }
+
+        .wrapper {
+            min-height: 100%;
+            margin: 0 auto;
+            padding: 20px 10px;
+            max-width: 85%;
+            background: #ffffff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        #purchase-container {
+            grid-template-columns: 1fr 1fr;
+            grid-column-gap: 1em;
+        }
+
+        .purchase-left{
+            grid-column-start: 1;
+            grid-row-start: 1;
+        }
+
+        .purchase-right {
+            grid-column-start: 2;
+            grid-row-start: 1;
+        }
+
+        #uploaded-image {
+            margin: 10px 0;
+            grid-column-start: 2;
+        }
+
+        #image-filler {
+            display: grid;
+        }
+
+        .pf-split {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .pf-line, .pf-lines-top {
+            display: grid;
+            grid-template-columns: 2fr 2fr 3fr 1fr 3fr 2fr;
+            grid-column-gap: 10px;
+        }
+
+        h4 {
+            font-size: 18px;
+        }
+
+        .pf-lines-top h4 {
+            width: 100%;
+        }
+        .pf-header-hidden, .sf-header-hidden {
+            display: none;
+        }
+
+        /*
+        .pf-lines-top {
+            display: grid;
+            grid-template-columns: 4fr 3fr 3fr 2fr 2fr 2fr;
+            grid-column-gap: 1em;
+        }*/
+
+        #upload-file-part {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+
+        #purchase-block {
+            min-height: 50px;
+        }
+
+        /*
+        Sale form
+         */
+
+        .sf-upper {
+            grid-template-columns: 1fr 1fr;
+            grid-column-gap: 3em;
+        }
+        .sf-form-input {
+            grid-template-columns: 1fr 2fr;
+        }
+        .sf-form-input h4, .sf-line-total {
+            padding:0 10px;
+            text-align: right;
+            line-height: 30px;
+        }
+
+        #sf-lines-top-small {
+            display: none;
+        }
+
+        #sf-lines-top-big {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 1fr 2fr;
+            grid-column-gap: 1em;
+        }
+
+        .sf-line{
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 1fr 2fr;
+            grid-column-gap: 1em;
+        }
+        .sf-line-input {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: min-content;
+        }
+
+        .sf-line-button {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .sf-reference-block {
+            display:grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr auto;
+        }
+
+        #sf-reference {
+            grid-template-rows: min-content;
+        }
+
+        #reference-fill {
+            min-height: 150px;
+        }
+
+        #register-user {
+            margin: 0 auto;
+            width: 50%;
+        }
+
+        #contact-info {
+            margin: 0 auto;
+            width: 50%;
+        }
+
+        .pre-form {
+            width: 50%;
+        }
+
+        .pf-split-right {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: min-content;
+        }
+        #maturity_date {
+            max-height: 20px;
+        }
+
+        #profile-container {
+            margin: 0 auto;
+            width: 50%;
+        }
+
+        .profile-title, .profile-p {
+            font-size: 16px;
+        }
+
+        #loader-image {
+            width: 5%;
+        }
+
+        .modal-content {
+            width: 40%;
+        }
+
+        .new-contact-input {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .new-contact-input h4 {
+            padding:0 10px;
+            text-align: right;
+            line-height: 30px;
+        }
+    }
+}

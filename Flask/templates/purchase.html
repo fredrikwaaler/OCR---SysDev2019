@@ -1,0 +1,10 @@
+{% extends 'layout_post_warning.html' %}
+{% block container %}
+    <h2>Kjøp</h2>
+    <div id="purchase-container">
+        {% include 'purchase_widget.html' %}
+    </div>
+    {% include 'create_contact_modal.html' %}
+    {% include 'popup.html' %}
+
+{% endblock container %}

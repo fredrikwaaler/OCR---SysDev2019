@@ -8,3 +8,8 @@ psycopg2==2.7.7
 requests==2.18.4
 wtforms==2.2.1
 google==2.0.1
+google-api-core==1.8.0
+google-auth==1.6.3
+google-cloud==0.34.0
+google-cloud-core==0.29.1
+google-cloud-vision==0.36.0

@@ -102,7 +102,7 @@ class PurchaseDataFormatter:
             total_amount = 0
             for gross in data.getlist('gross_amount'):
                 total_amount += float(gross)
-            return_data["paymentAmount"] = total_amount
+            return_data["paymentAmount"] = PurchaseDataFormatter.fiken_number_formatter(total_amount)
         # Add identifier if existent:
         if not data["invoice_number"].strip() == '':
             return_data["identifier"] = data["invoice_number"]
@@ -123,15 +123,21 @@ class PurchaseDataFormatter:
             vat_percentages.append(PurchaseDataFormatter.safts_to_vat[int(saft)])
             vat_types.append(PurchaseDataFormatter.safts_to_type[int(saft)])
         # Calculate net from vatPercentages
+        # Need one overview of net_amounts to calculate vats
         net_amounts = []
+        # Need one overview of net-amounts that will be sent to fiken (formatting "123.00" as "12300")
+        net_amounts_to_fiken = []
         for i in range(len(gross_amounts)):
             net_amounts.append(float(gross_amounts[i]) / (1 + vat_percentages[i]))
+            net_amounts_to_fiken.append(PurchaseDataFormatter.fiken_number_formatter(round(float(gross_amounts[i]) /
+                                                                                  (1 + vat_percentages[i]), 2)))
             # Calculate vat-values
-            vats.append(float(gross_amounts[i]) - float(net_amounts[i]))
+            vats.append(PurchaseDataFormatter.fiken_number_formatter(round(float(gross_amounts[i]) -
+                                                                           float(net_amounts[i]), 2)))
         # Create product-lines for each product
         products = []
         for i in range(len(descriptions)):  # As many products as descriptions
-            product_line = {"description": descriptions[i], "netPrice": net_amounts[i],
+            product_line = {"description": descriptions[i], "netPrice": net_amounts_to_fiken[i],
                             "vat": vats[i], "account": accounts[i], "vatType": vat_types[i]}
             products.append(product_line)
         # Add product-lines
@@ -161,7 +167,8 @@ class PurchaseDataFormatter:
 
         # Should be one account for each payment
         for i in range(len(payment_accounts)):
-            payment = {"account": payment_accounts[i], "amount": payment_amounts[i], "date": payment_dates[i]}
+            payment = {"account": payment_accounts[i], "amount":
+                PurchaseDataFormatter.fiken_number_formatter(payment_amounts[i]), "date": payment_dates[i]}
             payments.append(payment)
 
         return payments
@@ -172,4 +179,27 @@ class PurchaseDataFormatter:
 
         return {'AttachmentFile': (filename, open(filepath, 'rb')), 'PurchaseAttachment': (None,
                                             '{}'.format(dict_string)), }
+
+    @staticmethod
+    def fiken_number_formatter(num):
+        """
+        Fiken formats numbers in a very special way.
+        For instance "123.00" should be sent as 12300, and "44.8" should be sent as "4480".
+        This function manipulates a number such that fiken will perceive its original value.
+        :param num: The number to manipulate.
+        :return: The number input manipulated in such a way that fiken understands it.
+        """
+        num = str(num)
+        num_split = num.split('.')
+        # Meaning there are no commas in the number
+        if len(num_split) == 1:
+            return num + "00"
+        # Meaning there are commas in the number
+        else:
+            if len(num_split[1]) == 1:
+                return num_split[0] + num_split[1] + "0"
+            else:
+                return num_split[0] + num_split[1]
+
+
 

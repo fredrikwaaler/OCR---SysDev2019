@@ -31,7 +31,7 @@
                         {% endfor %}
                     </select>
                     <div class="empty"></div>
-                    <input disabled class="modal_button sf-button disabled_func" id="new-account-button" type="button" value="Opprett ny">
+                    <input disabled class="sf-button disabled_func" id="new-account-button" type="button" value="Opprett ny">
                 </div>
             </div>
         </div>
@@ -349,10 +349,13 @@ function get_total_mva() {
 
     let mva_total = 0;
     for (let i = 0; i < prices.length; i++) {
-        let mva = parseFloat(sale_vats[i].options[sale_vats[i].options.selectedIndex].value);
-        let mvaPercentage = mva / 100;
-        let price = parseFloat(prices[i].textContent);
-        mva_total += mvaPercentage * price;
+        let mva_field = sale_vats[i].options[sale_vats[i].options.selectedIndex];
+        if (mva_field != null) {
+            let mva = parseFloat(mva_field.value);
+            let mvaPercentage = mva / 100;
+            let price = parseFloat(prices[i].textContent);
+            mva_total += mvaPercentage * price;
+        }
     }
     for (let i = 0; i < prices_free.length; i++) {
         let mva_text = sale_vats_free[i].options[sale_vats_free[i].options.selectedIndex].text;
@@ -380,7 +383,7 @@ function check_discount(counter) {
         discount.value = 100;
         update_sale_lines()
     }
-    else if  (!(/^(\d{0,2}(\.\d{1,2})?|100(\.00?)?)$ /.test(String(discount.value)))) {
+    else if  (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(discount.value)))) {
         discount.value = 0;
         update_sale_lines()
     }
@@ -586,11 +589,11 @@ function createHTML(type) {
             </div>
             <div class="sf-line-input line-split">
                 <h4 class="sf-header-hidden">Pris</h4>
-                <input id="price-${counter}" name="price" type="number" value="0.00" onchange="update_sale_lines(); check_price(${counter});">
+                <input id="price-${counter}" name="price" type="text" value="0.00" onchange="update_sale_lines(); check_price(${counter});">
             </div>
             <div class="sf-line-input line-split">
                 <h4 class="sf-header-hidden">Rabatt</h4>
-                <input id="discount-${counter}" min="0" max="100" name="discount" type="number" value="0" onchange="update_sale_lines(); check_discount(${counter})">
+                <input id="discount-${counter}" min="0" max="100" name="discount" type="text" value="0.00" onchange="update_sale_lines(); check_discount(${counter})">
             </div>
             <div class="sf-line-input line-split">
                 <h4 class="sf-header-hidden">Antall</h4>
@@ -616,19 +619,19 @@ function createHTML(type) {
                 </div>
                 <ul class="sf-line-input" id="sale-type">
                     <li>
-                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="1" checked>
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free" onclick="update_sale_lines();" type="radio" value="1" checked>
                         <label for="sale_type-0">Vare (for videresalg)</label>
                     </li>
                     <li>
-                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="2">
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free" onclick="update_sale_lines();" type="radio" value="2">
                         <label for="sale_type-1">Vare (egenprodusert)</label>
                     </li>
                     <li>
-                        <input  onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="3">
+                        <input  onchange="updateMvaFree(${counter});" name="sale_type_free" onclick="update_sale_lines();" type="radio" value="3">
                         <label for="sale_type-2">Tjeneste</label>
                     </li>
                     <li>
-                        <input class="disabled_func" disabled onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="4">
+                        <input class="disabled_func" disabled onchange="updateMvaFree(${counter});" name="sale_type_free" onclick="update_sale_lines();" type="radio" value="4">
                         <label class="disabled_func" for="sale_type-3">Annet</label>
                     </li>
                 </ul>
@@ -639,11 +642,11 @@ function createHTML(type) {
             </div>
             <div class="sf-line-input line-split">
                 <h4 class="sf-header-hidden">Pris</h4>
-                <input id="price-${counter}" name="price_free" type="number" value="0.00" onchange="update_sale_lines(); check_price(${counter});">
+                <input id="price-${counter}" name="price_free" type="text" value="0.00" onchange="update_sale_lines(); check_price(${counter});">
             </div>
             <div class="sf-line-input line-split">
                 <h4 class="sf-header-hidden">Rabatt</h4>
-                <input id="discount-${counter}" name="discount_free" min="0" max="100" type="number" value="0" onchange="update_sale_lines(); check_discount(${counter});">
+                <input id="discount-${counter}" name="discount_free" min="0" max="100" type="text" value="0" onchange="update_sale_lines(); check_discount(${counter});">
             </div>
             <div class="sf-line-input line-split">
                 <h4 class="sf-header-hidden">Antall</h4>

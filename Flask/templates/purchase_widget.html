@@ -804,7 +804,7 @@ function createHTML(type) {
                 </div>
                 <div class="pf-line-input">
                     <h4 class="pf-header">Beløp</h4>
-                    <input id="payment-amount-${counter}" value="0" min="1" name="payment-amount" type="number" onchange="check_payment(${counter}); update_payment();" required>
+                    <input id="payment-amount-${counter}" value="0.00" name="payment-amount" type="text" onchange="check_payment(${counter}); update_payment();" required>
                 </div>
                 <div class="pf-line-input">
                     <h4 class="pf-header">Betalingsdato</h4>
@@ -838,7 +838,7 @@ function createHTML(type) {
                 </div>
                 <div class="pf-line-input">
                     <h4 class="pf-header">Beløp</h4>
-                    <input disabled id="payment-amount-cash" name="payment-amount" type="number" onchange="update_payment();" required>
+                    <input disabled id="payment-amount-cash" name="payment-amount" type="text" onchange="update_payment();" required>
                 </div>
                 <div class="pf-line-input">
                     <h4 class="pf-header">Betalingsdato</h4>

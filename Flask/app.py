@@ -16,6 +16,7 @@ from mailer import Mailer
 from ImageProcessor import VisionManager, TextProcessor
 import smtplib
 from datetime import timedelta
+from FikenManager import FikenManager
 
 
 def create_login_manager():
@@ -127,6 +128,7 @@ def register_purchase():
     validated, errors = validate_purchase_form(request.form)
     if validated:
         purchase_data = PurchaseDataFormatter.ready_data_for_purchase(request.form)
+        print(purchase_data)
         post = current_user.fiken_manager.post_data_to_fiken(purchase_data, "purchases")
 
         if post.status_code == 201:
@@ -165,6 +167,8 @@ def register_purchase():
             flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
     else:
         flash(errors[0])
+
+    return redirect(url_for('purchase'))
 
 
 @app.route('/sale', methods=['GET', 'POST'])
@@ -298,6 +302,8 @@ def log_in():
             if PasswordHandler.compare_hash_with_text(user.password, password):
                 login_user(user, remember=False)
                 # In case the company set has active has been deleted in fiken since last time (very unlikely)
+                if not current_user.fiken_manager:
+                    current_user.fiken_manager = FikenManager()
                 if current_user.fiken_manager.has_valid_login():
                     slugs = [info[2] for info in current_user.fiken_manager.get_company_info()]
                     if current_user.fiken_manager.get_company_slug() not in slugs:
@@ -604,18 +610,23 @@ def create_contact(contact_type):
     contact["currency"] = new_contact_info["currency"]
     contact["customer"] = True
 
+    if contact_type == "supplier":
+        contact_type_no = "leverandør"
+    else:
+        contact_type_no = "kunde"
+
     # Send data to fiken to create new contact
     post = current_user.fiken_manager.post_data_to_fiken(contact, "contacts")
     if post.status_code is not 201:
-        flash("Kunne ikke oprette kunde. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+        flash("Kunne ikke oprette {}. Prøv igjen senere eller kontakt oss om problemet vedvarer.".format(contact_type_no))
     else:
-        flash("Ny kunde opprettet.")
+        flash("Ny {} opprettet.".format(contact_type_no))
 
     # Customers are created on sales-page
     if contact_type == "customer":
         return redirect(url_for('sale'))
     # Suppliers are created on purchase-page
-    if contact_type == "supplier":
+    elif contact_type == "supplier":
         return redirect(url_for('purchase'))
 
 
@@ -723,4 +734,4 @@ def gateway_timeout(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host="0.0.0.0", port="80")
+    app.run(debug=False, port="8000")

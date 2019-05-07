@@ -158,17 +158,24 @@ class SalesDataFormatter:
             product_info[i]["vatAmount"] = mva * product_info[i]["netAmount"]
             # Add gross amount
             product_info[i]["grossAmount"] = product_info[i]["netAmount"] + product_info[i]["vatAmount"]
+
+            # Format the data so that it is correct for send-in to fiken
+            product_info[i]["unitNetAmount"] = SalesDataFormatter.fiken_number_formatter(product_info[i]["unitNetAmount"])
+            product_info[i]["netAmount"] = SalesDataFormatter.fiken_number_formatter(product_info[i]["netAmount"])
+            product_info[i]["vatAmount"] = SalesDataFormatter.fiken_number_formatter(product_info[i]["vatAmount"])
+            product_info[i]["grossAmount"] = SalesDataFormatter.fiken_number_formatter(product_info[i]["grossAmount"])
+
         return_data["lines"] = product_info
 
         # Retrieve product-info for each free-text product
         product_info_free_text = []
         descriptions = data.getlist('description_free')
         comments = data.getlist('comment_free')
-        sale_types = data.getlist('sale_type')
+        sale_types = data.getlist('sale_type_free')
         unit_prices = data.getlist('price_free')
         discounts = data.getlist('discount_free')
         quantities = data.getlist('quantity_free')
-        safts = data.getlist('sale_free_saft')
+        safts = data.getlist('sale_vat_free')
         for i in range(len(descriptions)):
             product_info_free_text.append({})
             product_info_free_text[i]["description"] = descriptions[i]
@@ -183,12 +190,37 @@ class SalesDataFormatter:
             mva = SalesDataFormatter.saft_to_VAT[int(safts[i])]
             product_info_free_text[i]["vatAmount"] = product_info_free_text[i]["netAmount"] * mva
             product_info_free_text[i]["grossAmount"] = product_info_free_text[i]["netAmount"] + product_info_free_text[i]["vatAmount"]
+
+            # Format the data so that it is correct for send-in to fiken
+            product_info_free_text[i]["unitNetAmount"] = SalesDataFormatter.fiken_number_formatter(product_info_free_text[i]["unitNetAmount"])
+            product_info_free_text[i]["netAmount"] = SalesDataFormatter.fiken_number_formatter(product_info_free_text[i]["netAmount"])
+            product_info_free_text[i]["vatAmount"] = SalesDataFormatter.fiken_number_formatter(product_info_free_text[i]["vatAmount"])
+            product_info_free_text[i]["grossAmount"] = SalesDataFormatter.fiken_number_formatter(product_info_free_text[i]["grossAmount"])
+
         return_data["lines"] += product_info_free_text
 
         return return_data
 
-
-
+    @staticmethod
+    def fiken_number_formatter(num):
+        """
+        Fiken formats numbers in a very special way.
+        For instance "123.00" should be sent as 12300, and "44.8" should be sent as "4480".
+        This function manipulates a number such that fiken will perceive its original value.
+        :param num: The number to manipulate.
+        :return: The number input manipulated in such a way that fiken understands it.
+        """
+        num = str(num)
+        num_split = num.split('.')
+        # Meaning there are no commas in the number
+        if len(num_split) == 1:
+            return num + "00"
+        # Meaning there are commas in the number
+        else:
+            if len(num_split[1]) == 1:
+                return num_split[0] + num_split[1] + "0"
+            else:
+                return num_split[0] + num_split[1]
 
 
 

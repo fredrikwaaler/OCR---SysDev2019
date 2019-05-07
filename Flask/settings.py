@@ -3,7 +3,7 @@ MAIL_LOGIN = "contactfikto@gmail.com"
 MAIL_PASSWORD = "Gruppe8OCR"
 
 DB_HOST = "localhost"
-DB_USER = "group8"
-DB_PASSWORD = "group8"
-DB_DATABASE = "group8db"
+DB_USER = "postgres"
+DB_PASSWORD = "Sebas10an99"
+DB_DATABASE = "sukkertoppen"
 

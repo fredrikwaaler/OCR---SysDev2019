@@ -2,9 +2,8 @@
 MAIL_LOGIN = "contactfikto@gmail.com"
 MAIL_PASSWORD = "Gruppe8OCR"
 
-# TODO - CHANGE TO ACTUAL DATABASE
 DB_HOST = "localhost"
-DB_USER = "postgres"
-DB_PASSWORD = "password"
-DB_DATABASE = "Sukkertoppen"
+DB_USER = "group8"
+DB_PASSWORD = "group8"
+DB_DATABASE = "group8db"
 

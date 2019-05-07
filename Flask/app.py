@@ -372,7 +372,7 @@ def forgot_password():
             except smtplib.SMTPException:
                 flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
         else:
-            flash("Obs: Finner ingen bruker med den angitte epsoten.")
+            flash("Obs: Finner ingen bruker med den angitte eposten.")
 
         return redirect(url_for('log_in'))
 
@@ -723,4 +723,4 @@ def gateway_timeout(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=False, port="80")
+    app.run(debug=False, host="0.0.0.0", port="80")

@@ -90,27 +90,14 @@
     </div>
 </form>
 <script>
-let mdblock = document.getElementById("maturity_date-block");
-let mdblock_filler = document.getElementById("maturity_date-block-filler");
-let paid = document.getElementById("pf-paid");
-let payment = document.getElementById("pf-payment");
-let supplier = document.getElementById("supplier");
-let supplier_button = document.getElementById("supplier-button");
-let amount = document.getElementById("amount");
+/**
+ * JavaScript for sale widget.
+ */
 
-let counter = 1; //Counter to represent amount of made lines
-
+//Update date to current date
+document.getElementById("date").value = get_current_date();
+//Restrict dates
 restrict_dates();
-init();
-
-function init() {
-    if (document.getElementById("purchase-form")) {
-        add_purchase_line();
-    }
-    if (document.getElementById("sale-form")) {
-        add_product_line();
-    }
-}
 
 /**
  * Restrict the choice of dates on the page to only dates this year.
@@ -123,126 +110,6 @@ function restrict_dates() {
     let max_date = this_year+'-12-31';
     date.setAttribute("min", min_date);
     date.setAttribute("max", max_date);
-}
-
-// PURCHASE FORM
-// -- Mode Selection
-
-/**
- * Changes the mode to supplier mode.
- */
-function mode_supplier() {
-    mdblock.style.display = "grid";
-    paid.style.display = "grid";
-    payment.style.display = "none";
-    supplier.disabled = false;
-    supplier_button.disabled = false;
-}
-
-/**
- * Changes the mode to cash mode.
- */
-function mode_cash() {
-    mdblock.style.display = "none";
-    paid.style.display = "none";
-    payment.style.display = "grid";
-    supplier.disabled = true;
-    supplier_button.disabled = true;
-}
-
-
-// -- Line selection
-
-/**
- * Adds a new line to purchase form.
- */
-function add_purchase_line() {
-    let purchase_line = createHTML("purchase_line");
-    let parent = "pf-lines";
-    let element = "div";
-    let element_id = "pf-line-"+counter;
-    addElement(parent, "pf-line", element, element_id, purchase_line);
-}
-
-/**
- * Removes a line in purchase form.
- * @param id The id of line to be removed.
- */
-function remove_purchase_line(id) {
-    let pf_lines = document.getElementById("pf-lines");
-    if (pf_lines.children.length > 1){
-        removeElement(id);
-    } else {
-        // TODO - Flash if only one element is left
-        console.log("Cant remove line");
-    }
-}
-
-/**
- * Clears the purchase form for input and deletes lines.
- */
-function clear_purchase_form() {
-    document.getElementById("purchase-form").reset();
-    for (let i = 1; i < counter; i++) {
-        let id = "pf-line-"+i;
-        remove_purchase_line(id);
-    }
-}
-
-let purchaseForm = document.getElementById("purchase-form");
-
-/**
- * Changes the net value in a line.
- * Used when gross amount is changed.
- */
-function change_net(){
-    // TODO - Change value of gross field when net field is changed.
-    let gross_total = 0;
-    let net_total = 0;
-    for (let i = 1; i < counter; i++) {
-        let gross_id = "gross_amount-" + i;
-        let net_id = "net_amount-" + i;
-        let gross_pointer = document.getElementById(gross_id);
-        let net_pointer = document.getElementById(net_id);
-        if (gross_pointer != null){
-            let gross_amount = Number(gross_pointer.value);
-            let net_amount = gross_amount/(1.25);
-            net_pointer.value = net_amount;
-            gross_total += gross_amount;
-            net_total += net_amount;
-        }
-    }
-    let vat_total = gross_total-net_total;
-    change_total(gross_total, vat_total, net_total);
-}
-
-
-/**
- * Changes the total field.
- * @param gross_total The gross total.
- * @param vat_total The vat total.
- * @param net_total The net total.
- */
-function change_total(gross_total, vat_total, net_total) {
-    let total = document.getElementById("pf-total");
-    let amount = document.getElementById("amount");
-    total.innerHTML = "Totalbeløp: " + net_total.toFixed(2) + " + mva: " +
-        vat_total.toFixed(2) +" = " +  gross_total.toFixed(2);
-    amount.value = gross_total;
-}
-
-
-// SALE FORM
-
-function update_maturity_date() {
-    let days = document.getElementById("days_to_maturity").value;
-    let send_date = document.getElementById('date').value;
-    let time = new Date(send_date);
-    time.setDate(time.getDate()+Number(days));
-    let day = time.getDate();
-    let month = time.getMonth() + 1;
-    let year = time.getFullYear();
-    document.getElementById("maturity-text").innerHTML = "Forfallsdato: " + day +"." + month + "." + year;
 }
 
 // -- Line selection
@@ -266,6 +133,33 @@ function add_freetext_line() {
     update_sale_lines();
 }
 
+/**
+ * Gets the current date and returns it as an ISO string.
+ * @return: Current date as an ISO string.
+ */
+function get_current_date() {
+    let time = new Date();
+    return time.toISOString().substr(0, 10);
+}
+
+
+/**
+ * Update maturity date according to days to maturity
+ */
+function update_maturity_date() {
+    let days = document.getElementById("days_to_maturity").value;
+    let send_date = document.getElementById('date').value;
+    let time = new Date(send_date);
+    time.setDate(time.getDate()+Number(days));
+    let day = time.getDate();
+    let month = time.getMonth() + 1;
+    let year = time.getFullYear();
+    document.getElementById("maturity-text").innerHTML = "Forfallsdato: " + day +"." + month + "." + year;
+}
+
+/**
+ * Checks if days to maturity is valid input
+ */
 function check_days_to_maturity() {
     let days_to_maturity = document.getElementById('days_to_maturity');
     if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(days_to_maturity.value)))
@@ -273,7 +167,6 @@ function check_days_to_maturity() {
         days_to_maturity.value = 0;
     }
 }
-
 
 /**
  * Removes a line in purchase form.
@@ -302,13 +195,18 @@ function clear_sale_form() {
     update_sale_lines();
 }
 
+/**
+ * Update sale line total values
+ */
 function update_sale_lines() {
     change_sale_line_total();
     change_sale_total();
 }
 
+/**
+ * Change the total amount per line
+ */
 function change_sale_line_total() {
-    // TODO - Calculate vat
     for (let i = 1; i < counter; i++){
         let price_pointer = document.getElementById("price-"+i);
         let discount_pointer = document.getElementById("discount-"+i);
@@ -324,8 +222,10 @@ function change_sale_line_total() {
     }
 }
 
+/**
+ * Changes the total amount in total.
+ */
 function change_sale_total() {
-    // TODO - Add vat calculation
     let total = document.getElementById("sf-total");
     let gross_amount = 0;
     let net_amount = 0;
@@ -340,13 +240,14 @@ function change_sale_total() {
     total.innerHTML = gross_amount.toFixed(2) + " " + "(" + total_mva.toFixed(2) + " inkl. mva)"
 }
 
+/**
+ * Gets the total mva to be paid.
+ */
 function get_total_mva() {
     let sale_vats = document.getElementsByName('sale_vat');
     let prices = document.getElementsByName('total');
     let prices_free = document.getElementsByName('total_free');
     let sale_vats_free = document.getElementsByName('sale_vat_free');
-
-
     let mva_total = 0;
     for (let i = 0; i < prices.length; i++) {
         let mva_field = sale_vats[i].options[sale_vats[i].options.selectedIndex];
@@ -412,6 +313,7 @@ function check_amount(counter) {
 /**
  * Validates that the price-field with the given counter is set to strictly numerical.
  * If it is not, the value is set to 0.
+ * @param counter: The count of the price field to be checked.
  */
 function check_price(counter) {
     let price = document.getElementById('price-'+counter);
@@ -421,6 +323,10 @@ function check_price(counter) {
     }
 }
 
+/**
+ * Gets the price of the product and inserts it in form.
+ * @param counter: The count of the mva to be updated
+ */
 function updateSinglePrice(counter) {
     let products = document.getElementById("product-"+counter);
     let prod = products.options[products.selectedIndex].text;
@@ -430,6 +336,10 @@ function updateSinglePrice(counter) {
     update_sale_lines();
 }
 
+/**
+ * Updates the mva according to the product.
+ * @param counter: The count of the mva to be updated
+ */
 function updateMva(counter) {
     let products = document.getElementById("product-" + counter);
     let selectedProd = products.options[products.selectedIndex].value;
@@ -460,6 +370,7 @@ function updateMva(counter) {
 
 /**
  * Updates the values of the mva drop-down for free-text with the given counter based on chosen product-type.
+ * @param counter: The count of the mva to be updated
  */
 function updateMvaFree(counter) {
     let radios = document.getElementsByName("sale_type_free-"+counter);
@@ -470,8 +381,8 @@ function updateMvaFree(counter) {
             // Remove prev options before populating
             removeOptions(sel);
             if (radios[i].value == '1' || radios[i].value == '2') {
-                // Populate for videresalg
-                z
+                // Populate for sale of commodity
+                sel.options[sel.options.length] = new Option('25% (Vanlige salg til Norge med 25% mva.)', 3);
                 sel.options[sel.options.length] = new Option('15% (Vanlige salg til Norge med 15% mva. Næringsmidler etc.)', 31);
                 sel.options[sel.options.length] = new Option('11,11% (Råfisk. Kun dersom firmaets primære salsgsobjekt)', 32);
                 sel.options[sel.options.length] = new Option('Fritatt (Salg som er fritatt for avgift)', 5 );
@@ -485,15 +396,13 @@ function updateMvaFree(counter) {
                 sel.options[sel.options.length] = new Option('Utførsel (Varer som er fritatt for mva. ved eksport)', 52);
                 sel.options[sel.options.length] = new Option('Utenfor (Salg til Norge som ligger utenfor merverdiavgiftsloven)', 6);
             }
-            else if (radios[i].value == '4') {
-                // TODO - Fill choices for "annet"
-            }
         }
     }
 }
 
 /**
  * Takes a selectbox object and removes all its options.
+ * @param select: The select DOM to remove all options.
 */
 function removeOptions(select) {
     let length = select.options.length;
@@ -503,75 +412,13 @@ function removeOptions(select) {
     }
 }
 
-
-
-
-// GENERAL
-
-/**
- * Adds an element to the document.
- * @param parentId The id of parent element.
- * @param elementClass The class of the new element.
- * @param elementTag The tag of the new element.
- * @param elementId The id of the new element.
- * @param html The html to be filled in new element.
- */
-function addElement(parentId, elementClass, elementTag, elementId, html) {
-    // Adds an element to the document
-    let p = document.getElementById(parentId);
-    let newElement = document.createElement(elementTag);
-    newElement.setAttribute('class', elementClass);
-    newElement.setAttribute('id', elementId);
-    newElement.innerHTML = html;
-    p.appendChild(newElement);
-    counter++;
-}
-
-/**
- * Removes an element in document.
- * @param elementId The id of element to be removed.
- */
-function removeElement(elementId) {
-    let element = document.getElementById(elementId);
-    if (element != null) {
-        element.parentNode.removeChild(element);
-    }
-}
-
 /**
  * Creates HTML for document
  * @param type The HTML type
  * @returns {string} The HTML for specific type.
  */
 function createHTML(type) {
-    if (type === "purchase_line") {
-        return `
-            <div class="pf-line-input">
-                <h4 class="pf-header-hidden"> Tekst</h4>
-                <input id="text-${counter}" name="text-${counter}" type="text">
-            </div>
-            <div class="pf-line-input">
-                <h4 class="pf-header-hidden">Kostnadskonto</h4>
-                <select id="billing_account-${counter}" name="billing_account-${counter}"></select>
-            </div>
-            <div class="pf-line-input">
-                <h4 class="pf-header-hidden">Bruttobeløp</h4>
-                <input id="gross_amount-${counter}" name="gross_amount-${counter}" type="number" onchange="change_net()">
-            </div>
-            <div class="pf-line-input">
-                <h4 class="pf-header-hidden">Mva</h4>
-                <select id="vat-${counter}" name="vat-${counter}"></select>
-            </div>
-            <div class="pf-line-input">
-                <h4 class="pf-header-hidden">Nettobeløp</h4>
-                <input id="net_amount-${counter}" name="net_amount-${counter}" type="number" disabled>
-            </div>
-            <div class="pf-line-input">
-                <input class="pf-button" id="pf-button-${counter}" type="button" value="Slett linje" onclick="remove_purchase_line(this.parentNode.parentNode.id)">
-            </div>
-            `;
-    }
-    else if (type === "product_line") {
+    if (type === "product_line") {
         return `
             <div class="description-column">
                 <div class="sf-line-input">
@@ -619,19 +466,19 @@ function createHTML(type) {
                 </div>
                 <ul class="sf-line-input" id="sale-type">
                     <li>
-                        <input onchange="updateMvaFree(${counter});" name="sale_type_free" onclick="update_sale_lines();" type="radio" value="1" checked>
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="1" checked>
                         <label for="sale_type-0">Vare (for videresalg)</label>
                     </li>
                     <li>
-                        <input onchange="updateMvaFree(${counter});" name="sale_type_free" onclick="update_sale_lines();" type="radio" value="2">
+                        <input onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="2">
                         <label for="sale_type-1">Vare (egenprodusert)</label>
                     </li>
                     <li>
-                        <input  onchange="updateMvaFree(${counter});" name="sale_type_free" onclick="update_sale_lines();" type="radio" value="3">
+                        <input  onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="3">
                         <label for="sale_type-2">Tjeneste</label>
                     </li>
                     <li>
-                        <input class="disabled_func" disabled onchange="updateMvaFree(${counter});" name="sale_type_free" onclick="update_sale_lines();" type="radio" value="4">
+                        <input class="disabled_func" disabled onchange="updateMvaFree(${counter});" name="sale_type_free-${counter}" onclick="update_sale_lines();" type="radio" value="4">
                         <label class="disabled_func" for="sale_type-3">Annet</label>
                     </li>
                 </ul>
@@ -671,5 +518,4 @@ function createHTML(type) {
             `;
     }
 }
-
 </script>

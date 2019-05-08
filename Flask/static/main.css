@@ -2,11 +2,10 @@
     ================
         General
     ================
- */
-
+*/
 /*
  Semantic elements
- */
+*/
 html {
     height: 100%;
     background: #e2e2e2;
@@ -36,6 +35,14 @@ body {
     margin: 0;
 }
 
+.marginbox {
+    display: block;
+    color: white;
+    background-color: white;
+    width: 100%;
+    height: 400px;
+}
+
 a {
     margin: 10px 0 0 0;
 }
@@ -49,7 +56,7 @@ h2 {
     margin: 10px auto;
 }
 
-/* h3 is used for field; headings */
+/* h3 is used for field headings */
 h3 {
     font-size: 1.5em;
     font-family: 'Overpass', system-ui;
@@ -91,14 +98,12 @@ form {
     clear: left;
 }
 
-/* styling for active/highlighted buttons */
 input[type="submit"]:focus, input[type="button"]:focus {
     color: #333;
     background-color: #e6e6e6;
     border-color: #8c8c8c;
 }
 
-/* just for checkboxes */
 input[type="checkbox"] {
     position: relative;
     display: block;
@@ -121,23 +126,11 @@ input[type="file"] {
     max-width: 207px;
 }
 
-/* Styling for buttons on profile page */
-#warning {
-    background-color: red;
-    color: #ffffff;
-}
-
-#warning:focus {
-    background-color: blue;
-    border: 3px solid yellow;
-}
-
 /*
-    ==============
+    ================
         Navbar
-    ==============
+    ================
  */
-
 nav {
     position: sticky;
     top: 0;
@@ -208,14 +201,10 @@ hr {
     width: 100%;
 }
 
-/*
-    ================
-        General
-    ================
- */
-
-/*
-Pre
+ /* 
+    =========================
+        Pre-login styling
+    =========================
  */
 .pre-container {
     background-color: white;
@@ -242,10 +231,11 @@ Pre
     width: 50%;
 }
 
-/*
-Post
+ /*
+    =========================
+        post-login styling
+    =========================
  */
-
 .main-form {
     margin: 0;
     padding:0;
@@ -312,16 +302,12 @@ select:disabled, input[type="text"]:disabled, #supplier-button:disabled, input:d
     ====================
         Purchase Page
     ====================
- */
-
+*/
 .imagebox {
     height: 100%;
     width: 100%;
     margin: 0 auto;
     text-align: center;
-}
-
-#image-filler {
 }
 
 .file-upload {
@@ -515,7 +501,6 @@ select:disabled, input[type="text"]:disabled, #supplier-button:disabled, input:d
     line-height: 30px;
 }
 
-
 #line-text {
     margin: 5px 0;
 }
@@ -538,8 +523,7 @@ textarea {
     ==================
         Admin Page
     ==================
- */
-
+*/
 .admin-flash {
     margin:0;
     padding:0;
@@ -561,9 +545,9 @@ textarea {
 
 /*
     ===================
-        Contact Page
+        Contact Page 
     ===================
- */
+*/
 .contact-content {
     margin: 0;
     padding: 0 15px;
@@ -575,7 +559,17 @@ textarea {
     ===================
         Profile Page
     ===================
- */
+*/
+#warning {
+    background-color: red;
+    color: #ffffff;
+}
+
+#warning:focus {
+    background-color: blue;
+    border: 3px solid yellow;
+}
+
 #profile-container {
     margin: 0;
     padding: 0 15px;
@@ -621,7 +615,7 @@ textarea {
     ==================
         Loader Page
     ==================
- */
+*/
 #loader {
     width: 100%;
     height: 100%;
@@ -640,17 +634,11 @@ textarea {
     z-index: 100;
 }
 
-/* ------ HISTORY PAGE ----- */
-/* Just a div placed on certain pages
-    to make the footer placed correctly */
-.marginbox {
-    display: block;
-    color: white;
-    background-color: white;
-    width: 100%;
-    height: 400px;
-}
-
+/*
+    ===================
+        History page
+    ===================
+*/
 .filter_buttons {
     position: static;
     margin: 0 10% 2%;
@@ -707,7 +695,6 @@ textarea {
     text-align: start;
 }
 
-
 .content {
     display: none;
     background-color: #fff;
@@ -720,13 +707,10 @@ textarea {
     border-top: none;
 }
 
-
 .content img {
     max-width: 300px;
     width: 100%;
 }
-
-
 
 .no_history {
     font-size: 200%;
@@ -734,8 +718,6 @@ textarea {
     text-align: center;
 }
 
-
-/* ------ HISTORY 2 ----- */
 .entry_container {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -790,7 +772,6 @@ textarea {
     padding: 2% 0 1% 0;
 }
 
-
 .entry_pic {
     padding: 1%;
     align-content: center;
@@ -826,8 +807,7 @@ textarea {
   transition: 0.3s;
 }
 
-.history_modal_close:hover,
-.history_modal_close:focus {
+.history_modal_close:hover, .history_modal_close:focus {
   color: #bbb;
   text-decoration: none;
   cursor: pointer;
@@ -860,15 +840,15 @@ textarea {
 }
 
 
-/**
+/*
 CSS for visually displaying that some functionality is not in order.
- */
+*/
 .disabled_func {
     opacity: 0.3;
 }
 
 /* Pop-up for å endre selskap i fiken */
-
+/* pop-up to change company for Fiken */
 .company_table {
     background-color: white;
     width: 100%;
@@ -894,7 +874,6 @@ CSS for visually displaying that some functionality is not in order.
     font-style: italic;
 }
 
-
 /* Buttons that should stack, floats are cleared. */
 .stacked_button {
     float: none !important;
@@ -919,11 +898,10 @@ CSS for visually displaying that some functionality is not in order.
 }
 
 /*
-    =================
+    ================
         Modals
-    =================
+    ================
 */
-
 .modal, .popup {
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -986,18 +964,11 @@ CSS for visually displaying that some functionality is not in order.
   margin: 20px auto 0 !important;
 }
 
-.close:hover,
-.close:focus,
-.popup-close:hover,
-.popup-close:focus {
+.close:hover, .close:focus, .popup-close:hover, .popup-close:focus {
   color: #000;
   text-decoration: none;
   cursor: pointer;
 }
-
-/*
-  TYPE SPECIFIC
-*/
 
 .new-contact, .new-account {
   margin: 0 15px;
@@ -1031,11 +1002,10 @@ CSS for visually displaying that some functionality is not in order.
 }
 
 /*
-    =================
+    ================
         Flashes
-    =================
+    ================
 */
-
 .flash {
     padding: 0;
     display: grid;
@@ -1061,13 +1031,9 @@ CSS for visually displaying that some functionality is not in order.
     border: 1px green solid;
 }
 
-
-
     /* Styling for non-widescren (not phones)
     480px < width > 1200px */
 @media screen and (min-width: 480px) {
-    /* temp color changes to make a clear
-        differences between devices */
     body {
         word-break: keep-all;
     }
@@ -1076,8 +1042,6 @@ CSS for visually displaying that some functionality is not in order.
         width: 90%;
     }
 
-    /* some h2 are elements are used as title for a
-        minor block/boxdisplay. */
     .title {
         font-size: 2em;
         display: block;
@@ -1094,7 +1058,6 @@ CSS for visually displaying that some functionality is not in order.
         Purchase Page
     ====================
     */
-
     .pf-form-input {
         grid-template-columns: 1fr 2fr;
     }
@@ -1118,7 +1081,6 @@ CSS for visually displaying that some functionality is not in order.
         Sale Page
     ===================
     */
-
     .sf-line-split {
         grid-template-columns: 1fr 1fr;
     }
@@ -1148,10 +1110,13 @@ CSS for visually displaying that some functionality is not in order.
         width: 70%;
     }
 
-
-    /* Styling for widescreens, ie. width > 768px */
+    /* Styling for widescreens, ie. width > 1200px */
     @media screen and (min-width: 1200px) {
-        /* center the forms pre log in */
+        /*
+        ==================
+            Login page
+        ==================
+        */
         .pre-form {
             display: block;
             margin: 0 25% 0 25%;
@@ -1165,8 +1130,6 @@ CSS for visually displaying that some functionality is not in order.
             width: 85%;
         }
 
-        /* some h2 are elements are used as title for a
-            minor block/boxdisplay. */
         .title {
             font-size: 2em;
             display: block;
@@ -1183,6 +1146,11 @@ CSS for visually displaying that some functionality is not in order.
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
+        /*
+        =====================
+            Purchase page
+        =====================
+        */
         #purchase-container {
             grid-template-columns: 1fr 1fr;
             grid-column-gap: 1em;
@@ -1224,16 +1192,10 @@ CSS for visually displaying that some functionality is not in order.
         .pf-lines-top h4 {
             width: 100%;
         }
+
         .pf-header-hidden, .sf-header-hidden {
             display: none;
         }
-
-        /*
-        .pf-lines-top {
-            display: grid;
-            grid-template-columns: 4fr 3fr 3fr 2fr 2fr 2fr;
-            grid-column-gap: 1em;
-        }*/
 
         #upload-file-part {
             grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -1244,9 +1206,10 @@ CSS for visually displaying that some functionality is not in order.
         }
 
         /*
-        Sale form
-         */
-
+        ==================
+            Sales page
+        ==================
+        */
         .sf-upper {
             grid-template-columns: 1fr 1fr;
             grid-column-gap: 3em;
@@ -1327,6 +1290,11 @@ CSS for visually displaying that some functionality is not in order.
             width: 50%;
         }
 
+        /*
+        ====================
+            Profile page
+        ====================
+        */
         .profile-title, .profile-p {
             font-size: 16px;
         }

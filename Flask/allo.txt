@@ -1,6 +1,0 @@
-This is your email: janAnton
-This is your name: Jan Anton
-This is your admin status: True
-This is your account activity status: True
-This is your fiken-account: None
-This is your active company: None

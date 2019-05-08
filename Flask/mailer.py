@@ -100,11 +100,29 @@ class Mailer:
             <h2>Velkommen!</h2>
             <p>Du er nå registrert hos oss og kan nå <a href="www.fikto.no">logge inn</a> for å bruke vår applikasjon</p>
             <p>Epost: {} <br> Passord: {} </p>
+            <br><hr><br>
+            <h2>Brukervilkår</h2>
+            <h3>Hva vilk&aring;rene gjelder</h3>
+            <p>Vilk&aring;rene gjelder bruk av tjenesten Fikto, Tjenesten eies av en gruppe best&aring;ende av Jan Anton Pedersen, Yrian &Oslash;ksne, Fredrik Waaler, Klaus Dyvik overordnet Norges teknisk-naturvitenskapelige universitet.</p>
+            <h3>Om Fikto</h3>
+            <p>Tjenesten er en forenkling av den eksisterende tjenesten Fiken. En benytter seg av tjenesten ved &aring; bruke koblingen <a href="http://fikto.no">http://fikto.no</a> via en nettleser. Tjenesten fungerer p&aring; flere enheter (PC, nettbrett, mobil).</p>
+            <h3>Bruk av tjenesten</h3>
+            <p>Det koster ikke noe &aring; bruke tjenesten. Bruk av tjenesten skal v&aelig;re avtalt med gruppen. Konsekvenser av misbruk vil f&oslash;re til utestengelse av tjenesten.</p>
+            <h3>Ansvar for tjenesten</h3>
+            <p>Ved bruk av tjenesten tar gruppen ansvar for at data blir innsendt riktig. Ved bruk av bildegjenkjenningssystemet har bruker et ansvar for &aring; dobbeltsjekke foresl&aring;tte verdier for innsending.</p>
+            <h3>Registrering og behandling av personvernopplysninger</h3>
+            <p>Ved foresp&oslash;rsel om registrering av ny bruker skal alle forespurte personopplysninger gis korrekt. Det er mulig &aring; laste ned alle lagrede data, samt slette all data via profil-siden. Merk at n&aring;r data blir slettet, vil profilen ogs&aring; bli slettet.</p>
+            <h3>Fiken</h3>
+            <p>For &aring; bruke tjenesten kreves det at du har en konto p&aring; tjenesten Fiken. Det betyr og at du m&aring; godta brukervilk&aring;rene til Fiken funnet her: <a href="https://fiken.no/sluttbrukeravtale">https://fiken.no/sluttbrukeravtale</a>. Ved bruk av v&aring;r tjeneste, godtar du at vi kan innhente informasjon fra din profil p&aring; Fiken. Denne data blir ikke lagret.</p>
+            <h3>&Oslash;vrig</h3>
+            <p>For &aring; ta kontakt med gruppen, f&oslash;lg informasjonen gitt under siden <a href="http://www.fikto.no/contact">http://www.fikto.no/contact</a>. Her kan du ogs&aring; sende eventuelle endringsforslag som er kritiske for tjenesten.</p>
+            <br><hr><br>
             <p><br>Obs: Vennligts ikke svar på denne mailen.</p>
             </body>
         </html>
         """.format(receiver, password)
         self.send_mail("Velkommen til oss!", content, receiver, mime_type='html')
+
 
 
 

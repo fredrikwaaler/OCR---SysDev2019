@@ -102,15 +102,13 @@ class User(UserMixin):
     def delete_user(self):
         self.Dm.delete_user_by_email(self.email)
 
-    def generate_new_password(self):
+    def change_password_pre_hashed(self, new_password):
         """
-        Generates a new random password for the user.
-        :return: The new random password.
+        Sets a new password for the user. This password should be hashed in forehand.
+        :param new_password: The new hashed password.
         """
-        new_password = PasswordHandler.generate_random_password()
-        self.password = PasswordHandler.generate_hashed_password(new_password)
+        self.password = new_password
         self.store_user()
-        return new_password
 
     @staticmethod
     def get_user(email):

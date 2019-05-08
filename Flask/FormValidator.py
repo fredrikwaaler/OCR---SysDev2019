@@ -55,7 +55,7 @@ def validate_new_password(new_pass, repeat_new_pass):
     Second value is a list containing the error, if any, else the list is empty.
     :param new_pass: The new password
     :param repeat_new_pass: The "repeated" new password.
-    :return: A tuple containing info of whether or not the form was validated and a list of any errors.
+    :return: A tuple containing info of whether or not the password was validated and a list of any errors.
     """
     errors = []
     if new_pass != repeat_new_pass:
@@ -70,6 +70,13 @@ def validate_new_password(new_pass, repeat_new_pass):
 
 
 def validate_password(password):
+    """
+    Validates a password.
+    A password is validated if it is between 8-20 characters, contains both upper- and lowercase
+    letters and at least one number.
+    :param password: The password to validate
+    :return: A tuple containing info of whether or not the password was validated and a list of any errors.
+    """
     errors = []
     if not re.match('^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$', password):
         errors.append( "Obs: Passordet må inneholde store bokstaver, små bokstaver og tall. Passordet må være mellom"
@@ -78,6 +85,11 @@ def validate_password(password):
 
 
 def validate_email(email):
+    """
+    Validates that the email is in a valid format. I.e. something@something.something
+    :param email: The email to validate.
+    :return: A tuple containing info of whether or not the email was validated and a list of any errors.
+    """
     errors = []
     if not re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
         errors.append("Obs: Eposten er ikke gyldig.")
@@ -85,32 +97,40 @@ def validate_email(email):
 
 
 def validate_new_fiken_user(login, password):
+    """
+    Validates that the fiken-user is a valid fiken user.
+    :param login: The login to fiken
+    :param password: The password to fiken
+    :return: A tuple containing info of whether or not the fiken-user was validated and a list of any errors.
+    """
     errors = []
-    # Validate email
-    good_email, email_errors = validate_email(login)
-    # Validate password, no need, cant login unless password is correct.
-    # good_pass, pass_errors = validate_password(password)
 
+    # Check with fiken is this is credentials to a user they manage
     if not FikenManager.is_valid_credentials(login, password):
         errors.append("Obs: Eposten eller passordet du har angitt er ikke riktig. Prøv på nytt.")
-    elif not good_email:
-        errors += email_errors
-    # elif not good_pass:
-        # errors += pass_errors
 
     return len(errors) == 0, errors
 
 
 def validate_sign_up(name, email):
+    """
+    Validates a the name and email for a new sign-up.
+    :param name: The name
+    :param email: The email
+    :return: A tuple containing info of whether or not the sign-up was validated and a list of any errors.
+    """
     errors = []
     # Validate email
     good_email, email_errors = validate_email(email)
+    # Check whether there already exists a user with this email.
     if User.user_exists(email):
         good_email = False
         email_errors += ["Eposten er allerede i bruk."]
+    # Check if the email is valid at all
     if not good_email:
         errors += email_errors
 
+    # Check if the name is valid
     good_name, name_errors = validate_new_name(name)
     if not good_name:
         errors += name_errors
@@ -119,6 +139,13 @@ def validate_sign_up(name, email):
 
 
 def validate_sales_form(form):
+    """
+    Validates the inputs to sale-form not auto-validated by HTML.
+    Checks that the every product-lines is positive. A product-line with total=0 is without meaning
+    and thus not possible to send to fiken.
+    :param form: The sales-form to validate
+    :return: A tuple containing info of whether or not the form was validated and a list of any errors.
+    """
     errors = []
 
     # Validate that all line totals are positive
@@ -143,6 +170,13 @@ def validate_sales_form(form):
 
 
 def validate_purchase_form(form):
+    """
+    Validates the inputs to purchase-form not auto-validated by HTML.
+    Checks that the every product-lines is positive. A product-line with total=0 is without meaning
+    and thus not possible to send to fiken.
+    :param form: The purchase-form
+    :return:  A tuple containing info of whether or not the form was validated and a list of any errors.
+    """
     errors = []
 
     # Validate that all lines have a positive sum

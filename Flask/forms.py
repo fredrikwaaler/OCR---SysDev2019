@@ -5,15 +5,24 @@ from wtforms.validators import DataRequired, InputRequired
 
 
 class LoginForm(FlaskForm):
+    """
+    Form for login (email and password).
+    """
     email = StringField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
 
 
 class ForgotForm(FlaskForm):
+    """
+    Form for email if password is forgotten.
+    """
     email = StringField('Email')
 
 
 class PurchaseForm(FlaskForm):
+    """
+    Purchase form. Contains fields for detailing info about a purchase.
+    """
     purchase_type = RadioField('Label', choices=[('0', ''), ('1','Kjøp fra leverandør'),('2','Kontantkjøp')])
     invoice_date = DateField('Faktura', validators=[DataRequired(), InputRequired()])
     maturity_date = DateField('Forfall')
@@ -29,6 +38,9 @@ class PurchaseForm(FlaskForm):
 
 
 class SaleForm(FlaskForm):
+    """
+    Sales form. Contains fields for detailing info about a sale.
+    """
     sale_type = SelectField('Type', choices=[('0', ''), ('1', 'Faktura')])
     date = DateField('Dato', validators=[DataRequired(), InputRequired()])
     days_to_maturity = StringField("Dager til forfalll")
@@ -49,6 +61,9 @@ class SaleForm(FlaskForm):
 
 
 class ProfileForm(FlaskForm):
+    """
+    Form for the profile-page.
+    """
     # For changing name
     new_name = StringField('Name')
     # For changing email
@@ -59,16 +74,25 @@ class ProfileForm(FlaskForm):
 
 
 class FikenModalForm(FlaskForm):
+    """
+    Modal form for changing fiken-user.
+    """
     # For changing fiken-user
     email = StringField('Email')
     password = PasswordField('Passord')
 
 
 class ConfirmPasswordForm(FlaskForm):
+    """
+    Form for confirming password.
+    """
     password = PasswordField('Bekreft Passordet')
 
 
 class CustomerForm(FlaskForm):
+    """
+    Form for creating a new contact
+    """
     name = StringField('Navn', validators=[InputRequired(), DataRequired()])
     org_nr = StringField('Org.nr')
     email = StringField('Epost')
@@ -83,6 +107,9 @@ class CustomerForm(FlaskForm):
 
 
 class AccountForm(FlaskForm):
+    """
+    Form for creating accounts.
+    """
     account_name = StringField('Navn')
     account_type = SelectField('Type', choices=[('Vanlig', 'Vanlig'), ('Uvanlig', 'Utenlandsk / betalingstjeneste')])
     account_bank = SelectField('Bank', choices=[('0', ''), ('1', 'Stripe'), ('2', 'PayPal')])
@@ -90,6 +117,9 @@ class AccountForm(FlaskForm):
 
 
 class SignUpForm(FlaskForm):
+    """
+    Form for sign-up.
+    """
     name = StringField('Name')
     email = StringField('Email')
     admin = BooleanField('Admin')

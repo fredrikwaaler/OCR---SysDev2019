@@ -176,19 +176,32 @@ class SalesDataFormatter:
         discounts = data.getlist('discount_free')
         quantities = data.getlist('quantity_free')
         safts = data.getlist('sale_vat_free')
+        # For each product (always one description per product)
         for i in range(len(descriptions)):
+            # Create a dictionary to represent the product line
             product_info_free_text.append({})
+            # Add description
             product_info_free_text[i]["description"] = descriptions[i]
+            # Add comment if there is one
             if not comments[i].strip() == '':
                 product_info_free_text[i]["comment"] = comments[i]
+            # Add income account - retrieved from correlation to sale-type
             product_info_free_text[i]["incomeAccount"] = SalesDataFormatter.sale_type_to_account[sale_types[i]]
+            # Add unit net-amount
             product_info_free_text[i]["unitNetAmount"] = float(unit_prices[i])
+            # Add discount
             product_info_free_text[i]["discountPercent"] = float(discounts[i])
+            # Add quantity
             product_info_free_text[i]["quantity"] = int(quantities[i])
+            # Add net amount (unitPrice * quantity)
             product_info_free_text[i]["netAmount"] = product_info_free_text[i]["unitNetAmount"] * product_info_free_text[i]["quantity"]
+            # Retrieve and add vat-type based on saft-code, which is value for the different vat-options
             product_info_free_text[i]["vatType"] = SalesDataFormatter.saft_to_VAT_types[int(safts[i])]
+            # Get mva from saft-type as well
             mva = SalesDataFormatter.saft_to_VAT[int(safts[i])]
+            # Calculate vat-amount = mva (in percent) * netAmount
             product_info_free_text[i]["vatAmount"] = product_info_free_text[i]["netAmount"] * mva
+            # Calculate gross-amount = net + vat
             product_info_free_text[i]["grossAmount"] = product_info_free_text[i]["netAmount"] + product_info_free_text[i]["vatAmount"]
 
             # Format the data so that it is correct for send-in to fiken
@@ -197,6 +210,7 @@ class SalesDataFormatter:
             product_info_free_text[i]["vatAmount"] = SalesDataFormatter.fiken_number_formatter(product_info_free_text[i]["vatAmount"])
             product_info_free_text[i]["grossAmount"] = SalesDataFormatter.fiken_number_formatter(product_info_free_text[i]["grossAmount"])
 
+        # Add the product to the product-lines
         return_data["lines"] += product_info_free_text
 
         return return_data
@@ -210,6 +224,8 @@ class SalesDataFormatter:
         :param num: The number to manipulate.
         :return: The number input manipulated in such a way that fiken understands it.
         """
+        # Make sure the number has tops 2 digits
+        num = round(float(num), 2)
         num = str(num)
         num_split = num.split('.')
         # Meaning there are no commas in the number

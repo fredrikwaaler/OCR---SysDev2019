@@ -237,7 +237,7 @@ function change_sale_total() {
         }
     }
     let total_mva = get_total_mva();
-    total.innerHTML = gross_amount.toFixed(2) + " " + "(" + total_mva.toFixed(2) + " inkl. mva)"
+    total.innerHTML = gross_amount.toFixed(2) + " " + "(" + gross_amount.toFixed(2) + total_mva.toFixed(2) + " inkl. mva)"
 }
 
 /**
@@ -337,7 +337,7 @@ function updateSinglePrice(counter) {
 }
 
 /**
- * Updates the mva according to the product.
+ * Updates the mva according to the product chosen.
  * @param counter: The count of the mva to be updated
  */
 function updateMva(counter) {
@@ -413,7 +413,9 @@ function removeOptions(select) {
 }
 
 /**
- * Creates HTML for document
+ * Creates HTML for document based on type.
+ * This includes parts of the HTML that are frequently reused, with the possibility to add and delete on click.
+ * Examples are a product line, thats added every time the user presses the "add product-line" button.
  * @param type The HTML type
  * @returns {string} The HTML for specific type.
  */

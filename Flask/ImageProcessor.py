@@ -32,11 +32,9 @@ class VisionManager:
         texts = response.text_annotations
         text_string = ""
         for text in texts:
-            #print('\n"{}"'.format(text.description) + "")
             text_string = text_string + text.description
             vertices = (['({},{})'.format(vertex.x, vertex.y)
                          for vertex in text.bounding_poly.vertices])
-            #print('bounds: {}'.format(','.join(vertices)))
 
         return text_string
 

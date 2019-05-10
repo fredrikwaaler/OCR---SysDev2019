@@ -495,8 +495,9 @@ function add_ocr_lines() {
 }
 
 /**
- * Creates HTML for document
- * @param type The HTML type
+ * Creates HTML for document based on type.
+ * This includes parts of the HTML that are frequently reused, with the possibility to add and delete on click.
+ * Examples are a purchase, that is added every time the user presses the "add purchase-line" button.
  * @returns {string} The HTML for specific type.
  */
 function createHTML(type) {

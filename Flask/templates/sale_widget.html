@@ -228,8 +228,6 @@ function change_sale_line_total() {
 function change_sale_total() {
     let total = document.getElementById("sf-total");
     let gross_amount = 0;
-    let net_amount = 0;
-    let vat_amount = 0;
     for (let i = 1; i < counter; i++){
         let total_pointer = document.getElementById("sf-line-total-"+i);
         if (total_pointer != null) {
@@ -237,7 +235,8 @@ function change_sale_total() {
         }
     }
     let total_mva = get_total_mva();
-    total.innerHTML = gross_amount.toFixed(2) + " " + "(" + gross_amount.toFixed(2) + total_mva.toFixed(2) + " inkl. mva)"
+    let total_amount = total_mva + gross_amount;
+    total.innerHTML = gross_amount.toFixed(2) + " " + "(" + total_amount.toFixed(2) + " inkl. mva)"
 }
 
 /**

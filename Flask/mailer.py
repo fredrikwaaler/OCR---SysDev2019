@@ -7,7 +7,9 @@ class Mailer:
 
     # The mailer uses this SMTP-server to send mails.
     # Port 587 is secure TLS on google smtp-server.
-    smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
+    server_name = "smtp.gmail.com"
+    server_port = 587
+    smtp_server = smtplib.SMTP(server_name, server_port)
 
     def __init__(self, email, password, envelope_name=None):
         """
@@ -29,6 +31,7 @@ class Mailer:
         Must be used before sending mails with the mailer.
         Readies the mailer for use with encryption and the set mail-login.
         """
+        self.smtp_server.connect(self.server_name, self.server_port)
         self.smtp_server.ehlo()
         self.smtp_server.starttls()
         self.smtp_server.login(self.email, self.password)

@@ -425,6 +425,30 @@ function set_cash_payment_sum() {
     }
 }
 
+/**
+ * Validates that the gross-field with the given counter is set to strictly numerical.
+ * If it is not, the value is set to 0.
+ */
+function check_gross(counter) {
+    let price = document.getElementById('gross_amount-'+counter);
+    if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(price.value))) || price.value.startsWith('-')) {
+        price.value = 0;
+        change_net();
+    }
+}
+
+/**
+ * Validates that the payment-field with the given counter is set to strictly numerical.
+ * If it is not, the value is set to 0.
+ */
+function check_payment(counter) {
+    let payment = document.getElementById('payment-amount-'+counter);
+    if (!(/^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$/.test(String(payment.value))) || payment.value.startsWith('-')) {
+        payment.value = 0;
+        change_net();
+    }
+}
+
 // Purchase form population
 
 /**

@@ -413,19 +413,19 @@ def admin():
             new_password = PasswordHandler.generate_random_password()
             hashed_new = PasswordHandler.generate_hashed_password(new_password)
             # Try to mail the new user its credentials.
-            try:
-                mailer = Mailer(app.config["MAIL_LOGIN"], app.config["MAIL_PASSWORD"])
-                mailer.open_server()
-                mailer.send_new_user(email, new_password)
-                mailer.close_server()
-                flash("Bruker registrert. Mail sendt til bruker med info.", "success")
+            #try:
+            mailer = Mailer(app.config["MAIL_LOGIN"], app.config["MAIL_PASSWORD"])
+            mailer.open_server()
+            mailer.send_new_user(email, new_password)
+            mailer.close_server()
+            flash("Bruker registrert. Mail sendt til bruker med info.", "success")
 
-                # Create new user and store to DB (if mailing was successful)
-                new_user = User(email, hashed_new, name, admin)
-                new_user.store_user()
-            # If mailing went wrong, notify the admin.
-            except smtplib.SMTPException:
-                flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
+            # Create new user and store to DB (if mailing was successful)
+            new_user = User(email, hashed_new, name, admin)
+            new_user.store_user()
+                # If mailing went wrong, notify the admin.
+            #except smtplib.SMTPException:
+                #flash("Noe gikk galt. Prøv igjen senere eller kontakt oss om problemet vedvarer.")
         # Notify is invalid form-request
         else:
             for error in errors:
@@ -713,7 +713,7 @@ def get_user_data():
     """
     # Create a file and append all user data.
     filename = 'bruker_data.txt'
-    f = open(filename,"w+")
+    f = open(filename, "w+")
     f.write("This is your email: " + current_user.email + "\n")
     f.write("This is your name: " + current_user.name + "\n")
     f.write("This is your admin status: {}".format(current_user.admin) + "\n")
@@ -868,4 +868,4 @@ def gateway_timeout(e):
 
 # If this script is run, host the app using waitress on given port and host.
 if __name__ == '__main__':
-    serve(app, host="127.0.0.1", port="8000")
+    app.run(host="127.0.0.1", port="8000")
